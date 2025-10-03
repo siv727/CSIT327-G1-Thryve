@@ -1,7 +1,5 @@
 # Thryve: SME Resource Sharing & Collaboration Network
 
----
-
 **Thryve** is a comprehensive web platform designed to connect Small and Medium Enterprises (SMEs) in a collaborative network where businesses can share resources, exchange services, and build meaningful partnerships. The platform serves as a digital marketplace that enables local businesses to optimize their operations through resource sharing and service collaboration.
 
 ### 🎯 Mission Statement
