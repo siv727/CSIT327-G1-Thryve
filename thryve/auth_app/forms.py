@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
 from .models import CustomUser
 
@@ -48,3 +48,14 @@ class RegistrationForm(UserCreationForm):
         if company_name and CustomUser.objects.filter(company_name=company_name).exists():
             raise forms.ValidationError("Company name already exists")
         return company_name
+
+class LoginForm(AuthenticationForm):
+    username = forms.EmailField(widget=forms.EmailInput(attrs={
+        'placeholder': 'Email Address',
+        'class': 'w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors',
+    }))
+    password = forms.CharField(widget=forms.EmailInput(attrs={
+        'placeholder': 'Password',
+        'class': 'w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors',
+    }))
+
