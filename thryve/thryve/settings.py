@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'thryve_app',
+    'auth_app',
 ]
 
 MIDDLEWARE = [
@@ -61,7 +62,8 @@ ROOT_URLCONF = 'thryve.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates/thryve_app/'],
+        'DIRS': ['templates/thryve_app/',
+                 'auth_app/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,13 +124,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/thryve_app/'
+STATIC_URL = 'static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static')
+    os.path.join(BASE_DIR, 'static'),
 )
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'auth_app.CustomUser'
