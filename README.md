@@ -7,6 +7,155 @@ To empower SMEs by creating a unified platform that facilitates resource optimiz
 
 ---
 
+## 🛠️ Technology Stack
+
+### Backend
+- **Framework**: Django 5.0+ (Pure Django - templates, views, models)
+- **Database**: Supabase (PostgreSQL-based backend-as-a-service)
+- **Authentication**: Django's built-in authentication system
+- **ORM**: Django ORM with PostgreSQL adapter
+
+### Frontend
+- **Templates**: Django Template Language (DTL)
+- **Styling**: TailwindCSS for responsive design and styling
+- **Interactivity**: Minimal JavaScript with Django integration
+
+---
+
+## 🚀 Setup & Run Instructions
+
+### Prerequisites
+- **Python 3.10+**
+- **Git**
+- **Supabase account** (free tier available)
+- **Node.js** (for TailwindCSS)
+
+---
+
+### 📋 Step-by-Step Installation Guide
+
+#### **1. Clone the Repository**
+```bash
+# Clone the project repository
+git clone https://github.com/your-team/thryve.git
+cd thryve
+```
+
+#### **2. Set Up Virtual Environment**
+```bash
+# Create virtual environment
+python -m venv env
+
+# Activate virtual environment
+# On Windows:
+env\\Scripts\\activate
+
+# On macOS/Linux:
+source env/bin/activate
+```
+
+#### **3. Install Python Dependencies**
+```bash
+# Install required packages
+pip install django psycopg2 dj-database-url python-dotenv
+```
+
+#### **4. Set Up Supabase Database**
+
+1. **Create Supabase Project:**
+   - Go to [Supabase Dashboard](https://supabase.com/dashboard)
+   - Click "New Project"
+   - Choose your organization and set project details
+   - Wait for project setup to complete
+
+2. **Get Database Connection Details:**
+   - In your Supabase project dashboard
+   - Go to **Settings → Database**
+   - Copy the **Connection Pooling** connection string (Session Pooler)
+   - It should look like: `postgresql://postgres:YOUR_PASSWORD@aws-0-<project-ref>.pooler.supabase.com:5432/postgres`
+
+#### **5. Configure Environment Variables**
+```bash
+# Create .env file in project root
+touch .env  # On Windows: echo. > .env
+```
+
+Add the following to your `.env` file:
+```env
+# Django Configuration
+SECRET_KEY=your-super-secret-django-key-here
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Supabase Database Configuration (Session Pooler)
+DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@aws-0-<project-ref>.pooler.supabase.com:5432/postgres?sslmode=require
+```
+
+**Important Notes:**
+- Replace `YOUR_PASSWORD` with your Supabase database password
+- Replace `<project-ref>` with your actual project reference from Supabase
+- Keep `sslmode=require` as Supabase enforces SSL connections
+
+#### **6. Database Setup**
+```bash
+# Create and apply database migrations
+python manage.py makemigrations
+python manage.py migrate
+```
+
+#### **7. Verify Database Connection (Optional)**
+```bash
+# Test if Django can connect to Supabase
+python manage.py shell
+
+# In the Django shell, run:
+import os
+print(os.environ.get("DATABASE_URL"))
+# Should display your connection string
+
+# Test database connectivity
+from django.db import connection
+cursor = connection.cursor()
+print("Database connection successful!")
+exit()
+```
+
+#### **8. Run the Development Server**
+```bash
+# Start Django development server
+python manage.py runserver
+
+# Access the application at:
+# http://127.0.0.1:8000
+```
+
+---
+
+### 🔍 Troubleshooting Common Issues
+
+#### **Database Connection Issues:**
+```bash
+# If migrations fail, check your DATABASE_URL
+python manage.py shell
+import os
+print(os.environ.get("DATABASE_URL"))
+
+# Ensure .env file is in the correct location (project root)
+# Verify Supabase project is active and credentials are correct
+```
+
+---
+
+## 👥 Team Members
+
+| Name | Role | Email |
+|------|------|-------|
+| **Andre Salonga** | Lead Frontend Developer | andre.salonga@cit.edu |
+| **Ervin Louis Villas** | Lead Backend Developer | ervinlouis.villas@cit.edu |
+| **Justine Vilocura** | Assistant Frontend & Backend Developer | justine.vilocura@cit.edu |
+
+---
+
 ## 🌟 Key Features
 
 ### 🏢 Business Directory
