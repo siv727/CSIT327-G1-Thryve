@@ -28,7 +28,6 @@ To empower SMEs by creating a unified platform that facilitates resource optimiz
 - **Python 3.10+**
 - **Git**
 - **Supabase account** (free tier available)
-- **Node.js** (for TailwindCSS)
 
 ---
 
