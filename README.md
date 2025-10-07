@@ -146,6 +146,12 @@ print(os.environ.get("DATABASE_URL"))
 
 ---
 
+## 🌐 Deployed Application
+
+🚀 **Live Demo**: Coming Soon!
+
+---
+
 ## 👥 Team Members
 
 | Name | Role | Email |
