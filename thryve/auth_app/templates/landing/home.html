@@ -1,206 +1,93 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Thryve • Marketplace</title>
-  <link rel="stylesheet" href="{% static 'styles/home.css' %}?v=9">
+
+  <!-- ✅ Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
 
-  <!-- Top Bar -->
-  <header class="topbar">
-    <div class="topbar__inner container">
-      <div class="brand">Thryve</div>
+<body class="bg-gray-50 text-slate-800 font-inter">
 
-     <nav class="tabs">
-      <a class="tab tab--active" href="{% url 'home' %}">
-        <span class="tab__icon" aria-hidden="true">◎</span>
-              Marketplace
-       </a>
-      
-        <span class="tab__icon" aria-hidden="true">👥</span>
-          Community
-      
-    </nav>
+  <!-- 🌊 Top Bar -->
+  <header class="bg-gradient-to-r from-sky-700 to-sky-500 text-white shadow">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="font-extrabold text-2xl tracking-tight">Thryve</div>
 
+      <nav class="flex items-center space-x-3">
+        <a href="{% url 'home' %}" class="flex items-center gap-2 px-4 py-2 rounded-full bg-white text-sky-700 font-bold shadow">
+          ◎ <span>Marketplace</span>
+        </a>
+        <a href="#" class="flex items-center gap-2 px-4 py-2 rounded-full border border-white/30 text-white hover:bg-white/10">
+          👥 <span>Community</span>
+        </a>
+      </nav>
 
-
-      <button class="btn btn--primary btn--add">+ Add Listing</button>
+      <button class="bg-sky-600 hover:bg-sky-700 px-4 py-2 rounded-lg font-bold shadow">
+        + Add Listing
+      </button>
     </div>
   </header>
 
-  <!-- Page -->
-  <main class="container page">
+  <!-- 📦 Page -->
+  <main class="max-w-6xl mx-auto px-4 py-8">
 
-    <!-- Title row with right Category select -->
-    <div class="page__header">
-      <div class="page__title">
-        <h1>Marketplace</h1>
-        <p class="muted">Buy, sell, or swap equipment and services</p>
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between gap-6 mb-8">
+      <div>
+        <h1 class="text-3xl font-bold">Marketplace</h1>
+        <p class="text-gray-500 mb-3">Buy, sell, or swap equipment and services</p>
 
-        <!-- chips -->
-        <div class="chips">
-          <button class="chip chip--active">All</button>
-          <button class="chip">For Sale</button>
-          <button class="chip">Swap</button>
-          <button class="chip">Wanted</button>
+        <!-- Chips -->
+        <div class="flex space-x-2">
+          <button class="px-4 py-2 rounded-full bg-sky-600 text-white font-semibold">All</button>
+          <button class="px-4 py-2 rounded-full bg-white border font-semibold hover:bg-gray-100">For Sale</button>
+          <button class="px-4 py-2 rounded-full bg-white border font-semibold hover:bg-gray-100">Swap</button>
+          <button class="px-4 py-2 rounded-full bg-white border font-semibold hover:bg-gray-100">Wanted</button>
         </div>
       </div>
 
-      <div class="filters__right">
-        <label class="select__label" for="category">Category</label>
-        <div class="select">
-          <select id="category" name="category">
-            <option selected>All Categories</option>
-            <option>IT Equipment</option>
-            <option>Office</option>
-            <option>Machinery</option>
-            <option>Services</option>
-          </select>
-          <span class="select__chev">▾</span>
-        </div>
+      <div class="flex flex-col">
+        <label for="category" class="font-semibold text-gray-700 mb-1">Category</label>
+        <select id="category" name="category" class="border rounded-lg px-3 py-2 font-semibold">
+          <option>All Categories</option>
+          <option>IT Equipment</option>
+          <option>Office</option>
+          <option>Machinery</option>
+          <option>Services</option>
+        </select>
       </div>
     </div>
 
-    <!-- Cards -->
-    <section class="grid">
+    <!-- 🧱 Cards Grid -->
+    <section class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-      <!-- 1 -->
-      <article class="card">
-        <div class="card__row">
-          <span class="pill pill--sale"><span class="pill__dot"></span> SALE</span>
-          <span class="status status--available">available</span>
+      <!-- Card Template -->
+      <article class="bg-white border rounded-2xl shadow p-5 space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="bg-blue-600 text-white font-bold text-xs px-3 py-1 rounded-full flex items-center gap-2">
+            <span class="w-2 h-2 bg-white rounded-full"></span> SALE
+          </span>
+          <span class="bg-green-100 text-green-700 font-semibold text-xs px-3 py-1 rounded-full">available</span>
         </div>
 
-        <h3 class="card__title">Industrial 3D Printer</h3>
-        <div class="card__sub">
-          <span class="mini mini--building"></span> TechFab Solutions
-        </div>
-        <p class="card__desc">
-          High-precision industrial 3D printer, barely used. Perfect for prototyping and small-scale production.
-        </p>
-        <div class="price">$8,500</div>
+        <h3 class="text-lg font-bold">Industrial 3D Printer</h3>
+        <p class="text-gray-500 text-sm">TechFab Solutions</p>
+        <p class="text-gray-700">High-precision industrial 3D printer, barely used. Perfect for prototyping and small-scale production.</p>
+        <div class="text-xl font-bold text-sky-600">$8,500</div>
 
-        <div class="meta">
-          <span class="meta__item"><span class="mini mini--pin"></span> New York, NY</span>
-          <span class="meta__item"><span class="mini mini--cal"></span> 1/15/2024</span>
+        <div class="flex justify-between text-sm text-gray-500 font-medium">
+          <span>📍 New York, NY</span>
+          <span>🗓️ 1/15/2024</span>
         </div>
 
-        <a class="btn btn--cta" href="#">View Details</a>
+        <a href="#" class="block text-center mt-2 bg-gradient-to-b from-sky-400 to-sky-600 text-white font-bold py-2 rounded-lg hover:from-sky-500">View Details</a>
       </article>
 
-      <!-- 2 -->
-      <article class="card">
-        <div class="card__row">
-          <span class="pill pill--swap"><span class="pill__dot"></span> SWAP</span>
-          <span class="status status--available">available</span>
-        </div>
-
-        <h3 class="card__title">Office Furniture Set</h3>
-        <div class="card__sub"><span class="mini mini--building"></span> Creative Spaces Inc</div>
-        <p class="card__desc">
-          Complete office furniture set including 10 desks, chairs, and storage units. Modern design, excellent condition.
-        </p>
-        <p class="card__hint">Looking for: <strong>IT equipment or professional services</strong></p>
-
-        <div class="meta">
-          <span class="meta__item"><span class="mini mini--pin"></span> Los Angeles, CA</span>
-          <span class="meta__item"><span class="mini mini--cal"></span> 1/14/2024</span>
-        </div>
-
-        <a class="btn btn--cta" href="#">View Details</a>
-      </article>
-
-      <!-- 3 -->
-      <article class="card">
-        <div class="card__row">
-          <span class="pill pill--buy"><span class="pill__dot"></span> BUY</span>
-          <span class="status status--ghost"></span>
-        </div>
-
-        <h3 class="card__title">Looking for CNC Machine</h3>
-        <div class="card__sub"><span class="mini mini--building"></span> MetalWorks Ltd</div>
-        <p class="card__desc">
-          We need a CNC machine for metalworking. Offering up to $15,000 for the right machine.
-        </p>
-        <p class="card__hint">Budget: <strong>$15,000</strong></p>
-
-        <div class="meta">
-          <span class="meta__item"><span class="mini mini--pin"></span> Chicago, IL</span>
-          <span class="meta__item"><span class="mini mini--cal"></span> 1/13/2024</span>
-        </div>
-
-        <a class="btn btn--cta" href="#">View Details</a>
-      </article>
-
-      <!-- 4 -->
-      <article class="card">
-        <div class="card__row">
-          <span class="pill pill--sale"><span class="pill__dot"></span> SALE</span>
-          <span class="status status--available">available</span>
-        </div>
-
-        <h3 class="card__title">Surplus Electronic Components</h3>
-        <div class="card__sub"><span class="mini mini--building"></span> ElectroSupply Co</div>
-        <p class="card__desc">
-          Large batch of electronic components including resistors, capacitors, and integrated circuits.
-        </p>
-        <div class="price">$1,200</div>
-
-        <div class="meta">
-          <span class="meta__item"><span class="mini mini--pin"></span> Austin, TX</span>
-          <span class="meta__item"><span class="mini mini--cal"></span> 1/14/2024</span>
-        </div>
-
-        <a class="btn btn--cta" href="#">View Details</a>
-      </article>
-
-      <!-- 5 -->
-      <article class="card">
-        <div class="card__row">
-          <span class="pill pill--swap"><span class="pill__dot"></span> SWAP</span>
-          <span class="status status--available">available</span>
-        </div>
-
-        <h3 class="card__title">Web Development Services</h3>
-        <div class="card__sub"><span class="mini mini--building"></span> WebCraft Studios</div>
-        <p class="card__desc">
-          Offering web development services in exchange for marketing or design services. Open to proposals.
-        </p>
-        <p class="card__hint">Looking for: <strong>Marketing or design services</strong></p>
-
-        <div class="meta">
-          <span class="meta__item"><span class="mini mini--remote"></span> Remote</span>
-          <span class="meta__item"><span class="mini mini--cal"></span> 1/12/2024</span>
-        </div>
-
-        <a class="btn btn--cta" href="#">View Details</a>
-      </article>
-
-      <!-- 6 -->
-      <article class="card">
-        <div class="card__row">
-          <span class="pill pill--sale"><span class="pill__dot"></span> SALE</span>
-          <span class="status status--pending">pending</span>
-        </div>
-
-        <h3 class="card__title">Raw Materials - Steel Sheets</h3>
-        <div class="card__sub"><span class="mini mini--building"></span> SteelPro Industries</div>
-        <p class="card__desc">
-          High-quality steel sheets, various sizes available. Perfect for manufacturing and construction.
-        </p>
-        <div class="price">$5,000</div>
-
-        <div class="meta">
-          <span class="meta__item"><span class="mini mini--pin"></span> Houston, TX</span>
-          <span class="meta__item"><span class="mini mini--cal"></span> 1/12/2024</span>
-        </div>
-
-        <a class="btn btn--cta" href="#">View Details</a>
-      </article>
+      <!-- ✨ You can duplicate this <article> block for more listings (Swap, Wanted, etc.) -->
 
     </section>
   </main>
