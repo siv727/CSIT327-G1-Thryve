@@ -62,11 +62,11 @@ ROOT_URLCONF = 'thryve.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates/thryve_app/',
-                 'auth_app/templates/'],
+        'DIRS': [BASE_DIR / 'templates'],  # ✅ Correct directory
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -85,7 +85,6 @@ DATABASES = {
     "default": dj_database_url.config(
         default="sqlite:///db.sqlite3",
         conn_max_age=600, # persistent connections
-        ssl_require=True # enforce SSL
     )
 }
 
