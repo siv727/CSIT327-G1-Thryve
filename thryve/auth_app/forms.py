@@ -49,6 +49,27 @@ class RegistrationForm(UserCreationForm):
             raise forms.ValidationError("Company name already exists")
         return company_name
 
+    def clean_password1(self):
+        password = self.cleaned_data.get('password1')
+        if password:
+            # Check minimum length
+            if len(password) < 8:
+                raise forms.ValidationError("Password must be at least 8 characters long.")
+
+            # Check for uppercase letter
+            if not any(char.isupper() for char in password):
+                raise forms.ValidationError("Password must contain at least one uppercase letter.")
+
+            # Check for lowercase letter
+            if not any(char.islower() for char in password):
+                raise forms.ValidationError("Password must contain at least one lowercase letter.")
+
+            # Check for numeric digit
+            if not any(char.isdigit() for char in password):
+                raise forms.ValidationError("Password must contain at least one numeric digit.")
+
+        return password
+
 class LoginForm(AuthenticationForm):
     username = forms.EmailField(widget=forms.EmailInput(attrs={
         'placeholder': 'Email Address',

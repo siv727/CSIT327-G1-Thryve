@@ -147,6 +147,75 @@ class RegistrationFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('password2', form.errors)
 
+    def test_password_too_short(self):
+        """Test password validation for minimum length"""
+        form_data = {
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'company_name': 'Test Company',
+            'email': 'john@example.com',
+            'password1': 'short',
+            'password2': 'short'
+        }
+        form = RegistrationForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('password1', form.errors)
+
+    def test_password_no_uppercase(self):
+        """Test password validation for missing uppercase letter"""
+        form_data = {
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'company_name': 'Test Company',
+            'email': 'john@example.com',
+            'password1': 'lowercase123',
+            'password2': 'lowercase123'
+        }
+        form = RegistrationForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('password1', form.errors)
+
+    def test_password_no_lowercase(self):
+        """Test password validation for missing lowercase letter"""
+        form_data = {
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'company_name': 'Test Company',
+            'email': 'john@example.com',
+            'password1': 'UPPERCASE123',
+            'password2': 'UPPERCASE123'
+        }
+        form = RegistrationForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('password1', form.errors)
+
+    def test_password_no_numeric(self):
+        """Test password validation for missing numeric digit"""
+        form_data = {
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'company_name': 'Test Company',
+            'email': 'john@example.com',
+            'password1': 'PasswordOnly',
+            'password2': 'PasswordOnly'
+        }
+        form = RegistrationForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('password1', form.errors)
+
+    def test_password_meets_all_requirements(self):
+        """Test password that meets all requirements"""
+        form_data = {
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'company_name': 'Test Company',
+            'email': 'john@example.com',
+            'password1': 'ValidPass123',
+            'password2': 'ValidPass123'
+        }
+        form = RegistrationForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
 
 class AuthenticationViewsTest(TestCase):
     def test_register_view_get(self):
