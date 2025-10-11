@@ -20,4 +20,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('auth_app.urls')),
+    path('', views.home, name='home'),  # Home page route (linked to home view in auth_app)
 ]

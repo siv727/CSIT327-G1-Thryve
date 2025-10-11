@@ -6,4 +6,5 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('register/', views.register, name='register'),
     path('logout/', views.logout, name='logout'),
+    path('home/', views.home, name='home'),  # Home route (ensure you have a home view)
 ]
