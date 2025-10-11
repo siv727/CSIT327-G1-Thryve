@@ -16,6 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+
+# Import the views module from auth_app to use the home view
+from auth_app import views  # Add this import
 
 urlpatterns = [
     path('admin/', admin.site.urls),
