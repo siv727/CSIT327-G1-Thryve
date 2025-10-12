@@ -32,4 +32,4 @@ def user_logout(request):
     return render(request, 'accounts/logout.html')
 
 def home(request):
-    return render(request, 'landing/landing.html')
+    return render(request, 'landing/home.html')
