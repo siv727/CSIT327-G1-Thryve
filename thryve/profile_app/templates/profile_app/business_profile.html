@@ -87,12 +87,13 @@
           <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-lg font-bold bg-[#e9f6ff] text-[#177fb3]">
             <span>🏢</span> Business Profiles
           </a>
-          <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-lg text-[#3a4a5e] font-bold hover:bg-[#eef5fb]">
-            <span>🎨</span> Profile Customization
-          </a>
+          <a href="{% url 'profile_customization' %}" class="snav__item">
+  <span class="snav__icon">🎨</span>
+  Profile Customization
+</a>
         </nav>
 
-        <a href="{% url 'logout' %}" class="inline-block mt-3 bg-[#f55b5b] text-white px-3.5 py-2.5 rounded-lg font-semibold">↪ Logout</a>
+        
       </aside>
 
       <!-- Content -->
