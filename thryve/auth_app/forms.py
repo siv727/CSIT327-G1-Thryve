@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
 from .models import CustomUser
@@ -36,6 +38,26 @@ class RegistrationForm(UserCreationForm):
             'placeholder': 'Confirm Password',
             'class': 'w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors',
         })
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data['first_name']
+        pattern = r'[\'\"@_!#$%^&*()<>?/|}{~:]'
+        if first_name.strip() == "":
+            raise forms.ValidationError("Please enter a first name.")
+        elif re.search(r'\d', first_name.strip()) or re.search(pattern, first_name.strip()):
+            raise forms.ValidationError("Please enter a valid first name.")
+        else:
+            return first_name
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data['last_name']
+        pattern = r'[\'\"@_!#$%^&*()<>?/|}{~:]'
+        if last_name.strip() == "":
+            raise forms.ValidationError("Please enter a first name.")
+        elif re.search(r'\d', last_name.strip()) or re.search(pattern, last_name.strip()):
+            raise forms.ValidationError("Please enter a valid first name.")
+        else:
+            return last_name
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
