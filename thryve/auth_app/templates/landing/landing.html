@@ -34,14 +34,14 @@
 
                 <!-- Auth Buttons -->
                 <div class="flex items-center gap-3">
-                    <button
+                    <a href="{% url 'login' %}"
                         class="text-gray-700 hover:text-gray-900 px-4 py-2 rounded-lg font-medium transition-colors">
                         Login
-                    </button>
-                    <button
+                    </a>
+                    <a href="{% url 'register' %}"
                         class="bg-cyan-400 hover:bg-cyan-500 text-white px-6 py-2 rounded-lg font-medium transition-colors">
                         Sign up
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -102,10 +102,10 @@
 
             <!-- Call to action Buttons -->
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button
+                <a href="{% url 'register' %}"
                     class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-medium text-lg transition-colors">
                     Register
-                </button>
+                </a>
                 <button onclick="scrollToSection('features')"
                     class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 px-8 py-3 rounded-lg font-medium text-lg transition-colors cursor-pointer">
                     Learn more
@@ -234,10 +234,10 @@
                     Create your free account to connect with nearby SMEs, share resources, and grow together.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button
+                    <a href="{% url 'register' %}"
                         class="bg-cyan-400 hover:bg-cyan-500 text-white px-8 py-3 rounded-lg font-medium text-lg transition-colors">
                         Register now
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -272,7 +272,7 @@
                                 class="text-gray-600 hover:text-gray-900 transition-colors cursor-pointer">How it
                                 works</span>
                         </li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">Register</a></li>
+                        <li><a href="{% url 'register' %}" class="text-gray-600 hover:text-gray-900 transition-colors">Register</a></li>
                     </ul>
                 </div>
 
