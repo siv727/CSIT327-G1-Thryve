@@ -11,14 +11,16 @@ def register (request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            request.session['just_registered'] = True
             return redirect('login')
     else:
         form = RegistrationForm()
     return render(request, 'accounts/register.html', {'form': form})
 
 def user_login(request):
-    if request.user.is_authenticated:
+    just_registered = request.session.pop('just_registered', False)
+    
+    if request.user.is_authenticated and not just_registered:
         return redirect('home1')
     
     if request.method == 'POST':
