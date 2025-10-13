@@ -56,3 +56,11 @@ def home(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home1(request):
     return render(request, 'landing/home1.html')
+
+# Use this view for the marketplace UI (your current home.html)
+def marketplace(request):
+    return render(request, "home1.html") 
+
+# (optional) keep a separate landing page
+def landing(request):
+    return render(request, "landing/landing.html")
