@@ -1,6 +1,10 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.views.decorators.cache import cache_control
+
 from .forms import RegistrationForm, LoginForm
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
+
 
 def register (request):
     if request.method == 'POST':
@@ -14,6 +18,9 @@ def register (request):
     return render(request, 'accounts/register.html', {'form': form})
 
 def user_login(request):
+    if request.user.is_authenticated:
+        return redirect('home1')
+    
     if request.method == 'POST':
         form = LoginForm(request, request.POST)
         if form.is_valid():
@@ -23,13 +30,27 @@ def user_login(request):
 
             if user is not None:
                 login(request, user)
-                return redirect('home')
+                request.session.save()
+                return redirect('home1')
     else:
         form = LoginForm()
+
     return render(request, 'accounts/login.html', {'form': form})
 
+@login_required(login_url='login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_logout(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('home')
+    
     return render(request, 'accounts/logout.html')
 
 def home(request):
     return render(request, 'landing/landing.html')
+
+# Temporary view for home after login
+@login_required(login_url='login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def home1(request):
+    return render(request, 'landing/home1.html')
