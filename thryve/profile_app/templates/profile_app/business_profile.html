@@ -1,0 +1,209 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Thryve • Business Profile</title>
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              500: '#26a8e6',
+              600: '#199ad7',
+              700: '#148cc5',
+            },
+            ink: '#0f172a',
+            muted: '#6b7280',
+            line: '#e7edf4',
+            bg: '#f6f9fc'
+          },
+          boxShadow: {
+            card: '0 10px 24px rgba(15,23,42,.06)'
+          },
+          fontFamily: {
+            inter: ["Inter","system-ui","-apple-system","Segoe UI","Roboto","sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="font-inter text-ink bg-white">
+
+  <!-- Top Navigation -->
+ <!-- Top Nav -->
+  <header class="bg-gradient-to-r from-sky-700 to-teal-500 text-white shadow">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center">
+    <!-- LEFT group: logo + tabs live together -->
+    <a href="#" class="font-extrabold text-2xl tracking-tight mr-5">SME Exchange</a>
+
+    <!-- tabs sit right after the logo -->
+    <nav class="flex items-center gap-2">
+      <a href="{% url 'home' %}"
+         class="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-white/90 text-sky-700 font-semibold shadow">
+        Marketplace
+      </a>
+      <a href="#"
+         class="inline-flex items-center gap-2 rounded-full px-4 py-2 border border-white/30 text-white hover:bg-white/10">
+         Community
+      </a>
+      <a href="#"
+         class="inline-flex items-center gap-2 rounded-full px-4 py-2 border border-white/30 text-white hover:bg-white/10">
+         Bookings
+      </a>
+      <a href="{% url 'business_profile' %}"
+         class="inline-flex items-center gap-2 rounded-full px-4 py-2 border border-white/30 text-white hover:bg-white/10">
+         Profile
+      </a>
+    </nav>
+
+    <!-- RIGHT group: pushed to the edge -->
+    <div class="ml-auto flex items-center gap-3">
+     
+      <a href="{% url 'logout' %}" class="inline-flex items-center gap-2 rounded-full px-4 py-2 border border-white/30 hover:bg-white/10">
+        <span class="text-lg">↪</span> Logout
+      </a>
+    </div>
+  </div>
+</header>
+
+  <!-- Layout -->
+  <div class="bg-bg py-6">
+    <div class="max-w-[1140px] mx-auto px-6 grid gap-6 md:grid-cols-[240px_1fr]">
+      <!-- Sidebar -->
+      <aside class="relative">
+        <div class="font-extrabold text-brand-600 mb-2">thryve</div>
+
+        <nav class="flex flex-col gap-1.5 my-2.5 mb-4">
+          <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-lg text-[#3a4a5e] font-bold hover:bg-[#eef5fb]">
+            <span>🛡️</span> Roles & Permissions
+          </a>
+          <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-lg font-bold bg-[#e9f6ff] text-[#177fb3]">
+            <span>🏢</span> Business Profiles
+          </a>
+          <a href="{% url 'profile_customization' %}" class="snav__item">
+  <span class="snav__icon">🎨</span>
+  Profile Customization
+</a>
+        </nav>
+
+        
+      </aside>
+
+      <!-- Content -->
+      <main class="min-w-0">
+        <header class="mb-3">
+          <h1 class="text-[28px] font-semibold mb-1">Manage Your Business Profile</h1>
+          <p class="text-muted mb-4">
+            Establish and refine your business's presence on Thryve. Provide comprehensive details to
+            build trust and visibility with potential customers.
+          </p>
+
+          <!-- Subtabs -->
+          <div class="flex gap-2">
+            <button class="px-4 py-2 rounded-lg border border-transparent bg-[#e9f6ff] text-[#177fb3] font-bold">Business Information</button>
+            <button class="px-4 py-2 rounded-lg border border-line bg-white font-bold">Business Logo</button>
+            <button class="px-4 py-2 rounded-lg border border-line bg-white font-bold">Contact Details</button>
+          </div>
+        </header>
+
+        <!-- Card -->
+        <section class="bg-white border border-line rounded-xl p-5 shadow-card">
+          <h2 class="text-lg font-semibold mb-1">Business Details</h2>
+          <p class="text-[#6b7a90] mb-4">Provide core information about your business.</p>
+
+          <form class="flex flex-col gap-3.5">
+            <!-- Company -->
+            <label class="block">
+              <span class="block font-bold mb-1.5">Company Name</span>
+              <input type="text" placeholder="MarketConnect Pro Solutions"
+                     class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
+            </label>
+
+            <!-- Industry -->
+            <label class="block">
+              <span class="block font-bold mb-1.5">Industry</span>
+              <div class="relative">
+                <select class="w-full border border-line rounded-lg bg-white px-3 py-2.5 appearance-none outline-none focus:ring-2 focus:ring-brand-500/30">
+                  <option value="">Select industry</option>
+                  <option>Manufacturing</option>
+                  <option>Technology</option>
+                  <option>Logistics</option>
+                  <option>Professional Services</option>
+                </select>
+                <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">▾</span>
+              </div>
+            </label>
+
+            <!-- Description -->
+            <label class="block">
+              <span class="block font-bold mb-1.5">Business Description</span>
+              <textarea rows="4" placeholder="Describe your company, what you do, and your value proposition."
+                        class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none resize-y focus:ring-2 focus:ring-brand-500/30"></textarea>
+            </label>
+
+            <!-- Address row -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+              <label class="block">
+                <span class="block font-bold mb-1.5">Physical Address</span>
+                <input type="text" placeholder="123 Main Street"
+                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
+              </label>
+              <label class="block">
+                <span class="block font-bold mb-1.5">City</span>
+                <input type="text" placeholder="Anytown"
+                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
+              </label>
+              <label class="block">
+                <span class="block font-bold mb-1.5">State</span>
+                <input type="text" placeholder="CA"
+                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
+              </label>
+            </div>
+
+            <!-- Postal/Country -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              <label class="block">
+                <span class="block font-bold mb-1.5">Postal Code</span>
+                <input type="text" placeholder="90210"
+                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
+              </label>
+              <label class="block">
+                <span class="block font-bold mb-1.5">Country</span>
+                <input type="text" placeholder="USA"
+                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
+              </label>
+            </div>
+
+            <!-- Website -->
+            <label class="block">
+              <span class="block font-bold mb-1.5">Website URL</span>
+              <div class="flex items-center gap-2 border border-line rounded-lg px-3 py-2.5">
+                <span class="text-slate-500 select-none">https://</span>
+                <input type="text" placeholder="www.marketconnectpro.com" class="w-full outline-none"/>
+              </div>
+            </label>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-2 pt-1">
+              <button type="button" class="px-4 py-2 rounded-lg font-extrabold bg-[#eef2f6] text-[#354a5e]">
+                Cancel
+              </button>
+              <button type="submit" class="px-4 py-2 rounded-lg font-extrabold bg-[#1aa2dd] text-white hover:brightness-95">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+  </div>
+
+</body>
+</html>
