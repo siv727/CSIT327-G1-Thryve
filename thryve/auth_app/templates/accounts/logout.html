@@ -1,21 +1,55 @@
-{%  load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>User Register</title>
-    <link rel="stylesheet" type="text/css" href=" {%  static 'styles/styles.css' %}">
+    <title>Logout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <h2>Logout</h2>
-        <form method="POST" action="{%  url 'logout' %}">
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Modal -->
+    <div class="relative z-50 bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-8">
+        <!-- Icon -->
+        <div class="flex justify-center mb-6">
+            <div class="bg-gradient-to-r from-cyan-500 to-teal-600 rounded-full p-4">
+                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                    </path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Confirm Logout</h2>
+
+        <!-- Message -->
+        <p class="text-gray-600 text-center mb-8">Are you sure you want to log out of your account?</p>
+
+        <!-- Form -->
+        <form method="POST" action="{%  url 'logout' %}" class="space-y-4">
             {% csrf_token %}
-            <p>Are you sure you want to log out?</p>
-            <button type="submit">Logout</button>
-            <a href="{%  url 'home' %}">Cancel</a>
+
+            <!-- Buttons -->
+            <div class="flex gap-4">
+                <!-- Temporary redirect to home -->
+                <a href="{%  url 'home1' %}"
+                    class="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition duration-200 text-center">
+                    Cancel
+                </a>
+                <button type="submit"
+                    class="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-teal-600 text-white font-semibold rounded-lg hover:from-cyan-600 hover:to-teal-700 transition duration-200 shadow-lg">
+                    Logout
+                </button>
+            </div>
         </form>
     </div>
 </body>
+
 </html>
