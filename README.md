@@ -28,7 +28,6 @@ To empower SMEs by creating a unified platform that facilitates resource optimiz
 - **Python 3.10+**
 - **Git**
 - **Supabase account** (free tier available)
-- **Node.js** (for TailwindCSS)
 
 ---
 
@@ -143,6 +142,12 @@ print(os.environ.get("DATABASE_URL"))
 # Ensure .env file is in the correct location (project root)
 # Verify Supabase project is active and credentials are correct
 ```
+
+---
+
+## 🌐 Deployed Application
+
+🚀 **Live Demo**: Coming Soon!
 
 ---
 

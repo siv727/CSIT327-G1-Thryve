@@ -28,7 +28,7 @@
                     </label>
                     {{ form.first_name }}
                     {% if form.first_name.errors %}
-                    <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+                    <p class="text-red-500 text-xs mt-1">{{ form.first_name.errors.0 }}</p>
                     {% endif %}
                 </div>
                 <div class="flex-1">
@@ -37,7 +37,7 @@
                     </label>
                     {{ form.last_name }}
                     {% if form.last_name.errors %}
-                    <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+                    <p class="text-red-500 text-xs mt-1">{{ form.last_name.errors.0 }}</p>
                     {% endif %}
                 </div>
             </div>
@@ -49,7 +49,7 @@
                 </label>
                 {{ form.company_name }}
                 {% if form.company_name.errors %}
-                <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+                <p class="text-red-500 text-xs mt-1">{{ form.company_name.errors.0 }}</p>
                 {% endif %}
             </div>
 
@@ -60,7 +60,7 @@
                 </label>
                 {{ form.email }}
                 {% if form.email.errors %}
-                <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+                <p class="text-red-500 text-xs mt-1">{{ form.email.errors.0 }}</p>
                 {% endif %}
             </div>
 

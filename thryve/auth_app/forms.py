@@ -1,8 +1,11 @@
-from django.contrib.auth.forms import UserCreationForm
+import re
+
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
 from .models import CustomUser
 
 class RegistrationForm(UserCreationForm):
+    INVALID_NAME_PATTERN = r'[\'\"@_!#$%^&*()<>?/|}{~:]'
     first_name = forms.CharField(widget=forms.TextInput(attrs={
         'placeholder': 'First Name',
         'class': 'w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors',
@@ -37,6 +40,26 @@ class RegistrationForm(UserCreationForm):
             'class': 'w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors',
         })
 
+    def clean_first_name(self):
+        first_name = self.cleaned_data['first_name']
+        stripped_name = first_name.strip()
+        if stripped_name == "":
+            raise forms.ValidationError("Please enter a first name.")
+        elif re.search(r'\d', stripped_name) or re.search(self.INVALID_NAME_PATTERN, stripped_name):
+            raise forms.ValidationError("Please enter a valid first name.")
+        else:
+            return first_name
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data['last_name']
+        stripped_name = last_name.strip()
+        if stripped_name == "":
+            raise forms.ValidationError("Please enter a last name.")
+        elif re.search(r'\d', stripped_name) or re.search(self.INVALID_NAME_PATTERN, stripped_name):
+            raise forms.ValidationError("Please enter a valid last name.")
+        else:
+            return last_name
+
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if email and CustomUser.objects.filter(email=email).exists():
@@ -48,3 +71,35 @@ class RegistrationForm(UserCreationForm):
         if company_name and CustomUser.objects.filter(company_name=company_name).exists():
             raise forms.ValidationError("Company name already exists")
         return company_name
+
+    def clean_password1(self):
+        password = self.cleaned_data.get('password1')
+        if password:
+            # Check minimum length
+            if len(password) < 8:
+                raise forms.ValidationError("Password must be at least 8 characters long.")
+
+            # Check for uppercase letter
+            if not any(char.isupper() for char in password):
+                raise forms.ValidationError("Password must contain at least one uppercase letter.")
+
+            # Check for lowercase letter
+            if not any(char.islower() for char in password):
+                raise forms.ValidationError("Password must contain at least one lowercase letter.")
+
+            # Check for numeric digit
+            if not any(char.isdigit() for char in password):
+                raise forms.ValidationError("Password must contain at least one numeric digit.")
+
+        return password
+
+class LoginForm(AuthenticationForm):
+    username = forms.EmailField(widget=forms.EmailInput(attrs={
+        'placeholder': 'Email Address',
+        'class': 'w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors',
+    }))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'placeholder': 'Password',
+        'class': 'w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors',
+    }))
+
