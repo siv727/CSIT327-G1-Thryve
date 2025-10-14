@@ -137,3 +137,17 @@ STATICFILES_DIRS = (
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'auth_app.CustomUser'
+
+# Session security
+SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access
+SESSION_COOKIE_SECURE = True    # Only send over HTTPS (production)
+SESSION_COOKIE_SAMESITE = 'Lax' # CSRF protection
+SESSION_COOKIE_AGE = 1209600    # 2 weeks (default)
+
+# CSRF settings
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True       # Only HTTPS (production)
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+SESSION_SAVE_EVERY_REQUEST = True  # Reset timeout on each request
+SESSION_COOKIE_AGE = 3600  # 1 hour
