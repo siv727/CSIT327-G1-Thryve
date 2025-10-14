@@ -42,7 +42,8 @@ class ProfileCustomizationForm(forms.ModelForm):
         widgets = {
             'tagline': forms.TextInput(attrs={
                 'id': 'id_tagline',
-                'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-sky-300',
+                'placeholder': 'Describe yourself in a few words',
+                'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-300',
             }),
             'bio': forms.Textarea(attrs={
                 'id': 'id_bio',

@@ -240,7 +240,7 @@
                 {% endif %}
 
                 <div class="mt-2 text-lg font-extrabold" id="previewName">{{ form.display_name.value|default:user.first_name }}</div>
-                <div class="text-slate-500 text-sm font-medium" id="previewTag">Innovator | Strategist | Connector</div>
+                <div class="text-slate-500 text-sm font-medium" id="previewTag">{{ form.tagline.value|default:"Your Tagline" }}</div>
 
                 <p class="mt-3 text-[12px] leading-5 text-slate-600 line-clamp-4" id="previewBio">
                   Passionate about fostering connections and driving growth in the digital marketplace. Always seeking new
@@ -318,8 +318,8 @@
       [nameInput, tagInput, bioInput].forEach(el => {
         if (!el) return;
         el.addEventListener('input', () => {
-          if (el === nameInput) nameOut.textContent = el.value.trim() || '{{ user.first_name }} {{ user.last_name }}';
-          if (el === tagInput)  tagOut.textContent  = el.value.trim() || '—';
+          if (el === nameInput) nameOut.textContent = el.value.trim() || '{{ user.first_name }}';
+          if (el === tagInput)  tagOut.textContent  = el.value.trim() || 'Your Tagline';
           if (el === bioInput)  bioOut.textContent  = el.value.trim() || '';
         });
       });
