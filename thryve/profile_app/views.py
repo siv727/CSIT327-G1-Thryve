@@ -23,16 +23,16 @@ def profile_customization_view(request):
             saved_profile = form.save()
             print(f"Saved profile: {saved_profile}, avatar: {saved_profile.avatar}")
             print(f"Display name: {saved_profile.display_name}")
+            print(f"Tagline: {saved_profile.tagline}")
+            print(f"Bio: {saved_profile.bio}")
             print(f"Avatar URL: {saved_profile.avatar.url if saved_profile.avatar else 'None'}")
-            # Refresh the profile object to get updated data
-            profile.refresh_from_db()
             return redirect('profile_customization')
         else:
             print(f"Form errors: {form.errors}")
             print(f"Non-field errors: {form.non_field_errors()}")
     else:
         form = ProfileCustomizationForm(instance=profile, user=request.user)
-        print(f"GET request. Profile display_name: {profile.display_name}, avatar: {profile.avatar}")
+        print(f"GET request. Profile display_name: {profile.display_name}, tagline: {profile.tagline}, bio: {profile.bio}, avatar: {profile.avatar}")
 
     # Get user's initial and assign a color class for default avatar
     user = request.user

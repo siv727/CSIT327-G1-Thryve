@@ -315,14 +315,21 @@
       const tagOut    = document.getElementById('previewTag');
       const bioOut    = document.getElementById('previewBio');
 
+      // Initialize live preview with saved values on page load
+      function updateLivePreview() {
+        nameOut.textContent = nameInput.value.trim() || '{{ user.first_name }}';
+        tagOut.textContent = tagInput.value.trim() || 'Your Tagline';
+        bioOut.textContent = bioInput.value.trim() || '{{ form.bio.value|default:"Passionate about fostering connections and driving growth in the digital marketplace. Always seeking new challenges and opportunities to build meaningful relationships and empower businesses through technology."|linebreaksbr }}';
+      }
+
+      // Update on input
       [nameInput, tagInput, bioInput].forEach(el => {
         if (!el) return;
-        el.addEventListener('input', () => {
-          if (el === nameInput) nameOut.textContent = el.value.trim() || '{{ user.first_name }}';
-          if (el === tagInput)  tagOut.textContent  = el.value.trim() || 'Your Tagline';
-          if (el === bioInput)  bioOut.textContent  = el.value.trim() || '';
-        });
+        el.addEventListener('input', updateLivePreview);
       });
+
+      // Initialize on page load
+      updateLivePreview();
 
       const fileInput  = document.getElementById('id_avatar');
       const prevBig    = document.getElementById('avatarPreview');
