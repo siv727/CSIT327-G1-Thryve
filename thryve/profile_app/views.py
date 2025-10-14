@@ -16,4 +16,15 @@ def profile_customization_view(request):
     else:
         form = ProfileCustomizationForm()
 
-    return render(request, 'profile_app/profile_customization.html', {'form': form})
+    # Get user's initial and assign a color class for default avatar
+    user = request.user
+    initial = (user.first_name or user.username)[0].upper()
+    color_classes = ['bg-red-400', 'bg-teal-400', 'bg-blue-400', 'bg-green-400', 'bg-yellow-400', 'bg-purple-400', 'bg-cyan-400', 'bg-amber-400', 'bg-violet-400', 'bg-sky-400']
+    color_class = color_classes[ord(initial) % len(color_classes)]
+
+    return render(request, 'profile_app/profile_customization.html', {
+        'form': form,
+        'user': user,
+        'initial': initial,
+        'avatar_color_class': color_class
+    })

@@ -194,10 +194,17 @@
             <div class="flex flex-col items-center">
               <!-- avatar preview -->
               <div class="relative">
-                <img id="avatarPreview"
-                     src="{% if form.avatar.value %}{{ form.avatar.value.url }}{% else %}{% static 'images/avatar-placeholder.png' %}{% endif %}"
-                     class="w-28 h-28 rounded-full object-cover border border-slate-200"
-                     alt="Avatar">
+                {% if form.avatar.value %}
+                  <img id="avatarPreview"
+                       src="{{ form.avatar.value.url }}"
+                       class="w-28 h-28 rounded-full object-cover border border-slate-200"
+                       alt="Avatar">
+                {% else %}
+                  <div id="avatarPreview"
+                       class="w-28 h-28 rounded-full flex items-center justify-center text-white font-bold text-3xl border border-slate-200 {{ avatar_color_class }}">
+                    {{ initial }}
+                  </div>
+                {% endif %}
                 <span id="onlineDot" class="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
               </div>
 
@@ -226,10 +233,17 @@
               <div class="h-36 bg-gradient-to-br from-sky-100 via-rose-100 to-amber-100"></div>
 
               <div class="-mt-10 px-5 pb-5 text-center">
-                <img id="previewAvatarSmall"
-                     src="{% if form.avatar.value %}{{ form.avatar.value.url }}{% else %}{% static 'images/avatar-placeholder.png' %}{% endif %}"
-                     class="w-16 h-16 mx-auto rounded-full object-cover ring-4 ring-white"
-                     alt="Avatar small">
+                {% if form.avatar.value %}
+                  <img id="previewAvatarSmall"
+                       src="{{ form.avatar.value.url }}"
+                       class="w-16 h-16 mx-auto rounded-full object-cover ring-4 ring-white"
+                       alt="Avatar small">
+                {% else %}
+                  <div id="previewAvatarSmall"
+                       class="w-16 h-16 mx-auto rounded-full flex items-center justify-center text-white font-bold text-xl ring-4 ring-white {{ avatar_color_class }}">
+                    {{ initial }}
+                  </div>
+                {% endif %}
 
                 <div class="mt-2 text-lg font-extrabold" id="previewName">Alex Johnson</div>
                 <div class="text-slate-500 text-sm font-medium" id="previewTag">Innovator | Strategist | Connector</div>
@@ -327,8 +341,31 @@
           if (!file) return;
           const reader = new FileReader();
           reader.onload = (ev) => {
-            prevBig.src   = ev.target.result;
-            prevSmall.src = ev.target.result;
+            // Update large preview
+            if (prevBig.tagName === 'IMG') {
+              prevBig.src = ev.target.result;
+            } else {
+              // Replace div with img for uploaded avatar
+              const img = document.createElement('img');
+              img.id = 'avatarPreview';
+              img.className = 'w-28 h-28 rounded-full object-cover border border-slate-200';
+              img.alt = 'Avatar';
+              img.src = ev.target.result;
+              prevBig.parentNode.replaceChild(img, prevBig);
+            }
+
+            // Update small preview
+            if (prevSmall.tagName === 'IMG') {
+              prevSmall.src = ev.target.result;
+            } else {
+              // Replace div with img for uploaded avatar
+              const img = document.createElement('img');
+              img.id = 'previewAvatarSmall';
+              img.className = 'w-16 h-16 mx-auto rounded-full object-cover ring-4 ring-white';
+              img.alt = 'Avatar small';
+              img.src = ev.target.result;
+              prevSmall.parentNode.replaceChild(img, prevSmall);
+            }
           };
           reader.readAsDataURL(file);
         });
