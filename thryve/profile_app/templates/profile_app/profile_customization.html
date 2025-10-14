@@ -214,12 +214,6 @@
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" d="M12 5v14M5 12h14"/></svg>
                 Change Avatar
               </label>
-              <!-- Render Django field to keep form binding; hide default input UI -->
-              {% if form.avatar %}
-                {{ form.avatar.as_widget|safe }}
-              {% else %}
-                <input id="id_avatar" name="avatar" type="file" class="hidden" accept="image/*">
-              {% endif %}
             </div>
           </section>
 
@@ -297,8 +291,8 @@
     {% endif %}
   </label>
 
-  <!-- Hidden default file input (we trigger via the custom label button on the left card) -->
-  
+  <!-- Avatar file input (moved inside form) -->
+  <input id="id_avatar" name="avatar" type="file" class="hidden" accept="image/jpeg,image/png,image/gif,image/webp">
 
   <div class="pt-2 flex items-center gap-3 justify-end">
     <a href="{% url 'business_profile' %}" class="px-4 py-2 rounded-lg border font-semibold text-slate-700 hover:bg-slate-50">Cancel</a>
