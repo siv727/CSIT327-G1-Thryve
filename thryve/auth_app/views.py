@@ -21,7 +21,7 @@ def user_login(request):
     just_registered = request.session.pop('just_registered', False)
     
     if request.user.is_authenticated and not just_registered:
-        return redirect('home1')
+        return redirect('home')
     
     if request.method == 'POST':
         form = LoginForm(request, request.POST)
@@ -32,7 +32,7 @@ def user_login(request):
 
             if user is not None:
                 login(request, user)
-                return redirect('home1')
+                return redirect('home')
     else:
         form = LoginForm()
 
@@ -47,19 +47,19 @@ def user_logout(request):
     
     return render(request, 'accounts/logout.html')
 
-def home(request):
+def landing(request):
     return render(request, 'landing/landing.html')
 
 # Temporary view for home after login
 @login_required(login_url='login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def home1(request):
-    return render(request, 'landing/home1.html')
+def home(request):
+    return render(request, 'landing/home.html')
 
 # Use this view for the marketplace UI (your current home.html)
-def marketplace(request):
-    return render(request, "home1.html") 
+# def marketplace(request):
+#     return render(request, "home.html")
 
 # (optional) keep a separate landing page
-def landing(request):
-    return render(request, "landing/landing.html")
+# def landing(request):
+#     return render(request, "landing/landing.html")
