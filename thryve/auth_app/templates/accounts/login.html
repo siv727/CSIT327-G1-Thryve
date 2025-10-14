@@ -19,9 +19,9 @@
 
         <!-- Display login errors if any -->
         {% if form.non_field_errors %}
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                <p class="text-sm">{{ form.non_field_errors.0 }}</p>
-            </div>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <p class="text-sm">{{ form.non_field_errors.0 }}</p>
+        </div>
         {% endif %}
 
         <form method="POST" action="{% url 'login' %}" class="space-y-3">
@@ -47,7 +47,7 @@
             <!-- Submit Button -->
             <div class="pt-3">
                 <button type="submit"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition duration-200 ease-in-out">
+                    class="w-full bg-gradient-to-r from-cyan-600 to-teal-500 hover:from-cyan-700 hover:to-teal-600 text-white font-medium py-2.5 px-4 rounded-lg transition duration-200 ease-in-out shadow-lg">
                     Sign In
                 </button>
             </div>
@@ -57,7 +57,7 @@
         <div class="text-center mt-4">
             <p class="text-gray-600 text-sm">
                 Don't have an account?
-                <a href="{% url 'register' %}" class="text-blue-600 hover:text-blue-800 font-medium">
+                <a href="{% url 'register' %}" class="text-cyan-600 hover:text-cyan-800 font-medium">
                     Register here
                 </a>
             </p>
