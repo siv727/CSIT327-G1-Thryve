@@ -25,9 +25,10 @@
       }
     }
   </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body class="font-inter bg-[#f6f9fc] text-slate-900">
+<body class="font-inter bg-[#f7fbfd] text-brand-ink">
 
   <!-- Topbar (same style as Home/Business Profile) -->
   <!-- Professional Navbar with Icons -->
@@ -41,79 +42,70 @@
     </a>
 
     <!-- Center: Navigation Links -->
-   {# get the current URL name once #}
-{% with active=request.resolver_match.url_name %}
-<nav class="flex items-center gap-8 text-[15px]">
+    {% with active=request.resolver_match.url_name %}
+    <nav class="flex items-center gap-8 text-[15px] font-medium">
+      <!-- Marketplace -->
+      <a href="{% url 'home1' %}"
+         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"/>
+        </svg>
+        <span class="leading-none">Marketplace</span>
+        {% if active == 'home1' %}
+          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+        {% endif %}
+      </a>
 
-  <!-- Marketplace -->
-  <a href="{% url 'home1' %}"
-     class="relative pb-1 flex items-center gap-2 transition
-            {% if active == 'home1' %} text-white font-semibold
-            {% else %} text-white/80 font-medium hover:text-white {% endif %}">
-    <!-- svg -->
-     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"/>
-    </svg>
-    Marketplace
-    {% if active == 'home1' %}
-      <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-    {% endif %}
-  </a>
+      <!-- Community -->
+      <a href="#"
+         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 20h5V4H2v16h5M17 8l-5 5-5-5"/>
+        </svg>
+        <span class="leading-none">Community</span>
+        {% if active == 'community' %}
+          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+        {% endif %}
+      </a>
 
-  <!-- Community (placeholder) -->
-  <a href="#"
-     class="relative pb-1 flex items-center gap-2 transition text-white/80 font-medium hover:text-white">
-    <!-- svg -->
-     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
-    </svg>
-    Community
-  </a>
+      <!-- Bookings -->
+      <a href="#"
+         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"/>
+        </svg>
+        <span class="leading-none">Bookings</span>
+        {% if active == 'bookings' %}
+          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+        {% endif %}
+      </a>
 
-  <!-- Bookings (placeholder) -->
-  <a href="#"
-     class="relative pb-1 flex items-center gap-2 transition text-white/80 font-medium hover:text-white">
-    <!-- svg -->
-     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"/>
-    </svg>
-    Bookings
-  </a>
-
-  <!-- Profile: consider profile active for both business_profile AND profile_customization -->
-  <a href="{% url 'business_profile' %}"
-     class="relative pb-1 flex items-center gap-2 transition
-            {% if active == 'business_profile' or active == 'profile_customization' %}
-              text-white font-semibold
-            {% else %}
-              text-white/80 font-medium hover:text-white
-            {% endif %}">
-    <!-- svg -->
-     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z"/>
-    </svg>
-    Profile
-    {% if active == 'business_profile' or active == 'profile_customization' %}
-      <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-    {% endif %}
-  </a>
-
-</nav>
-{% endwith %}
-
-
+      <!-- Profile -->
+      <a href="{% url 'profile_customization' %}"
+         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z"/>
+        </svg>
+        <span class="leading-none">Profile</span>
+        {% if active == 'profile_customization' %}
+          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+        {% endif %}
+      </a>
+    </nav>
+    {% endwith %}
 
     <!-- Right: Logout -->
-    <a href="{% url 'logout' %}" 
-       class="inline-flex items-center gap-2 font-medium text-white/90 hover:text-white transition">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
+    <a href="{% url 'logout' %}"
+       class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1"/>
       </svg>
-      Logout
+      <span class="leading-none">Logout</span>
     </a>
 
   </div>
