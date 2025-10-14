@@ -12,8 +12,9 @@ def profile_customization_view(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        form = ProfileCustomizationForm(request.POST, request.FILES, instance=profile)
+        form = ProfileCustomizationForm(request.POST, request.FILES, instance=profile, user=request.user)
         print(f"POST request received. FILES: {request.FILES}")
+        print(f"POST data: {request.POST}")
         print(f"Avatar in FILES: {'avatar' in request.FILES}")
         if 'avatar' in request.FILES:
             print(f"Avatar file: {request.FILES['avatar']}")
@@ -21,14 +22,17 @@ def profile_customization_view(request):
             print("Form is valid, saving...")
             saved_profile = form.save()
             print(f"Saved profile: {saved_profile}, avatar: {saved_profile.avatar}")
+            print(f"Display name: {saved_profile.display_name}")
             print(f"Avatar URL: {saved_profile.avatar.url if saved_profile.avatar else 'None'}")
+            # Refresh the profile object to get updated data
+            profile.refresh_from_db()
             return redirect('profile_customization')
         else:
             print(f"Form errors: {form.errors}")
             print(f"Non-field errors: {form.non_field_errors()}")
     else:
-        form = ProfileCustomizationForm(instance=profile)
-        print(f"GET request. Profile avatar: {profile.avatar}")
+        form = ProfileCustomizationForm(instance=profile, user=request.user)
+        print(f"GET request. Profile display_name: {profile.display_name}, avatar: {profile.avatar}")
 
     # Get user's initial and assign a color class for default avatar
     user = request.user
