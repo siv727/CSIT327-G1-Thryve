@@ -30,7 +30,6 @@ def user_login(request):
 
             if user is not None:
                 login(request, user)
-                request.session.save()
                 return redirect('home1')
     else:
         form = LoginForm()
