@@ -44,7 +44,7 @@
   <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
 
     <!-- Left: Logo -->
-    <a href="{% url 'home1' %}" class="flex items-center gap-2">
+    <a href="{% url 'home' %}" class="flex items-center gap-2">
       <span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
       <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
     </a>
@@ -53,14 +53,14 @@
     {% with active=request.resolver_match.url_name %}
     <nav class="flex items-center gap-8 text-[15px] font-medium">
       <!-- Marketplace -->
-      <a href="{% url 'home1' %}"
+      <a href="{% url 'home' %}"
          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"/>
+                d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"></path>
         </svg>
         <span class="leading-none">Marketplace</span>
-        {% if active == 'home1' %}
+        {% if active == 'home' %}
           <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
         {% endif %}
       </a>

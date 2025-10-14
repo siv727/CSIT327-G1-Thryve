@@ -36,7 +36,7 @@
   <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
 
     <!-- Left: Logo -->
-    <a href="{% url 'home1' %}" class="flex items-center gap-2">
+    <a href="{% url 'home' %}" class="flex items-center gap-2">
       <span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
       <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
     </a>
@@ -44,8 +44,8 @@
     <!-- Center: Navigation Links -->
     {% with active=request.resolver_match.url_name %}
     <nav class="flex items-center gap-8 text-[15px] font-medium">
-      <!-- Marketplace -->
-      <a href="{% url 'home1' %}"
+      <!-- Marketplace/Home -->
+      <a href="{% url 'home' %}"
          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
