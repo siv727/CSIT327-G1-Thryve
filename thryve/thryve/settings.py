@@ -147,12 +147,12 @@ SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access
 SESSION_COOKIE_SECURE = True    # Only send over HTTPS (production)
 SESSION_COOKIE_SAMESITE = 'Lax' # CSRF protection
 # SESSION_COOKIE_AGE = 1209600    # 2 weeks (default)
-# SESSION_SAVE_EVERY_REQUEST = True  # Reset timeout on each request
+SESSION_SAVE_EVERY_REQUEST = True  # Reset timeout on each request
 
 # Session configuration for better reliability
 SESSION_COOKIE_AGE = 86400  # 24 hours (adjust as needed)
-SESSION_SAVE_EVERY_REQUEST = False  # Don't save empty sessions
+# SESSION_SAVE_EVERY_REQUEST = False  # Don't save empty sessions
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
-# For Supabase specifically - helps with connection issues
+# Use database-backed sessions
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
