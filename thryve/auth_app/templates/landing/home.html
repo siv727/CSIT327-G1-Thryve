@@ -205,8 +205,57 @@
 
     <!-- Listings -->
     <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      <!-- Card -->
+      {% for listing in listings %}
+      <!-- Dynamic Listing Card -->
       <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
+        <!-- Image Section -->
+        <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
+          {% if listing.image %}
+            <img src="{{ listing.image.url }}" alt="{{ listing.title }}" class="w-full h-full object-cover">
+          {% else %}
+            <img src="{% static 'thryve_app/images/listing-placeholder.png' %}" alt="No image available" class="w-full h-full object-cover">
+          {% endif %}
+        </div>
+
+        <div class="flex items-center justify-between mb-3">
+          {% if listing.listing_type == 'sale' %}
+            <span class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">SALE</span>
+          {% elif listing.listing_type == 'swap' %}
+            <span class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">SWAP</span>
+          {% elif listing.listing_type == 'buy' %}
+            <span class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">BUY</span>
+          {% endif %}
+          <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
+        </div>
+        <h3 class="text-lg font-bold">{{ listing.title }}</h3>
+        <div class="mt-0.5 text-slate-500 font-medium">{{ listing.company }}</div>
+        <p class="mt-3 text-slate-700">{{ listing.description|truncatechars:120 }}</p>
+
+        {% if listing.listing_type == 'sale' and listing.price %}
+          <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">${{ listing.price }}</div>
+        {% elif listing.listing_type == 'swap' and listing.swap_for %}
+          <p class="mt-2 text-slate-700">Looking for: <span class="font-semibold">{{ listing.swap_for }}</span></p>
+        {% elif listing.listing_type == 'buy' and listing.budget %}
+          <div class="mt-2 text-slate-700">Budget: <span class="font-semibold">${{ listing.budget }}</span></div>
+        {% endif %}
+
+        <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
+          <span>📍 {{ listing.location }}</span>
+          <span>📅 {{ listing.created_at|date:"m/d/Y" }}</span>
+        </div>
+        <div class="mt-5 grid grid-cols-2 gap-3">
+          <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
+          <a href="#" class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
+        </div>
+      </article>
+      {% empty %}
+      <!-- Sample Cards (shown when no listings exist) -->
+      <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
+        <!-- Image Section -->
+        <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
+          <img src="{% static 'thryve_app/images/listing-placeholder.jpg' %}" alt="No image available" class="w-full h-full object-cover">
+        </div>
+
         <div class="flex items-center justify-between mb-3">
           <span
             class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">SALE</span>
@@ -229,8 +278,12 @@
         </div>
       </article>
 
-      <!-- Card -->
       <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
+        <!-- Image Section -->
+        <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
+          <img src="{% static 'thryve_app/images/listing-placeholder.jpg' %}" alt="No image available" class="w-full h-full object-cover">
+        </div>
+
         <div class="flex items-center justify-between mb-3">
           <span
             class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">SWAP</span>
@@ -254,8 +307,12 @@
         </div>
       </article>
 
-      <!-- Card -->
       <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
+        <!-- Image Section -->
+        <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
+          <img src="{% static 'thryve_app/images/listing-placeholder.png' %}" alt="No image available" class="w-full h-full object-cover">
+        </div>
+
         <div class="flex items-center justify-between mb-3">
           <span
             class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">BUY</span>
@@ -277,6 +334,7 @@
             class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
         </div>
       </article>
+      {% endfor %}
     </section>
   </main>
 

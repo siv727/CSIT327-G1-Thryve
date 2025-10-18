@@ -55,8 +55,16 @@ def landing(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):
     from thryve_app.forms import ListingForm
+    from thryve_app.models import Listing
+
     form = ListingForm()
-    return render(request, 'landing/home.html', {'form': form})
+    # Get all listings to display on the page
+    listings = Listing.objects.all().order_by('-created_at')
+
+    return render(request, 'landing/home.html', {
+        'form': form,
+        'listings': listings
+    })
 
 # Use this view for the marketplace UI (your current home.html)
 # def marketplace(request):

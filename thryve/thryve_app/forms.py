@@ -43,7 +43,17 @@ class ListingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Set default category display
-        self.fields['category'].empty_label = None  # Remove empty label so "Other" is selected by default
-        # Make all fields required
-        for field in self.fields.values():
-            field.required = True
+        self.fields['category'].empty_label = "Choose Category"
+        # Make specific fields required based on listing type
+        self.fields['listing_type'].required = True
+        self.fields['category'].required = True
+        self.fields['title'].required = True
+        self.fields['description'].required = True
+        self.fields['your_name'].required = True
+        self.fields['company'].required = True
+        self.fields['location'].required = True
+        # Dynamic fields are handled in JavaScript validation
+        self.fields['price'].required = False
+        self.fields['swap_for'].required = False
+        self.fields['budget'].required = False
+        self.fields['image'].required = False

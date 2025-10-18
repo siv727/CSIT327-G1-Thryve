@@ -15,7 +15,13 @@ def create_listing(request):
             return redirect('home')
         else:
             # Form is invalid, return with errors to display in modal
-            return render(request, 'landing/home.html', {'form': form, 'show_modal': True})
+            from thryve_app.models import Listing
+            listings = Listing.objects.all().order_by('-created_at')
+            return render(request, 'landing/home.html', {
+                'form': form,
+                'show_modal': True,
+                'listings': listings
+            })
     else:
         form = ListingForm()
     return render(request, 'thryve_app/create_listing.html', {'form': form})
