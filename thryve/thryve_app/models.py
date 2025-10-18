@@ -1,5 +1,18 @@
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
+
+def validate_listing_image_size(image):
+    """Validate that uploaded image is under 5MB"""
+    max_size = 5 * 1024 * 1024  # 5MB in bytes
+    if image.size > max_size:
+        raise ValidationError('Image file too large. Size should not exceed 5MB.')
+
+def validate_listing_image_format(image):
+    """Validate that uploaded file is an image"""
+    valid_formats = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    if hasattr(image, 'content_type') and image.content_type not in valid_formats:
+        raise ValidationError('Unsupported file format. Please upload a JPEG, PNG, GIF, or WebP image.')
 
 class Listing(models.Model):
     LISTING_TYPE_CHOICES = [
@@ -25,6 +38,13 @@ class Listing(models.Model):
     your_name = models.CharField(max_length=100)
     company = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
+    image = models.ImageField(
+        upload_to='listings/',
+        blank=True,
+        null=True,
+        validators=[validate_listing_image_size, validate_listing_image_format],
+        help_text='Upload a listing image (max 5MB, JPEG/PNG/GIF/WebP only)'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     is_available = models.BooleanField(default=True)
 

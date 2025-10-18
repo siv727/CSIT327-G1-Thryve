@@ -18,9 +18,17 @@ class ListingForm(forms.ModelForm):
         })
     )
 
+    image = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={
+            'id': 'id_image',
+            'accept': 'image/jpeg,image/png,image/gif,image/webp'
+        })
+    )
+
     class Meta:
         model = Listing
-        fields = ['listing_type', 'category', 'title', 'description', 'price', 'swap_for', 'budget', 'your_name', 'company', 'location']
+        fields = ['listing_type', 'category', 'title', 'description', 'price', 'swap_for', 'budget', 'your_name', 'company', 'location', 'image']
         widgets = {
             'listing_type': forms.Select(attrs={'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky'}),
             'category': forms.Select(attrs={'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky'}),

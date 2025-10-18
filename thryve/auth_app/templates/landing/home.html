@@ -372,9 +372,21 @@
             </div>
 
             <!-- Location -->
-            <div class="mb-6">
+            <div class="mb-4">
               <label for="{{ form.location.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Location *</label>
               {{ form.location }}
+            </div>
+
+            <!-- Image Upload -->
+            <div class="mb-6">
+              <label for="{{ form.image.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Listing Image</label>
+              <div class="relative">
+                <input type="file" name="image" accept="image/jpeg,image/png,image/gif,image/webp" id="id_image" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-medium file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                <div class="mt-2 text-sm text-slate-500">
+                  <p>Upload an image for your listing (optional)</p>
+                  <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB)</p>
+                </div>
+              </div>
             </div>
 
             <!-- Buttons -->
@@ -461,6 +473,46 @@
       });
     });
 
+    // Real-time validation - clear errors when user starts typing
+    function setupRealTimeValidation() {
+      const allInputs = form.querySelectorAll('input, select, textarea');
+      allInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+          const fieldName = e.target.id.replace('id_', '');
+          clearFieldError(fieldName);
+        });
+      });
+    }
+
+    // Clear error for a specific field
+    function clearFieldError(fieldName) {
+      let fieldContainer;
+
+      if (fieldName === 'listing_type') {
+        fieldContainer = form.querySelector('.space-y-2').parentElement;
+      } else if (fieldName === 'price' || fieldName === 'swap_for' || fieldName === 'budget') {
+        fieldContainer = document.getElementById('dynamic-field-container');
+      } else {
+        const field = form.querySelector(`#id_${fieldName}`);
+        if (field) {
+          fieldContainer = field.closest('.mb-4') || field.closest('.mb-6');
+        }
+      }
+
+      if (fieldContainer) {
+        const errorMsg = fieldContainer.querySelector('.error-message');
+        if (errorMsg) {
+          errorMsg.remove();
+        }
+
+        // Remove red border
+        const field = form.querySelector(`#id_${fieldName}`);
+        if (field) {
+          field.classList.remove('border-red-500');
+        }
+      }
+    }
+
     // Form validation on submit
     submitBtn.addEventListener('click', (e) => {
       e.preventDefault(); // Always prevent default first
@@ -499,8 +551,12 @@
       if (selectedType) {
         if (selectedType.value === 'sale') {
           const priceInput = form.querySelector('#id_price');
+          const priceValue = parseFloat(priceInput.value);
           if (!priceInput.value.trim()) {
             showError('price', 'Please enter price');
+            hasErrors = true;
+          } else if (priceValue <= 0) {
+            showError('price', 'Price must be greater than 0');
             hasErrors = true;
           }
         } else if (selectedType.value === 'swap') {
@@ -511,16 +567,24 @@
           }
         } else if (selectedType.value === 'buy') {
           const budgetInput = form.querySelector('#id_budget');
+          const budgetValue = parseFloat(budgetInput.value);
           if (!budgetInput.value.trim()) {
             showError('budget', 'Please enter budget');
+            hasErrors = true;
+          } else if (budgetValue <= 0) {
+            showError('budget', 'Budget must be greater than 0');
             hasErrors = true;
           }
         }
       } else {
         // If no listing type is selected, default to checking price (since For Sale is default)
         const priceInput = form.querySelector('#id_price');
+        const priceValue = parseFloat(priceInput.value);
         if (!priceInput.value.trim()) {
           showError('price', 'Please enter price');
+          hasErrors = true;
+        } else if (priceValue <= 0) {
+          showError('price', 'Price must be greater than 0');
           hasErrors = true;
         }
       }
@@ -530,6 +594,9 @@
         form.submit();
       }
     });
+
+    // Initialize real-time validation
+    setupRealTimeValidation();
 
     function showError(fieldName, message) {
       let field;
