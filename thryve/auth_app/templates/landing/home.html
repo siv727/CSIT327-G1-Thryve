@@ -286,8 +286,8 @@
 =======
   <!-- Add Listing Modal -->
   <div id="add-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 {% if show_modal %}flex{% else %}hidden{% endif %} z-50">
-    <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen p-4 w-full">
+      <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
         <div class="p-6">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold text-slate-900">Create New Listing</h2>
@@ -298,7 +298,7 @@
             </button>
           </div>
 
-          <form id="listing-form" method="post" action="{% url 'thryve_app:create_listing' %}">
+          <form id="listing-form" method="post" action="{% url 'thryve_app:create_listing' %}" novalidate>
             {% csrf_token %}
 
             <!-- Listing Type -->
@@ -318,36 +318,29 @@
                   <span class="ml-2 text-slate-700">Looking to Buy</span>
                 </label>
               </div>
-              {% if form.listing_type.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.listing_type.errors.0 }}</p>
-              {% endif %}
             </div>
 
             <!-- Category -->
             <div class="mb-4">
               <label for="{{ form.category.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Category *</label>
-              {{ form.category }}
-              {% if form.category.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.category.errors.0 }}</p>
-              {% endif %}
+              <select name="category" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" id="id_category">
+                <option value="">Choose Category</option>
+                <option value="electronics">Electronics</option>
+                <option value="furniture">Furniture</option>
+                <option value="other">Other</option>
+              </select>
             </div>
 
             <!-- Title -->
             <div class="mb-4">
               <label for="{{ form.title.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Title *</label>
               {{ form.title }}
-              {% if form.title.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.title.errors.0 }}</p>
-              {% endif %}
             </div>
 
             <!-- Description -->
             <div class="mb-4">
               <label for="{{ form.description.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Description *</label>
               {{ form.description }}
-              {% if form.description.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.description.errors.0 }}</p>
-              {% endif %}
             </div>
 
             <!-- Price -->
@@ -357,42 +350,30 @@
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
                 {{ form.price }}
               </div>
-              {% if form.price.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.price.errors.0 }}</p>
-              {% endif %}
             </div>
 
             <!-- Your Name -->
             <div class="mb-4">
               <label for="{{ form.your_name.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Your Name *</label>
               {{ form.your_name }}
-              {% if form.your_name.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.your_name.errors.0 }}</p>
-              {% endif %}
             </div>
 
             <!-- Company -->
             <div class="mb-4">
               <label for="{{ form.company.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Company *</label>
               {{ form.company }}
-              {% if form.company.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.company.errors.0 }}</p>
-              {% endif %}
             </div>
 
             <!-- Location -->
             <div class="mb-6">
               <label for="{{ form.location.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Location *</label>
               {{ form.location }}
-              {% if form.location.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.location.errors.0 }}</p>
-              {% endif %}
             </div>
 
             <!-- Buttons -->
             <div class="flex justify-end gap-3">
               <button type="button" id="cancel-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-              <button type="submit" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Create Listing</button>
+              <button type="submit" id="submit-btn" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Create Listing</button>
             </div>
           </form>
         </div>
@@ -406,6 +387,8 @@
     const addListingBtn = document.getElementById('add-listing-btn');
     const closeModalBtn = document.getElementById('close-modal');
     const cancelBtn = document.getElementById('cancel-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const form = document.getElementById('listing-form');
 
     // Open modal
     addListingBtn.addEventListener('click', () => {
@@ -428,6 +411,77 @@
         closeModal();
       }
     });
+
+    // Form validation on submit
+    submitBtn.addEventListener('click', (e) => {
+      e.preventDefault(); // Always prevent default first
+
+      // Clear previous errors
+      document.querySelectorAll('.error-message').forEach(el => el.remove());
+
+      let hasErrors = false;
+
+      // Check listing type
+      const listingType = form.querySelector('input[name="listing_type"]:checked');
+      if (!listingType) {
+        showError('listing_type', 'Please select a listing type');
+        hasErrors = true;
+      }
+
+      // Check category
+      const category = form.querySelector('#id_category');
+      if (!category || !category.value || category.value === '') {
+        showError('category', 'Please select a category');
+        hasErrors = true;
+      }
+
+      // Check required text fields
+      const requiredFields = ['title', 'description', 'price', 'your_name', 'company', 'location'];
+      requiredFields.forEach(field => {
+        const input = form.querySelector(`#id_${field}`);
+        if (!input.value.trim()) {
+          showError(field, `Please enter ${field.replace('_', ' ')}`);
+          hasErrors = true;
+        }
+      });
+
+      if (!hasErrors) {
+        // If no errors, submit the form normally
+        form.submit();
+      }
+    });
+
+    function showError(fieldName, message) {
+      let field;
+      let fieldContainer;
+
+      if (fieldName === 'listing_type') {
+        // For radio buttons, find the container div
+        fieldContainer = form.querySelector('.space-y-2').parentElement;
+        field = form.querySelector('input[name="listing_type"]'); // Just get first radio for styling
+      } else {
+        field = form.querySelector(`#id_${fieldName}`);
+        fieldContainer = field.closest('.mb-4') || field.closest('.mb-6');
+      }
+
+      // Remove existing error for this field
+      const existingError = fieldContainer.querySelector('.error-message');
+      if (existingError) {
+        existingError.remove();
+      }
+
+      // Add error message
+      const errorDiv = document.createElement('p');
+      errorDiv.className = 'error-message text-red-500 text-sm mt-1';
+      errorDiv.textContent = message;
+      fieldContainer.appendChild(errorDiv);
+
+      // Add red border to field (skip for radio buttons)
+      if (field && fieldName !== 'listing_type') {
+        field.classList.add('border-red-500');
+        setTimeout(() => field.classList.remove('border-red-500'), 3000);
+      }
+    }
   </script>
 >>>>>>> ba53524 (feature(marketplace): add_marketplace_listing_form_with_modal_popup)
 </body>

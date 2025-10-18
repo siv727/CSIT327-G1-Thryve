@@ -13,9 +13,6 @@ def create_listing(request):
             listing.save()
             messages.success(request, 'Your listing has been created successfully!')
             return redirect('home')
-        else:
-            # Form is invalid, return with errors to display in modal
-            return render(request, 'landing/home.html', {'form': form, 'show_modal': True})
     else:
         form = ListingForm()
     return render(request, 'thryve_app/create_listing.html', {'form': form})

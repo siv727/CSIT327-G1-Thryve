@@ -19,7 +19,7 @@ class ListingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Set default category display
-        self.fields['category'].empty_label = "Choose Category"
+        self.fields['category'].empty_label = None  # Remove empty label so "Other" is selected by default
         # Make all fields required
         for field in self.fields.values():
             field.required = True
