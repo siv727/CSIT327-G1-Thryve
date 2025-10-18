@@ -85,9 +85,18 @@ WSGI_APPLICATION = 'thryve.wsgi.application'
 DATABASES = {
     "default": dj_database_url.config(
         default="sqlite:///db.sqlite3",
-        conn_max_age=600, # persistent connections
-        ssl_require=True # enforce SSL
+        conn_max_age=60,  # SHORT timeout for dev (1 minute)
+        ssl_require=True,
     )
+}
+
+# Add connection health checks
+DATABASES['default']['CONN_HEALTH_CHECKS'] = True
+
+# Add timeout options
+DATABASES['default']['OPTIONS'] = {
+    'connect_timeout': 10,
+    'options': '-c statement_timeout=30000'  # 30 seconds
 }
 
 
