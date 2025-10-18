@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'thryve.wsgi.application'
 DATABASES = {
     "default": dj_database_url.config(
         default="sqlite:///db.sqlite3",
-        conn_max_age=60, # persistent connections
+        conn_max_age=300, # persistent connections
         ssl_require=True, # enforce SSL
         conn_health_checks=True,  # Enable health checks
     )
