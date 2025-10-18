@@ -343,12 +343,19 @@
               {{ form.description }}
             </div>
 
-            <!-- Price -->
-            <div class="mb-4">
-              <label for="{{ form.price.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Price *</label>
-              <div class="relative">
+            <!-- Price/Swap For/Budget Field -->
+            <div class="mb-4" id="dynamic-field-container">
+              <label id="dynamic-field-label" for="id_price" class="block text-slate-700 font-semibold mb-2">Price *</label>
+              <div class="relative" id="price-container">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-                {{ form.price }}
+                <input type="number" name="price" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" step="0.01" id="id_price">
+              </div>
+              <div class="hidden" id="swap-container">
+                <input type="text" name="swap_for" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="What are you looking to swap for?" id="id_swap_for">
+              </div>
+              <div class="relative hidden" id="budget-container">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                <input type="number" name="budget" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" step="0.01" id="id_budget">
               </div>
             </div>
 
@@ -412,6 +419,48 @@
       }
     });
 
+    // Dynamic form fields based on listing type
+    const listingTypeRadios = form.querySelectorAll('input[name="listing_type"]');
+    const dynamicFieldLabel = document.getElementById('dynamic-field-label');
+    const priceContainer = document.getElementById('price-container');
+    const swapContainer = document.getElementById('swap-container');
+    const budgetContainer = document.getElementById('budget-container');
+
+    function updateDynamicField(selectedType) {
+      // Clear any existing errors for dynamic fields
+      document.querySelectorAll('.error-message').forEach(el => {
+        if (el.closest('#dynamic-field-container')) {
+          el.remove();
+        }
+      });
+
+      // Hide all containers first
+      priceContainer.classList.add('hidden');
+      swapContainer.classList.add('hidden');
+      budgetContainer.classList.add('hidden');
+
+      // Show the appropriate container and update label
+      if (selectedType === 'sale') {
+        priceContainer.classList.remove('hidden');
+        dynamicFieldLabel.textContent = 'Price *';
+        dynamicFieldLabel.setAttribute('for', 'id_price');
+      } else if (selectedType === 'swap') {
+        swapContainer.classList.remove('hidden');
+        dynamicFieldLabel.textContent = 'Looking to Swap For *';
+        dynamicFieldLabel.setAttribute('for', 'id_swap_for');
+      } else if (selectedType === 'buy') {
+        budgetContainer.classList.remove('hidden');
+        dynamicFieldLabel.textContent = 'Budget *';
+        dynamicFieldLabel.setAttribute('for', 'id_budget');
+      }
+    }
+
+    listingTypeRadios.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        updateDynamicField(e.target.value);
+      });
+    });
+
     // Form validation on submit
     submitBtn.addEventListener('click', (e) => {
       e.preventDefault(); // Always prevent default first
@@ -436,7 +485,7 @@
       }
 
       // Check required text fields
-      const requiredFields = ['title', 'description', 'price', 'your_name', 'company', 'location'];
+      const requiredFields = ['title', 'description', 'your_name', 'company', 'location'];
       requiredFields.forEach(field => {
         const input = form.querySelector(`#id_${field}`);
         if (!input.value.trim()) {
@@ -444,6 +493,37 @@
           hasErrors = true;
         }
       });
+
+      // Check the dynamic field based on listing type
+      const selectedType = form.querySelector('input[name="listing_type"]:checked');
+      if (selectedType) {
+        if (selectedType.value === 'sale') {
+          const priceInput = form.querySelector('#id_price');
+          if (!priceInput.value.trim()) {
+            showError('price', 'Please enter price');
+            hasErrors = true;
+          }
+        } else if (selectedType.value === 'swap') {
+          const swapInput = form.querySelector('#id_swap_for');
+          if (!swapInput.value.trim()) {
+            showError('swap_for', 'Please enter what you are looking to swap for');
+            hasErrors = true;
+          }
+        } else if (selectedType.value === 'buy') {
+          const budgetInput = form.querySelector('#id_budget');
+          if (!budgetInput.value.trim()) {
+            showError('budget', 'Please enter budget');
+            hasErrors = true;
+          }
+        }
+      } else {
+        // If no listing type is selected, default to checking price (since For Sale is default)
+        const priceInput = form.querySelector('#id_price');
+        if (!priceInput.value.trim()) {
+          showError('price', 'Please enter price');
+          hasErrors = true;
+        }
+      }
 
       if (!hasErrors) {
         // If no errors, submit the form normally
@@ -459,6 +539,10 @@
         // For radio buttons, find the container div
         fieldContainer = form.querySelector('.space-y-2').parentElement;
         field = form.querySelector('input[name="listing_type"]'); // Just get first radio for styling
+      } else if (fieldName === 'price' || fieldName === 'swap_for' || fieldName === 'budget') {
+        // For dynamic fields, use the dynamic field container
+        fieldContainer = document.getElementById('dynamic-field-container');
+        field = form.querySelector(`#id_${fieldName}`);
       } else {
         field = form.querySelector(`#id_${fieldName}`);
         fieldContainer = field.closest('.mb-4') || field.closest('.mb-6');

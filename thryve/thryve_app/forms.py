@@ -2,9 +2,25 @@ from django import forms
 from .models import Listing
 
 class ListingForm(forms.ModelForm):
+    swap_for = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky',
+            'placeholder': 'What are you looking to swap for?'
+        })
+    )
+    budget = forms.DecimalField(
+        required=False,
+        widget=forms.NumberInput(attrs={
+            'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky',
+            'placeholder': '0.00',
+            'step': '0.01'
+        })
+    )
+
     class Meta:
         model = Listing
-        fields = ['listing_type', 'category', 'title', 'description', 'price', 'your_name', 'company', 'location']
+        fields = ['listing_type', 'category', 'title', 'description', 'price', 'swap_for', 'budget', 'your_name', 'company', 'location']
         widgets = {
             'listing_type': forms.Select(attrs={'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky'}),
             'category': forms.Select(attrs={'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky'}),
