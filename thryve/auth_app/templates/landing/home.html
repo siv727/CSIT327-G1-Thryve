@@ -136,13 +136,19 @@
         <h1 class="text-[38px] leading-[1.1] font-extrabold">Marketplace</h1>
         <p class="text-slate-600 mt-1">Buy, sell, or swap equipment and services with confidence.</p>
       </div>
+<<<<<<< HEAD
       <a href="#"
         class="inline-flex items-center gap-2 rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold px-4 py-2.5 shadow-soft transition">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <path stroke-width="2" d="M12 5v14M5 12h14" />
         </svg>
+=======
+      <button id="add-listing-btn"
+         class="inline-flex items-center gap-2 rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold px-4 py-2.5 shadow-soft transition">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" d="M12 5v14M5 12h14"/></svg>
+>>>>>>> ba53524 (feature(marketplace): add_marketplace_listing_form_with_modal_popup)
         Add Listing
-      </a>
+      </button>
     </div>
 
     <!-- Search / Category -->
@@ -274,8 +280,156 @@
     </section>
   </main>
 
+<<<<<<< HEAD
   <!-- Logout Modal with Animation -->
   {% include 'accounts/logout_modal.html' %}
+=======
+  <!-- Add Listing Modal -->
+  <div id="add-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 {% if show_modal %}flex{% else %}hidden{% endif %} z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-slate-900">Create New Listing</h2>
+            <button id="close-modal" class="text-slate-400 hover:text-slate-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <form id="listing-form" method="post" action="{% url 'thryve_app:create_listing' %}">
+            {% csrf_token %}
+
+            <!-- Listing Type -->
+            <div class="mb-4">
+              <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="radio" name="listing_type" value="sale" class="text-brand-sky focus:ring-brand-sky" required>
+                  <span class="ml-2 text-slate-700">For Sale</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="radio" name="listing_type" value="swap" class="text-brand-sky focus:ring-brand-sky" required>
+                  <span class="ml-2 text-slate-700">For Swap</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="radio" name="listing_type" value="buy" class="text-brand-sky focus:ring-brand-sky" required>
+                  <span class="ml-2 text-slate-700">Looking to Buy</span>
+                </label>
+              </div>
+              {% if form.listing_type.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.listing_type.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Category -->
+            <div class="mb-4">
+              <label for="{{ form.category.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Category *</label>
+              {{ form.category }}
+              {% if form.category.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.category.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Title -->
+            <div class="mb-4">
+              <label for="{{ form.title.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Title *</label>
+              {{ form.title }}
+              {% if form.title.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.title.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+              <label for="{{ form.description.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Description *</label>
+              {{ form.description }}
+              {% if form.description.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.description.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Price -->
+            <div class="mb-4">
+              <label for="{{ form.price.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Price *</label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                {{ form.price }}
+              </div>
+              {% if form.price.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.price.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Your Name -->
+            <div class="mb-4">
+              <label for="{{ form.your_name.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Your Name *</label>
+              {{ form.your_name }}
+              {% if form.your_name.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.your_name.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Company -->
+            <div class="mb-4">
+              <label for="{{ form.company.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Company *</label>
+              {{ form.company }}
+              {% if form.company.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.company.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Location -->
+            <div class="mb-6">
+              <label for="{{ form.location.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Location *</label>
+              {{ form.location }}
+              {% if form.location.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.location.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-end gap-3">
+              <button type="button" id="cancel-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+              <button type="submit" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Create Listing</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal functionality
+    const modal = document.getElementById('add-listing-modal');
+    const addListingBtn = document.getElementById('add-listing-btn');
+    const closeModalBtn = document.getElementById('close-modal');
+    const cancelBtn = document.getElementById('cancel-btn');
+
+    // Open modal
+    addListingBtn.addEventListener('click', () => {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    });
+
+    // Close modal functions
+    const closeModal = () => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    };
+
+    closeModalBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+  </script>
+>>>>>>> ba53524 (feature(marketplace): add_marketplace_listing_form_with_modal_popup)
 </body>
 
 </html>

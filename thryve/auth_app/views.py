@@ -54,7 +54,9 @@ def landing(request):
 @login_required(login_url='login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):
-    return render(request, 'landing/home.html')
+    from thryve_app.forms import ListingForm
+    form = ListingForm()
+    return render(request, 'landing/home.html', {'form': form})
 
 # Use this view for the marketplace UI (your current home.html)
 # def marketplace(request):
