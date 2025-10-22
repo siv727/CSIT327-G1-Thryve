@@ -6,7 +6,7 @@ class BusinessProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=255, blank=True)
     industry = models.CharField(max_length=100, blank=True)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True, null=True)
     street_address = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=100, blank=True)
     state = models.CharField(max_length=100, blank=True)
@@ -15,12 +15,18 @@ class BusinessProfile(models.Model):
     website_url = models.URLField(blank=True)
     contact_phone = models.CharField(max_length=50, blank=True)
     contact_email = models.EmailField(blank=True)
-
+    logo = models.ImageField(
+        upload_to='business_logo/',
+        blank=True,
+        null=True,
+        max_length=200,
+        help_text='Upload business logo (recommended <5MB)'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
-    
 
     def __str__(self):
         return f"{self.user}'s business profile"
+
 
 def validate_image_size(image):
     """Validate that uploaded image is under 5MB"""

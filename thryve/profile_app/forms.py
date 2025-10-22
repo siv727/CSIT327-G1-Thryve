@@ -114,4 +114,10 @@ class ProfileCustomizationForm(forms.ModelForm):
                 'accept': 'image/jpeg,image/png,image/gif,image/webp'
             })
         }
-
+class BusinessLogoForm(forms.ModelForm):
+    class Meta:
+        model = BusinessProfile
+        fields = ['logo']
+        widgets = {
+            'logo': forms.ClearableFileInput(attrs={'accept': 'image/*'})
+        }

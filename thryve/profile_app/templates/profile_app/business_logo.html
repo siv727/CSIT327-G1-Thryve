@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Thryve • Business Logo</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 500: '#26a8e6', 600: '#199ad7', 700: '#148cc5' },
+            ink: '#0f172a',
+            line: '#e7edf4',
+            bg: '#f7fbfd'
+          },
+          boxShadow: { soft: '0 10px 28px rgba(2,8,23,.06)' },
+          fontFamily: { inter: ['Inter','system-ui','-apple-system','Segoe UI','Roboto','sans-serif'] }
+        }
+      }
+    }
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="font-inter bg-[#f7fbfd] text-brand-ink">
+
+  <!-- Top header -->
+  <header class="bg-[#23d3ee] text-white shadow">
+    <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
+      <a href="{% url 'home' %}" class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
+        <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
+      </a>
+
+      <nav class="flex items-center gap-6 text-[15px]">
+        <a href="{% url 'home' %}" class="text-white/90">Marketplace</a>
+        <a href="#" class="text-white/80">Community</a>
+        <a href="#" class="text-white/80">Bookings</a>
+        <a href="{% url 'business_profile' %}" class="text-white/80">Profile</a>
+      </nav>
+
+      <a href="{% url 'logout' %}" class="text-white/90">Logout</a>
+    </div>
+  </header>
+
+  <!-- Main layout -->
+  <div class="max-w-6xl mx-auto px-5 py-7 grid grid-cols-[240px,1fr] gap-6">
+
+    <!-- Sidebar -->
+    <aside class="md:pr-4">
+      <nav class="space-y-1 text-[15px] font-medium">
+        <a href="{% url 'business_profile' %}" class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all bg-sky-50 text-[#177fb3] border border-sky-100">
+          <span>Business Profile</span>
+        </a>
+        <a href="{% url 'profile_customization' %}" class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]">
+          <span>Profile Customization</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Content -->
+    <main class="min-w-0">
+      <header class="mb-4">
+        <h1 class="text-3xl font-extrabold">Manage Your Business Profile</h1>
+        <p class="text-slate-600 mt-1">Upload your company logo to build brand recognition.</p>
+      </header>
+
+      <!-- Tabs -->
+      {% with active=request.resolver_match.url_name %}
+      <div class="mb-6 flex gap-3">
+        <a href="{% url 'business_profile' %}"
+           class="px-4 py-2 rounded-lg border text-sm font-medium
+                  {% if active == 'business_profile' %}
+                    bg-[#e9f6ff] text-[#177fb3] border-transparent
+                  {% else %}
+                    bg-white text-slate-700 border border-slate-100 hover:bg-slate-50
+                  {% endif %}"
+           aria-current="{% if active == 'business_profile' %}page{% endif %}">
+          Business Information
+        </a>
+
+        <a href="{% url 'business_logo' %}"
+           class="px-4 py-2 rounded-lg border text-sm font-medium
+                  {% if active == 'business_logo' %}
+                    bg-[#e9f6ff] text-[#177fb3] border-transparent
+                  {% else %}
+                    bg-white text-slate-700 border border-slate-100 hover:bg-slate-50
+                  {% endif %}"
+           aria-current="{% if active == 'business_logo' %}page{% endif %}">
+          Business Logo
+        </a>
+      </div>
+      {% endwith %}
+
+      <!-- Card -->
+      <section class="bg-white border border-line rounded-xl p-6 shadow-soft">
+        <div>
+          <h2 class="text-xl font-semibold mb-2">Business Logo</h2>
+          <p class="text-slate-500 mb-6">Upload your company logo to build brand recognition.</p>
+
+          <!-- Form: center preview, hidden input, styled label -->
+          <form method="post" enctype="multipart/form-data" class="flex flex-col items-center">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <!-- preview box -->
+            <div class="w-full flex justify-center mb-6">
+              <div id="previewBox" class="w-[180px] h-[90px] bg-white border border-slate-100 rounded shadow-sm flex items-center justify-center overflow-hidden">
+                {% if business_profile.logo %}
+                  <img id="logoPreview" src="{{ business_profile.logo.url }}" alt="business logo" class="object-contain w-full h-full" />
+                {% else %}
+                  <!-- inline SVG placeholder (clean, centered) -->
+                  <div id="logoPreview" class="w-full h-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="62" height="34" viewBox="0 0 62 34" fill="none" aria-hidden="true">
+                      <rect x="0.5" y="0.5" width="61" height="33" rx="4.5" stroke="#E6EEF6" fill="#F8FBFD"/>
+                      <g transform="translate(8,6)" fill="#90A4AE">
+                        <rect width="16" height="16" rx="2" fill="#E6EEF6"/>
+                        <path d="M36 10.5c0 3.038-2.462 5.5-5.5 5.5s-5.5-2.462-5.5-5.5S27.462 5 30.5 5 36 7.462 36 10.5zM32.5 10.5a2 2 0 11-4.001-.001A2 2 0 0132.5 10.5z" fill="#B0BEC5"/>
+                        <rect x="20" y="2" width="16" height="10" rx="2" fill="#E6EEF6"/>
+                      </g>
+                    </svg>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Hidden file input (Django renders form.logo; ensure widget id is 'id_logo') -->
+            <div class="flex flex-col items-center">
+              <input id="id_logo" name="logo" type="file" accept="image/*" class="hidden" />
+              <label for="id_logo" class="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-slate-200 shadow-sm cursor-pointer select-none hover:bg-slate-50">
+                <!-- upload icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M12 12V3m0 0l-3.5 3.5M12 3l3.5 3.5" />
+                </svg>
+                <span class="font-medium text-sm text-slate-800">Upload Logo</span>
+              </label>
+
+              <!-- helper text -->
+              <p class="text-slate-400 text-sm mt-3 text-center max-w-xs">
+                Recommended: <span class="font-medium text-slate-600">PNG, JPG or WebP</span>. Keep file under <span class="font-medium text-slate-600">2MB</span>.
+              </p>
+
+              <!-- Save button (you said you have Save Changes elsewhere — keep or remove as needed) -->
+              <div class="mt-4">
+                <button type="submit" class="px-4 py-2 rounded-lg bg-[#1aa2dd] text-white hover:brightness-95">Save Logo</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Live preview JS -->
+  <script>
+    (function () {
+      const input = document.getElementById('id_logo');
+      const preview = document.getElementById('logoPreview');
+
+      if (!input || !preview) return;
+
+      input.addEventListener('change', function (e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        const max = 2 * 1024 * 1024; // 2MB
+        if (file.size > max) {
+          alert('File is larger than 2MB. Please select a smaller image.');
+          input.value = '';
+          return;
+        }
+
+        // If file is an image, show it in preview
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+          // if preview is an <img> element, change its src; if it's a div with svg, replace contents
+          if (preview.tagName && preview.tagName.toLowerCase() === 'img') {
+            preview.src = ev.target.result;
+          } else {
+            // replace inner HTML of preview container with an <img>
+            preview.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = ev.target.result;
+            img.alt = 'Selected logo preview';
+            img.className = 'object-contain w-full h-full';
+            preview.appendChild(img);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -2,9 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import ProfileCustomizationForm
+from django.shortcuts import render, redirect, HttpResponse
 from .models import UserProfile
 from .forms import BusinessProfileForm
 from .models import BusinessProfile
+from .forms import BusinessLogoForm
 
 @login_required
 def business_profile_view(request):
@@ -64,4 +66,28 @@ def profile_customization_view(request):
         'user': user,
         'initial': initial,
         'avatar_color_class': color_class
+    })
+def business_profile(request):
+    # Your existing code
+    business_profile = BusinessProfile.objects.first()
+    return render(request, 'business_profile.html', {'business_profile': business_profile})
+
+@login_required
+def business_logo(request):
+    business_profile, created = BusinessProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = BusinessLogoForm(request.POST, request.FILES, instance=business_profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Logo uploaded.")
+            return redirect('business_logo')
+        else:
+            messages.error(request, "Please fix the errors with the logo upload.")
+    else:
+        form = BusinessLogoForm(instance=business_profile)
+
+    return render(request, 'profile_app/business_logo.html', {
+        'business_profile': business_profile,
+        'form': form,
     })
