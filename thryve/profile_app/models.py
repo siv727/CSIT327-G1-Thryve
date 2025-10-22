@@ -2,6 +2,26 @@ from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
+class BusinessProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    company_name = models.CharField(max_length=255, blank=True)
+    industry = models.CharField(max_length=100, blank=True)
+    description = models.TextField(blank=True)
+    street_address = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    state = models.CharField(max_length=100, blank=True)
+    zip_code = models.CharField(max_length=20, blank=True)
+    country = models.CharField(max_length=100, blank=True)
+    website_url = models.URLField(blank=True)
+    contact_phone = models.CharField(max_length=50, blank=True)
+    contact_email = models.EmailField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+
+    def __str__(self):
+        return f"{self.user}'s business profile"
+
 def validate_image_size(image):
     """Validate that uploaded image is under 5MB"""
     max_size = 5 * 1024 * 1024  # 5MB in bytes

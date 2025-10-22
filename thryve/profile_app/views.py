@@ -1,12 +1,31 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from .forms import ProfileCustomizationForm
 from .models import UserProfile
+from .forms import BusinessProfileForm
+from .models import BusinessProfile
 
 @login_required
 def business_profile_view(request):
-    return render(request, 'profile_app/business_profile.html')
+    # ensure a BusinessProfile exists for this user
+    profile, created = BusinessProfile.objects.get_or_create(user=request.user)
 
+    if request.method == "POST":
+        form = BusinessProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Business details updated.")
+            return redirect('business_profile')   # or whatever your URL name is
+        else:
+            messages.error(request, "Please fix the errors below.")
+    else:
+        form = BusinessProfileForm(instance=profile)
+
+    return render(request, 'profile_app/business_profile.html', {
+        'form': form,
+        'profile': profile,
+    })
 @login_required
 def profile_customization_view(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)

@@ -181,9 +181,6 @@
   {% endwith %}
 </aside>
 
-
-
-
       <!-- Content -->
       <main class="min-w-0">
         <header class="mb-3">
@@ -201,106 +198,166 @@
         </header>
 
         <!-- Card -->
-        <section class="bg-white border border-line rounded-xl p-5 shadow-card">
-          <h2 class="text-lg font-semibold mb-1">Business Details</h2>
-          <p class="text-[#6b7a90] mb-4">Provide core information about your business.</p>
+        <section class="bg-white border border-line rounded-xl p-5 shadow-card relative">
+  <!-- header row: title left, edit button right -->
+  <div class="flex items-start justify-between mb-2">
+    <div>
+      <h2 class="text-lg font-semibold">Business Details</h2>
+      <p class="text-[#6b7a90]">Provide core information about your business.</p>
+    </div>
 
-          <form class="flex flex-col gap-3.5">
-            <!-- Company -->
-            <label class="block">
-              <span class="block font-bold mb-1.5">Company Name</span>
-              <input type="text" placeholder="MarketConnect Pro Solutions"
-                     class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-            </label>
+    <!-- Edit / Save button -->
+    <div>
+      <!-- button type="button" so it doesn't submit until in "save" mode -->
+      <button id="editToggle" type="button"
+              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-300"
+              aria-pressed="false" title="Edit business details">
+        <!-- pencil icon (default) -->
+        <svg id="editIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-slate-700">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M16.862 4.487l2.651 2.651m-9.193 9.192l-3.534.883.883-3.534 9.193-9.192a1.5 1.5 0 012.122 0l.877.877a1.5 1.5 0 010 2.122l-9.192 9.193z" />
+        </svg>
+        <span id="editLabel" class="text-sm font-medium text-slate-700">Edit</span>
+      </button>
+    </div>
+  </div>
 
-            <!-- Industry -->
-            <label class="block">
-              <span class="block font-bold mb-1.5">Industry</span>
-              <div class="relative">
-                <select class="w-full border border-line rounded-lg bg-white px-3 py-2.5 appearance-none outline-none focus:ring-2 focus:ring-brand-500/30">
-                  <option value="">Select industry</option>
-                  <option>Manufacturing</option>
-                  <option>Technology</option>
-                  <option>Logistics</option>
-                  <option>Professional Services</option>
-                </select>
-                <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">▾</span>
-              </div>
-            </label>
+  <!-- Form (fields start disabled via JS) -->
+  <form id="businessForm" method="post" class="mt-4 space-y-4">
+    {% csrf_token %}
 
-            <!-- Description -->
-            <label class="block">
-              <span class="block font-bold mb-1.5">Business Description</span>
-              <textarea rows="4" placeholder="Describe your company, what you do, and your value proposition."
-                        class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none resize-y focus:ring-2 focus:ring-brand-500/30"></textarea>
-            </label>
+    <!-- Company Name -->
+    <label class="block">
+      <span class="block font-bold mb-1.5">Company Name</span>
+      {{ form.company_name }}
+      {% if form.company_name.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.company_name.errors|join:", " }}</div>{% endif %}
+    </label>
 
-            <!-- Address row -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-              <label class="block">
-                <span class="block font-bold mb-1.5">Street Address</span>
-                <input type="text" placeholder="123 Main Street"
-                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-              </label>
-              <label class="block">
-                <span class="block font-bold mb-1.5">City</span>
-                <input type="text" placeholder="Anytown"
-                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-              </label>
-              <label class="block">
-                <span class="block font-bold mb-1.5">State</span>
-                <input type="text" placeholder="CA"
-                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-              </label>
-            </div>
+    <!-- Industry -->
+    <label class="block">
+      <span class="block font-bold mb-1.5">Industry</span>
+      {{ form.industry }}
+      {% if form.industry.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.industry.errors|join:", " }}</div>{% endif %}
+    </label>
 
-            <!-- Postal/Country -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-              <label class="block">
-                <span class="block font-bold mb-1.5">Postal Code</span>
-                <input type="text" placeholder="90210"
-                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-              </label>
-              <label class="block">
-                <span class="block font-bold mb-1.5">Country</span>
-                <input type="text" placeholder="USA"
-                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-              </label>
-            </div>
+    <!-- Description -->
+    <label class="block">
+      <span class="block font-bold mb-1.5">Business Description</span>
+      {{ form.description }}
+      {% if form.description.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.description.errors|join:", " }}</div>{% endif %}
+    </label>
 
-            <!-- Website -->
-            <label class="block">
-              <span class="block font-bold mb-1.5">Website URL</span>
-              <div class="flex items-center gap-2 border border-line rounded-lg px-3 py-2.5">
-                <span class="text-slate-500 select-none">https://</span>
-                <input type="text" placeholder="www.marketconnectpro.com" class="w-full outline-none"/>
-              </div>
-            </label>
-            <!-- Contact Information -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-  <label class="block">
-    <span class="block font-bold mb-1.5">Contact Phone</span>
-    <input type="text" placeholder="+1 (555) 123-4567"
-           class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-  </label>
-  <label class="block">
-    <span class="block font-bold mb-1.5">Contact Email</span>
-    <input type="email" placeholder="contact@company.com"
-           class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-  </label>
-</div>
+    <!-- Address grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+      <label class="block">
+        <span class="block font-bold mb-1.5">Street Address</span>
+        {{ form.street_address }}
+      </label>
+      <label class="block">
+        <span class="block font-bold mb-1.5">City</span>
+        {{ form.city }}
+      </label>
+      <label class="block">
+        <span class="block font-bold mb-1.5">State</span>
+        {{ form.state }}
+      </label>
+    </div>
 
-            <!-- Actions -->
-            <div class="flex justify-end gap-2 pt-1">
-              <button type="button" class="px-4 py-2 rounded-lg font-extrabold bg-[#eef2f6] text-[#354a5e]">
-                Cancel
-              </button>
-              <button type="submit" class="px-4 py-2 rounded-lg font-extrabold bg-[#1aa2dd] text-white hover:brightness-95">
-                Save Changes
-              </button>
-            </div>
-          </form>
-        </section>
+    <!-- Postal / Country -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <label class="block">
+        <span class="block font-bold mb-1.5">Zip Code</span>
+        {{ form.zip_code }}
+      </label>
+      <label class="block">
+        <span class="block font-bold mb-1.5">Country</span>
+        {{ form.country }}
+      </label>
+    </div>
+
+    <!-- Website -->
+    <label class="block">
+      <span class="block font-bold mb-1.5">Website URL</span>
+      <div class="flex items-center gap-2 border border-line rounded-lg px-3 py-2.5">
+        <span class="text-slate-500 select-none">https://</span>
+        {{ form.website_url }}
+      </div>
+    </label>
+
+    <!-- Contact Information -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <label class="block">
+        <span class="block font-bold mb-1.5">Contact Phone</span>
+        {{ form.contact_phone }}
+      </label>
+      <label class="block">
+        <span class="block font-bold mb-1.5">Contact Email</span>
+        {{ form.contact_email }}
+      </label>
+    </div>
+
+    <!-- Actions: Save/Cancel appear only while editing (JS toggles) -->
+    <div id="actionRow" class="flex justify-end gap-2 pt-1 hidden">
+      <button id="cancelBtn" type="button" class="px-4 py-2 rounded-lg font-extrabold bg-[#eef2f6] text-[#354a5e]">Cancel</button>
+      <button id="saveBtn" type="submit" class="px-4 py-2 rounded-lg font-extrabold bg-[#1aa2dd] text-white hover:brightness-95">Save Changes</button>
+    </div>
+  </form>
+</section>
+<script>
+  (function () {
+    const editToggle = document.getElementById('editToggle');
+    const editLabel  = document.getElementById('editLabel');
+    const editIcon   = document.getElementById('editIcon');
+    const form       = document.getElementById('businessForm');
+    const actionRow  = document.getElementById('actionRow');
+    const cancelBtn  = document.getElementById('cancelBtn');
+
+    // Helper: enable/disable all inputs
+    function setReadonly(readonly) {
+      const controls = form.querySelectorAll('input, textarea, select');
+      controls.forEach(el => {
+        if (readonly) {
+          el.setAttribute('disabled', 'disabled');
+          el.classList.add('bg-[#f8fafc]');
+        } else {
+          el.removeAttribute('disabled');
+          el.classList.remove('bg-[#f8fafc]');
+        }
+      });
+    }
+
+    // Start readonly
+    setReadonly(true);
+    let editing = false;
+
+    // EDIT button behavior
+    editToggle.addEventListener('click', function () {
+      editing = !editing;
+
+      if (editing) {
+        // enter edit mode
+        editLabel.textContent = 'Editing...';
+        editIcon.classList.add('text-sky-600');
+        setReadonly(false);
+        actionRow.classList.remove('hidden');
+        editToggle.setAttribute('aria-pressed', 'true');
+      } else {
+        // return to readonly
+        editLabel.textContent = 'Edit';
+        editIcon.classList.remove('text-sky-600');
+        setReadonly(true);
+        actionRow.classList.add('hidden');
+        editToggle.setAttribute('aria-pressed', 'false');
+      }
+    });
+
+    // Cancel button reloads page to discard edits
+    cancelBtn.addEventListener('click', function () {
+      window.location.reload();
+    });
+  })();
+</script>
       </main>
     </div>
 

@@ -3,6 +3,64 @@ from django import forms
 from django.core.exceptions import ValidationError
 import re
 from .models import UserProfile
+from .models import BusinessProfile
+
+class BusinessProfileForm(forms.ModelForm):
+    class Meta:
+        model = BusinessProfile
+        fields = [
+            'company_name', 'industry', 'description',
+            'street_address', 'city', 'state',
+            'zip_code', 'country', 'website_url',
+            'contact_phone', 'contact_email'
+        ]
+        widgets = {
+            'company_name': forms.TextInput(attrs={
+                'class': 'w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30',
+                'placeholder': 'MarketConnect Pro Solutions'
+            }),
+            'industry': forms.TextInput(attrs={
+                'class': 'w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30',
+                'placeholder': 'Select industry'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none resize-y focus:ring-2 focus:ring-brand-500/30',
+                'rows': 4,
+                'placeholder': 'Describe your company, what you do, and your value proposition.'
+            }),
+            'street_address': forms.TextInput(attrs={
+                'class': 'w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30',
+                'placeholder': '123 Main Street'
+            }),
+            'city': forms.TextInput(attrs={
+                'class': 'w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30',
+                'placeholder': 'Anytown'
+            }),
+            'state': forms.TextInput(attrs={
+                'class': 'w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30',
+                'placeholder': 'CA'
+            }),
+            'zip_code': forms.TextInput(attrs={
+                'class': 'w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30',
+                'placeholder': '90210'
+            }),
+            'country': forms.TextInput(attrs={
+                'class': 'w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30',
+                'placeholder': 'USA'
+            }),
+            'website_url': forms.URLInput(attrs={
+                'class': 'w-full outline-none',
+                'placeholder': 'www.marketconnectpro.com'
+            }),
+            'contact_phone': forms.TextInput(attrs={
+                'class': 'w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30',
+                'placeholder': '+1 (555) 123-4567'
+            }),
+            'contact_email': forms.EmailInput(attrs={
+                'class': 'w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30',
+                'placeholder': 'contact@company.com'
+            }),
+        }
 
 def validate_display_name(value):
     """Validate that display name contains at least one letter and allows common characters."""
