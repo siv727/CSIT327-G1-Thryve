@@ -1,9 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Thryve • Profile Customization</title>
 
   <!-- Tailwind (CDN mode to match your project) -->
@@ -13,7 +14,7 @@
       theme: {
         extend: {
           colors: {
-            brand: { 600:'#1893d6', 700:'#167fb9' }
+            brand: { 600: '#1893d6', 700: '#167fb9' }
           },
           boxShadow: {
             soft: '0 10px 24px rgba(15,23,42,.06)'
@@ -28,88 +29,92 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body class="font-inter bg-[#f7fbfd] text-brand-ink">
 
   <!-- Topbar (same style as Home/Business Profile) -->
   <!-- Professional Navbar with Icons -->
-<header class="bg-[#23d3ee] text-white shadow">
-  <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
+  <header class="bg-[#23d3ee] text-white shadow">
+    <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
 
-    <!-- Left: Logo -->
-    <a href="{% url 'home' %}" class="flex items-center gap-2">
-      <span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
-      <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
-    </a>
-
-    <!-- Center: Navigation Links -->
-    {% with active=request.resolver_match.url_name %}
-    <nav class="flex items-center gap-8 text-[15px] font-medium">
-      <!-- Marketplace/Home -->
-      <a href="{% url 'home' %}"
-         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"/>
-        </svg>
-        <span class="leading-none">Marketplace</span>
-        {% if active == 'home1' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-        {% endif %}
+      <!-- Left: Logo -->
+      <a href="{% url 'home' %}" class="flex items-center gap-2">
+        <span
+          class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
+        <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
       </a>
 
-      <!-- Community -->
-      <a href="#"
-         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17 20h5V4H2v16h5M17 8l-5 5-5-5"/>
-        </svg>
-        <span class="leading-none">Community</span>
-        {% if active == 'community' %}
+      <!-- Center: Navigation Links -->
+      {% with active=request.resolver_match.url_name %}
+      <nav class="flex items-center gap-8 text-[15px] font-medium">
+        <!-- Marketplace/Home -->
+        <a href="{% url 'home' %}"
+          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0" />
+          </svg>
+          <span class="leading-none">Marketplace</span>
+          {% if active == 'home1' %}
           <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-        {% endif %}
-      </a>
+          {% endif %}
+        </a>
 
-      <!-- Bookings -->
-      <a href="#"
-         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"/>
-        </svg>
-        <span class="leading-none">Bookings</span>
-        {% if active == 'bookings' %}
+        <!-- Community -->
+        <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
+          </svg>
+          <span class="leading-none">Community</span>
+          {% if active == 'community' %}
           <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-        {% endif %}
-      </a>
+          {% endif %}
+        </a>
 
-      <!-- Profile -->
-      <a href="{% url 'profile_customization' %}"
-         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z"/>
-        </svg>
-        <span class="leading-none">Profile</span>
-        {% if active == 'profile_customization' %}
+        <!-- Bookings -->
+        <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
+          </svg>
+          <span class="leading-none">Bookings</span>
+          {% if active == 'bookings' %}
           <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-        {% endif %}
-      </a>
-    </nav>
-    {% endwith %}
+          {% endif %}
+        </a>
 
-    <!-- Right: Logout -->
-    <a href="{% url 'logout' %}"
-       class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1"/>
-      </svg>
-      <span class="leading-none">Logout</span>
-    </a>
+        <!-- Profile -->
+        <a href="{% url 'profile_customization' %}"
+          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z" />
+          </svg>
+          <span class="leading-none">Profile</span>
+          {% if active == 'profile_customization' %}
+          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+          {% endif %}
+        </a>
+      </nav>
+      {% endwith %}
 
-  </div>
-</header>
+      <!-- Right: Logout -->
+      <button onclick="openLogoutModal()" type="button"
+        class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
+        </svg>
+        <span class="leading-none">Logout</span>
+      </button>
+
+    </div>
+  </header>
 
 
 
@@ -117,58 +122,57 @@
   <div class="max-w-6xl mx-auto px-5 py-7 grid grid-cols-[240px,1fr] gap-6">
     <!-- Sidebar -->
     <!-- Sidebar -->
-<aside class="md:pr-4">
-  {% with current=request.resolver_match.url_name %}
-  <nav class="space-y-1 text-[15px] font-medium">
-     <a href="#"
-       class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+    <aside class="md:pr-4">
+      {% with current=request.resolver_match.url_name %}
+      <nav class="space-y-1 text-[15px] font-medium">
+        <a href="#" class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
               {% if current == 'roles_permissions' %}
                 bg-sky-50 text-[#177fb3] border border-sky-100
               {% else %}
                 text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
               {% endif %}">
-      <!-- shield/check icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 4v5a9 9 0 11-16 0V7l8-4z"/>
-        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9.5 12.5l2 2 3.5-3.5"/>
-      </svg>
-      <span>Roles & Permissions</span>
-    </a>
-    <!-- Business Profile -->
-    <a href="{% url 'business_profile' %}"
-       class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+          <!-- shield/check icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0 stroke-current" fill="none"
+            viewBox="0 0 24 24">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M12 3l8 4v5a9 9 0 11-16 0V7l8-4z" />
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9.5 12.5l2 2 3.5-3.5" />
+          </svg>
+          <span>Roles & Permissions</span>
+        </a>
+        <!-- Business Profile -->
+        <a href="{% url 'business_profile' %}" class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
               {% if current == 'business_profile' %}
                 bg-sky-50 text-[#177fb3] border border-sky-100
               {% else %}
                 text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
               {% endif %}">
-      <!-- Business icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M3 21h18M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 10h2m2 0h2M9 14h2m2 0h2M9 18h6"/>
-      </svg>
-      <span>Business Profile</span>
-    </a>
+          <!-- Business icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M3 21h18M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 10h2m2 0h2M9 14h2m2 0h2M9 18h6" />
+          </svg>
+          <span>Business Profile</span>
+        </a>
 
-    <!-- Profile Customization -->
-    <a href="{% url 'profile_customization' %}"
-       class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+        <!-- Profile Customization -->
+        <a href="{% url 'profile_customization' %}" class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
               {% if current == 'profile_customization' %}
                 bg-sky-50 text-[#177fb3] border border-sky-100
               {% else %}
                 text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
               {% endif %}">
-      <!-- Pencil icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M9 13l-6 6h6l10-10a2.5 2.5 0 10-3.5-3.5L9 13z"/>
-      </svg>
-      <span>Profile Customization</span>
-    </a>
+          <!-- Pencil icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M9 13l-6 6h6l10-10a2.5 2.5 0 10-3.5-3.5L9 13z" />
+          </svg>
+          <span>Profile Customization</span>
+        </a>
 
-  </nav>
-  {% endwith %}
-</aside>
+      </nav>
+      {% endwith %}
+    </aside>
 
 
 
@@ -178,7 +182,8 @@
       <header class="mb-6">
         <h1 class="text-[28px] leading-[1.1] font-extrabold">Profile Customization</h1>
         <p class="text-slate-600 mt-1">
-          Personalize your individual user account. Update your display name, add a captivating tagline, and share your professional bio.
+          Personalize your individual user account. Update your display name, add a captivating tagline, and share your
+          professional bio.
         </p>
       </header>
 
@@ -195,23 +200,24 @@
               <!-- avatar preview -->
               <div class="relative">
                 {% if form.avatar.value %}
-                  <img id="avatarPreview"
-                       src="{{ form.avatar.value.url }}"
-                       class="w-28 h-28 rounded-full object-cover border border-slate-200"
-                       alt="Avatar">
+                <img id="avatarPreview" src="{{ form.avatar.value.url }}"
+                  class="w-28 h-28 rounded-full object-cover border border-slate-200" alt="Avatar">
                 {% else %}
-                  <div id="avatarPreview"
-                       class="w-28 h-28 rounded-full flex items-center justify-center text-white font-bold text-3xl border border-slate-200 {{ avatar_color_class }}">
-                    {{ initial }}
-                  </div>
+                <div id="avatarPreview"
+                  class="w-28 h-28 rounded-full flex items-center justify-center text-white font-bold text-3xl border border-slate-200 {{ avatar_color_class }}">
+                  {{ initial }}
+                </div>
                 {% endif %}
-                <span id="onlineDot" class="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+                <span id="onlineDot"
+                  class="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
               </div>
 
               <!-- file input -->
               <label for="id_avatar"
-                     class="mt-4 inline-flex items-center gap-2 px-3 py-2 rounded-lg border font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" d="M12 5v14M5 12h14"/></svg>
+                class="mt-4 inline-flex items-center gap-2 px-3 py-2 rounded-lg border font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-width="2" d="M12 5v14M5 12h14" />
+                </svg>
                 Change Avatar
               </label>
             </div>
@@ -228,23 +234,25 @@
 
               <div class="-mt-10 px-5 pb-5 text-center">
                 {% if form.avatar.value %}
-                  <img id="previewAvatarSmall"
-                       src="{{ form.avatar.value.url }}"
-                       class="w-16 h-16 mx-auto rounded-full object-cover ring-4 ring-white"
-                       alt="Avatar small">
+                <img id="previewAvatarSmall" src="{{ form.avatar.value.url }}"
+                  class="w-16 h-16 mx-auto rounded-full object-cover ring-4 ring-white" alt="Avatar small">
                 {% else %}
-                  <div id="previewAvatarSmall"
-                       class="w-16 h-16 mx-auto rounded-full flex items-center justify-center text-white font-bold text-xl ring-4 ring-white {{ avatar_color_class }}">
-                    {{ initial }}
-                  </div>
+                <div id="previewAvatarSmall"
+                  class="w-16 h-16 mx-auto rounded-full flex items-center justify-center text-white font-bold text-xl ring-4 ring-white {{ avatar_color_class }}">
+                  {{ initial }}
+                </div>
                 {% endif %}
 
-                <div class="mt-2 text-lg font-extrabold" id="previewName">{{ form.display_name.value|default:user.first_name }}</div>
-                <div class="text-slate-500 text-sm font-medium" id="previewTag">{{ form.tagline.value|default:"Your Tagline" }}</div>
+                <div class="mt-2 text-lg font-extrabold" id="previewName">{{
+                  form.display_name.value|default:user.first_name }}</div>
+                <div class="text-slate-500 text-sm font-medium" id="previewTag">{{ form.tagline.value|default:"Your
+                  Tagline" }}</div>
 
                 <p class="mt-3 text-[12px] leading-5 text-slate-600 line-clamp-4" id="previewBio">
-                  Passionate about fostering connections and driving growth in the digital marketplace. Always seeking new
-                  challenges and opportunities to build meaningful relationships and empower businesses through technology.
+                  Passionate about fostering connections and driving growth in the digital marketplace. Always seeking
+                  new
+                  challenges and opportunities to build meaningful relationships and empower businesses through
+                  technology.
                 </p>
               </div>
             </div>
@@ -252,126 +260,133 @@
         </div>
 
         <form method="POST" enctype="multipart/form-data"
-      class="bg-white border border-slate-200 rounded-xl p-5 shadow-soft space-y-4">
-  <h2 class="text-lg font-bold">Profile Details</h2>
-  <p class="text-slate-500 text-sm">
-    Update your public display name, professional tagline, and personal biography.
-  </p>
+          class="bg-white border border-slate-200 rounded-xl p-5 shadow-soft space-y-4">
+          <h2 class="text-lg font-bold">Profile Details</h2>
+          <p class="text-slate-500 text-sm">
+            Update your public display name, professional tagline, and personal biography.
+          </p>
 
-  {% csrf_token %}
+          {% csrf_token %}
 
-  {% if form.non_field_errors %}
-    <div class="text-rose-600 text-sm">{{ form.non_field_errors }}</div>
-  {% endif %}
+          {% if form.non_field_errors %}
+          <div class="text-rose-600 text-sm">{{ form.non_field_errors }}</div>
+          {% endif %}
 
-  <!-- Display Name -->
-  <label class="block">
-    <span class="block text-sm font-semibold text-slate-700 mb-1">Display Name</span>
-    {{ form.display_name }}     {# ← widgets already carry Tailwind classes from forms.py #}
-    {% if form.display_name.errors %}
-      <div class="text-rose-600 text-xs mt-1">{{ form.display_name.errors|join:", " }}</div>
-    {% endif %}
-  </label>
+          <!-- Display Name -->
+          <label class="block">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Display Name</span>
+            {{ form.display_name }} {# ← widgets already carry Tailwind classes from forms.py #}
+            {% if form.display_name.errors %}
+            <div class="text-rose-600 text-xs mt-1">{{ form.display_name.errors|join:", " }}</div>
+            {% endif %}
+          </label>
 
-  <!-- Tagline -->
-  <label class="block">
-    <span class="block text-sm font-semibold text-slate-700 mb-1">Tagline</span>
-    {{ form.tagline }}
-    {% if form.tagline.errors %}
-      <div class="text-rose-600 text-xs mt-1">{{ form.tagline.errors|join:", " }}</div>
-    {% endif %}
-  </label>
+          <!-- Tagline -->
+          <label class="block">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Tagline</span>
+            {{ form.tagline }}
+            {% if form.tagline.errors %}
+            <div class="text-rose-600 text-xs mt-1">{{ form.tagline.errors|join:", " }}</div>
+            {% endif %}
+          </label>
 
-  <!-- Personal Bio -->
-  <label class="block">
-    <span class="block text-sm font-semibold text-slate-700 mb-1">Personal Bio</span>
-    {{ form.bio }}
-    {% if form.bio.errors %}
-      <div class="text-rose-600 text-xs mt-1">{{ form.bio.errors|join:", " }}</div>
-    {% endif %}
-  </label>
+          <!-- Personal Bio -->
+          <label class="block">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Personal Bio</span>
+            {{ form.bio }}
+            {% if form.bio.errors %}
+            <div class="text-rose-600 text-xs mt-1">{{ form.bio.errors|join:", " }}</div>
+            {% endif %}
+          </label>
 
-  <!-- Avatar file input (moved inside form) -->
-  <input id="id_avatar" name="avatar" type="file" class="hidden" accept="image/jpeg,image/png,image/gif,image/webp">
+          <!-- Avatar file input (moved inside form) -->
+          <input id="id_avatar" name="avatar" type="file" class="hidden"
+            accept="image/jpeg,image/png,image/gif,image/webp">
 
-  <div class="pt-2 flex items-center gap-3 justify-end">
-    <a href="{% url 'business_profile' %}" class="px-4 py-2 rounded-lg border font-semibold text-slate-700 hover:bg-slate-50">Cancel</a>
-    <button type="submit" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-semibold">
-      Save Changes
-    </button>
-  </div>
-</form>
+          <div class="pt-2 flex items-center gap-3 justify-end">
+            <a href="{% url 'business_profile' %}"
+              class="px-4 py-2 rounded-lg border font-semibold text-slate-700 hover:bg-slate-50">Cancel</a>
+            <button type="submit" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-semibold">
+              Save Changes
+            </button>
+          </div>
+        </form>
       </div>
     </main>
   </div>
 
   <!-- Live Preview + Avatar JS -->
   <script>
-    (function () {
-      const nameInput = document.getElementById('id_display_name');
-      const tagInput  = document.getElementById('id_tagline');
-      const bioInput  = document.getElementById('id_bio');
-      const nameOut   = document.getElementById('previewName');
-      const tagOut    = document.getElementById('previewTag');
-      const bioOut    = document.getElementById('previewBio');
+      (function () {
+        const nameInput = document.getElementById('id_display_name');
+        const tagInput = document.getElementById('id_tagline');
+        const bioInput = document.getElementById('id_bio');
+        const nameOut = document.getElementById('previewName');
+        const tagOut = document.getElementById('previewTag');
+        const bioOut = document.getElementById('previewBio');
 
-      // Initialize live preview with saved values on page load
-      function updateLivePreview() {
-        nameOut.textContent = nameInput.value.trim() || '{{ user.first_name }}';
-        tagOut.textContent = tagInput.value.trim() || 'Your Tagline';
-        bioOut.textContent = bioInput.value.trim() || '{{ form.bio.value|default:"Passionate about fostering connections and driving growth in the digital marketplace. Always seeking new challenges and opportunities to build meaningful relationships and empower businesses through technology."|linebreaksbr }}';
-      }
+        // Initialize live preview with saved values on page load
+        function updateLivePreview() {
+          nameOut.textContent = nameInput.value.trim() || '{{ user.first_name }}';
+          tagOut.textContent = tagInput.value.trim() || 'Your Tagline';
+          bioOut.textContent = bioInput.value.trim() || '{{ form.bio.value|default:"Passionate about fostering connections and driving growth in the digital marketplace. Always seeking new challenges and opportunities to build meaningful relationships and empower businesses through technology."|linebreaksbr }}';
+        }
 
-      // Update on input
-      [nameInput, tagInput, bioInput].forEach(el => {
-        if (!el) return;
-        el.addEventListener('input', updateLivePreview);
-      });
-
-      // Initialize on page load
-      updateLivePreview();
-
-      const fileInput  = document.getElementById('id_avatar');
-      const prevBig    = document.getElementById('avatarPreview');
-      const prevSmall  = document.getElementById('previewAvatarSmall');
-
-      if (fileInput) {
-        fileInput.classList.add('hidden'); // hide default input if not already hidden
-        fileInput.addEventListener('change', (e) => {
-          const file = e.target.files?.[0];
-          if (!file) return;
-          const reader = new FileReader();
-          reader.onload = (ev) => {
-            // Update large preview
-            if (prevBig.tagName === 'IMG') {
-              prevBig.src = ev.target.result;
-            } else {
-              // Replace div with img for uploaded avatar
-              const img = document.createElement('img');
-              img.id = 'avatarPreview';
-              img.className = 'w-28 h-28 rounded-full object-cover border border-slate-200';
-              img.alt = 'Avatar';
-              img.src = ev.target.result;
-              prevBig.parentNode.replaceChild(img, prevBig);
-            }
-
-            // Update small preview
-            if (prevSmall.tagName === 'IMG') {
-              prevSmall.src = ev.target.result;
-            } else {
-              // Replace div with img for uploaded avatar
-              const img = document.createElement('img');
-              img.id = 'previewAvatarSmall';
-              img.className = 'w-16 h-16 mx-auto rounded-full object-cover ring-4 ring-white';
-              img.alt = 'Avatar small';
-              img.src = ev.target.result;
-              prevSmall.parentNode.replaceChild(img, prevSmall);
-            }
-          };
-          reader.readAsDataURL(file);
+        // Update on input
+        [nameInput, tagInput, bioInput].forEach(el => {
+          if (!el) return;
+          el.addEventListener('input', updateLivePreview);
         });
-      }
-    })();
+
+        // Initialize on page load
+        updateLivePreview();
+
+        const fileInput = document.getElementById('id_avatar');
+        const prevBig = document.getElementById('avatarPreview');
+        const prevSmall = document.getElementById('previewAvatarSmall');
+
+        if (fileInput) {
+          fileInput.classList.add('hidden'); // hide default input if not already hidden
+          fileInput.addEventListener('change', (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              // Update large preview
+              if (prevBig.tagName === 'IMG') {
+                prevBig.src = ev.target.result;
+              } else {
+                // Replace div with img for uploaded avatar
+                const img = document.createElement('img');
+                img.id = 'avatarPreview';
+                img.className = 'w-28 h-28 rounded-full object-cover border border-slate-200';
+                img.alt = 'Avatar';
+                img.src = ev.target.result;
+                prevBig.parentNode.replaceChild(img, prevBig);
+              }
+
+              // Update small preview
+              if (prevSmall.tagName === 'IMG') {
+                prevSmall.src = ev.target.result;
+              } else {
+                // Replace div with img for uploaded avatar
+                const img = document.createElement('img');
+                img.id = 'previewAvatarSmall';
+                img.className = 'w-16 h-16 mx-auto rounded-full object-cover ring-4 ring-white';
+                img.alt = 'Avatar small';
+                img.src = ev.target.result;
+                prevSmall.parentNode.replaceChild(img, prevSmall);
+              }
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+      })();
   </script>
+
+  <!-- Include Logout Modal -->
+  {% include 'accounts/logout_modal.html' %}
+
 </body>
+
 </html>
