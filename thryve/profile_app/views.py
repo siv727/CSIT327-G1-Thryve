@@ -1,13 +1,17 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.views.decorators.cache import cache_control
+
 from .forms import ProfileCustomizationForm
 from .models import UserProfile
 
-@login_required
+@login_required(login_url='login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def business_profile_view(request):
     return render(request, 'profile_app/business_profile.html')
 
-@login_required
+@login_required(login_url='login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def profile_customization_view(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
 
