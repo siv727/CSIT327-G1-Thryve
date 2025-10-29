@@ -40,26 +40,6 @@ class RegistrationForm(UserCreationForm):
             'class': 'w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors',
         })
 
-    def clean_first_name(self):
-        first_name = self.cleaned_data['first_name']
-        stripped_name = first_name.strip()
-        if stripped_name == "":
-            raise forms.ValidationError("Please enter a first name.")
-        elif re.search(r'\d', stripped_name) or re.search(self.INVALID_NAME_PATTERN, stripped_name):
-            raise forms.ValidationError("Please enter a valid first name.")
-        else:
-            return first_name
-
-    def clean_last_name(self):
-        last_name = self.cleaned_data['last_name']
-        stripped_name = last_name.strip()
-        if stripped_name == "":
-            raise forms.ValidationError("Please enter a last name.")
-        elif re.search(r'\d', stripped_name) or re.search(self.INVALID_NAME_PATTERN, stripped_name):
-            raise forms.ValidationError("Please enter a valid last name.")
-        else:
-            return last_name
-
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if email and CustomUser.objects.filter(email=email).exists():
@@ -102,4 +82,3 @@ class LoginForm(AuthenticationForm):
         'placeholder': 'Password',
         'class': 'w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors',
     }))
-

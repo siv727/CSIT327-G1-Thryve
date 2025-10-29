@@ -1,0 +1,117 @@
+<!-- Reusable Logout Modal with Animations -->
+<div id="logoutModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+    aria-modal="true">
+    <!-- Background overlay with fade animation -->
+    <div id="logoutModalOverlay" class="fixed inset-0 bg-black transition-opacity duration-300 ease-out opacity-0"
+        onclick="closeLogoutModal()"></div>
+
+    <!-- Modal container -->
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <!-- Modal content with slide and scale animation -->
+        <div id="logoutModalContent"
+            class="relative bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 p-8 transform transition-all duration-300 ease-out scale-95 translate-y-4 opacity-0">
+
+            <!-- Icon -->
+            <div class="flex justify-center mb-6">
+                <div class="bg-gradient-to-r from-[#23d3ee] to-[#3ac363] rounded-full p-4">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                        </path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Title -->
+            <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Confirm Logout</h2>
+
+            <!-- Message -->
+            <p class="text-gray-600 text-center mb-8">Are you sure you want to log out of your account?</p>
+
+            <!-- Form -->
+            <form method="POST" action="{% url 'logout' %}" class="space-y-4">
+                {% csrf_token %}
+
+                <!-- Buttons -->
+                <div class="flex gap-4">
+                    <button type="button" onclick="closeLogoutModal()"
+                        class="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition duration-200">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="flex-1 px-6 py-3 bg-gradient-to-r from-[#23d3ee] to-[#3ac363] text-white font-semibold rounded-lg hover:from-[#1cc4dd] hover:to-[#33b459] transition duration-200 shadow-lg">
+                        Logout
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Prevent duplicate script loading
+    if (typeof window.logoutModalLoaded === 'undefined') {
+        window.logoutModalLoaded = true;
+
+        function openLogoutModal() {
+            const modal = document.getElementById('logoutModal');
+            const overlay = document.getElementById('logoutModalOverlay');
+            const content = document.getElementById('logoutModalContent');
+
+            // Calculate scrollbar width and prevent content shift
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+            // Show modal
+            modal.classList.remove('hidden');
+
+            // Prevent background scrolling while maintaining layout
+            document.body.style.overflow = 'hidden';
+            document.body.style.paddingRight = scrollbarWidth + 'px';
+
+            // Trigger animations
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                overlay.classList.add('opacity-50');
+
+                content.classList.remove('scale-95', 'translate-y-4', 'opacity-0');
+                content.classList.add('scale-100', 'translate-y-0', 'opacity-100');
+            }, 10);
+        }
+
+        function closeLogoutModal() {
+            const modal = document.getElementById('logoutModal');
+            const overlay = document.getElementById('logoutModalOverlay');
+            const content = document.getElementById('logoutModalContent');
+
+            // Reverse animations
+            overlay.classList.remove('opacity-50');
+            overlay.classList.add('opacity-0');
+
+            content.classList.remove('scale-100', 'translate-y-0', 'opacity-100');
+            content.classList.add('scale-95', 'translate-y-4', 'opacity-0');
+
+            // Hide modal after animation completes
+            setTimeout(() => {
+                modal.classList.add('hidden');
+
+                // Restore scrolling and remove padding compensation
+                document.body.style.overflow = 'auto';
+                document.body.style.paddingRight = '';
+            }, 300);
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeLogoutModal();
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('logoutModal').addEventListener('click', function (event) {
+            if (event.target === this) {
+                closeLogoutModal();
+            }
+        });
+    }
+</script>

@@ -1,9 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Thryve • Business Profile</title>
 
   <!-- Tailwind (CDN) -->
@@ -27,270 +28,280 @@
             card: '0 10px 24px rgba(15,23,42,.06)'
           },
           fontFamily: {
-            inter: ["Inter","system-ui","-apple-system","Segoe UI","Roboto","sans-serif"]
+            inter: ["Inter", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"]
           }
         }
       }
     }
   </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body class="font-inter bg-[#f7fbfd] text-brand-ink">
 
   <!-- Top Navigation -->
- <!-- Top Nav -->
+  <!-- Top Nav -->
   <!-- Clean, professional navbar (no pill buttons) -->
-<!-- Professional Navbar with Icons -->
-<header class="bg-[#23d3ee] text-white shadow">
-  <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
+  <!-- Professional Navbar with Icons -->
+  <header class="bg-[#23d3ee] text-white shadow">
+    <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
 
-    <!-- Left: Logo -->
-    <a href="{% url 'home' %}" class="flex items-center gap-2">
-      <span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
-      <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
-    </a>
-
-    <!-- Center: Navigation Links -->
-    {% with active=request.resolver_match.url_name %}
-    <nav class="flex items-center gap-8 text-[15px] font-medium">
-      <!-- Marketplace/Home -->
-      <a href="{% url 'home' %}"
-         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"/>
-        </svg>
-        <span class="leading-none">Marketplace</span>
-        {% if active == 'home1' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-        {% endif %}
+      <!-- Left: Logo -->
+      <a href="{% url 'home' %}" class="flex items-center gap-2">
+        <span
+          class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
+        <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
       </a>
 
-      <!-- Community -->
-      <a href="#"
-         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17 20h5V4H2v16h5M17 8l-5 5-5-5"/>
-        </svg>
-        <span class="leading-none">Community</span>
-        {% if active == 'community' %}
+      <!-- Center: Navigation Links -->
+      {% with active=request.resolver_match.url_name %}
+      <nav class="flex items-center gap-8 text-[15px] font-medium">
+        <!-- Marketplace/Home -->
+        <a href="{% url 'home' %}"
+          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0" />
+          </svg>
+          <span class="leading-none">Marketplace</span>
+          {% if active == 'home1' %}
           <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-        {% endif %}
-      </a>
+          {% endif %}
+        </a>
 
-      <!-- Bookings -->
-      <a href="#"
-         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"/>
-        </svg>
-        <span class="leading-none">Bookings</span>
-        {% if active == 'bookings' %}
+        <!-- Community -->
+        <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
+          </svg>
+          <span class="leading-none">Community</span>
+          {% if active == 'community' %}
           <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-        {% endif %}
-      </a>
+          {% endif %}
+        </a>
 
-      <!-- Profile -->
-      <a href="{% url 'business_profile' %}"
-         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z"/>
-        </svg>
-        <span class="leading-none">Profile</span>
-        {% if active == 'business_profile' %}
+        <!-- Bookings -->
+        <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
+          </svg>
+          <span class="leading-none">Bookings</span>
+          {% if active == 'bookings' %}
           <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-        {% endif %}
-      </a>
-    </nav>
-    {% endwith %}
+          {% endif %}
+        </a>
 
-    <!-- Right: Logout -->
-    <a href="{% url 'logout' %}"
-       class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1"/>
-      </svg>
-      <span class="leading-none">Logout</span>
-    </a>
+        <!-- Profile -->
+        <a href="{% url 'business_profile' %}"
+          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z" />
+          </svg>
+          <span class="leading-none">Profile</span>
+          {% if active == 'business_profile' %}
+          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+          {% endif %}
+        </a>
+      </nav>
+      {% endwith %}
 
-  </div>
-</header>
+      <!-- Right: Logout -->
+      <button onclick="openLogoutModal()" type="button"
+        class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
+        </svg>
+        <span class="leading-none">Logout</span>
+      </button>
+
+    </div>
+  </header>
 
 
   <!-- Layout -->
   <div class="max-w-6xl mx-auto px-5 py-7 grid grid-cols-[240px,1fr] gap-6">
-      <!-- Sidebar -->
-      <!-- Sidebar with clean line-style icons -->
-<!-- Sidebar with clean line-style icons -->
-<!-- Sidebar -->
-<aside class="md:pr-4">
-  {% with current=request.resolver_match.url_name %}
-  <nav class="space-y-1 text-[15px] font-medium">
-     <a href="#"
-       class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+    <!-- Sidebar -->
+    <!-- Sidebar with clean line-style icons -->
+    <!-- Sidebar with clean line-style icons -->
+    <!-- Sidebar -->
+    <aside class="md:pr-4">
+      {% with current=request.resolver_match.url_name %}
+      <nav class="space-y-1 text-[15px] font-medium">
+        <a href="#" class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
               {% if current == 'roles_permissions' %}
                 bg-sky-50 text-[#177fb3] border border-sky-100
               {% else %}
                 text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
               {% endif %}">
-      <!-- shield/check icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 4v5a9 9 0 11-16 0V7l8-4z"/>
-        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9.5 12.5l2 2 3.5-3.5"/>
-      </svg>
-      <span>Roles & Permissions</span>
-    </a>
-    <!-- Business Profile -->
-    <a href="{% url 'business_profile' %}"
-       class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+          <!-- shield/check icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0 stroke-current" fill="none"
+            viewBox="0 0 24 24">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M12 3l8 4v5a9 9 0 11-16 0V7l8-4z" />
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9.5 12.5l2 2 3.5-3.5" />
+          </svg>
+          <span>Roles & Permissions</span>
+        </a>
+        <!-- Business Profile -->
+        <a href="{% url 'business_profile' %}" class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
               {% if current == 'business_profile' %}
                 bg-sky-50 text-[#177fb3] border border-sky-100
               {% else %}
                 text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
               {% endif %}">
-      <!-- Business icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M3 21h18M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 10h2m2 0h2M9 14h2m2 0h2M9 18h6"/>
-      </svg>
-      <span>Business Profile</span>
-    </a>
+          <!-- Business icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M3 21h18M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 10h2m2 0h2M9 14h2m2 0h2M9 18h6" />
+          </svg>
+          <span>Business Profile</span>
+        </a>
 
-    <!-- Profile Customization -->
-    <a href="{% url 'profile_customization' %}"
-       class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+        <!-- Profile Customization -->
+        <a href="{% url 'profile_customization' %}" class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
               {% if current == 'profile_customization' %}
                 bg-sky-50 text-[#177fb3] border border-sky-100
               {% else %}
                 text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
               {% endif %}">
-      <!-- Pencil icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M9 13l-6 6h6l10-10a2.5 2.5 0 10-3.5-3.5L9 13z"/>
-      </svg>
-      <span>Profile Customization</span>
-    </a>
+          <!-- Pencil icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M9 13l-6 6h6l10-10a2.5 2.5 0 10-3.5-3.5L9 13z" />
+          </svg>
+          <span>Profile Customization</span>
+        </a>
 
-  </nav>
-  {% endwith %}
-</aside>
-
-
+      </nav>
+      {% endwith %}
+    </aside>
 
 
-      <!-- Content -->
-      <main class="min-w-0">
-        <header class="mb-3">
-          <h1 class="text-[28px] leading-[1.1] font-extrabold">Manage Your Business Profile</h1>
-          <p class="text-muted mb-4">
-            Establish and refine your business's presence on Thryve. Provide comprehensive details to
-            build trust and visibility with potential customers.
-          </p>
 
-          <!-- Subtabs -->
-          <div class="flex gap-2">
-            <button class="px-4 py-2 rounded-lg border border-transparent bg-[#e9f6ff] text-[#177fb3] font-bold">Business Information</button>
-            <button class="px-4 py-2 rounded-lg border border-line bg-white font-bold">Business Logo</button>
-            <button class="px-4 py-2 rounded-lg border border-line bg-white font-bold">Contact Details</button>
+
+    <!-- Content -->
+    <main class="min-w-0">
+      <header class="mb-3">
+        <h1 class="text-[28px] leading-[1.1] font-extrabold">Manage Your Business Profile</h1>
+        <p class="text-muted mb-4">
+          Establish and refine your business's presence on Thryve. Provide comprehensive details to
+          build trust and visibility with potential customers.
+        </p>
+
+        <!-- Subtabs -->
+        <div class="flex gap-2">
+          <button class="px-4 py-2 rounded-lg border border-transparent bg-[#e9f6ff] text-[#177fb3] font-bold">Business
+            Information</button>
+          <button class="px-4 py-2 rounded-lg border border-line bg-white font-bold">Business Logo</button>
+          <button class="px-4 py-2 rounded-lg border border-line bg-white font-bold">Contact Details</button>
+        </div>
+      </header>
+
+      <!-- Card -->
+      <section class="bg-white border border-line rounded-xl p-5 shadow-card">
+        <h2 class="text-lg font-semibold mb-1">Business Details</h2>
+        <p class="text-[#6b7a90] mb-4">Provide core information about your business.</p>
+
+        <form class="flex flex-col gap-3.5">
+          <!-- Company -->
+          <label class="block">
+            <span class="block font-bold mb-1.5">Company Name</span>
+            <input type="text" placeholder="MarketConnect Pro Solutions"
+              class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30" />
+          </label>
+
+          <!-- Industry -->
+          <label class="block">
+            <span class="block font-bold mb-1.5">Industry</span>
+            <div class="relative">
+              <select
+                class="w-full border border-line rounded-lg bg-white px-3 py-2.5 appearance-none outline-none focus:ring-2 focus:ring-brand-500/30">
+                <option value="">Select industry</option>
+                <option>Manufacturing</option>
+                <option>Technology</option>
+                <option>Logistics</option>
+                <option>Professional Services</option>
+              </select>
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">▾</span>
+            </div>
+          </label>
+
+          <!-- Description -->
+          <label class="block">
+            <span class="block font-bold mb-1.5">Business Description</span>
+            <textarea rows="4" placeholder="Describe your company, what you do, and your value proposition."
+              class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none resize-y focus:ring-2 focus:ring-brand-500/30"></textarea>
+          </label>
+
+          <!-- Address row -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+            <label class="block">
+              <span class="block font-bold mb-1.5">Physical Address</span>
+              <input type="text" placeholder="123 Main Street"
+                class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30" />
+            </label>
+            <label class="block">
+              <span class="block font-bold mb-1.5">City</span>
+              <input type="text" placeholder="Anytown"
+                class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30" />
+            </label>
+            <label class="block">
+              <span class="block font-bold mb-1.5">State</span>
+              <input type="text" placeholder="CA"
+                class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30" />
+            </label>
           </div>
-        </header>
 
-        <!-- Card -->
-        <section class="bg-white border border-line rounded-xl p-5 shadow-card">
-          <h2 class="text-lg font-semibold mb-1">Business Details</h2>
-          <p class="text-[#6b7a90] mb-4">Provide core information about your business.</p>
-
-          <form class="flex flex-col gap-3.5">
-            <!-- Company -->
+          <!-- Postal/Country -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             <label class="block">
-              <span class="block font-bold mb-1.5">Company Name</span>
-              <input type="text" placeholder="MarketConnect Pro Solutions"
-                     class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
+              <span class="block font-bold mb-1.5">Postal Code</span>
+              <input type="text" placeholder="90210"
+                class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30" />
             </label>
-
-            <!-- Industry -->
             <label class="block">
-              <span class="block font-bold mb-1.5">Industry</span>
-              <div class="relative">
-                <select class="w-full border border-line rounded-lg bg-white px-3 py-2.5 appearance-none outline-none focus:ring-2 focus:ring-brand-500/30">
-                  <option value="">Select industry</option>
-                  <option>Manufacturing</option>
-                  <option>Technology</option>
-                  <option>Logistics</option>
-                  <option>Professional Services</option>
-                </select>
-                <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">▾</span>
-              </div>
+              <span class="block font-bold mb-1.5">Country</span>
+              <input type="text" placeholder="USA"
+                class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30" />
             </label>
+          </div>
 
-            <!-- Description -->
-            <label class="block">
-              <span class="block font-bold mb-1.5">Business Description</span>
-              <textarea rows="4" placeholder="Describe your company, what you do, and your value proposition."
-                        class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none resize-y focus:ring-2 focus:ring-brand-500/30"></textarea>
-            </label>
-
-            <!-- Address row -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-              <label class="block">
-                <span class="block font-bold mb-1.5">Physical Address</span>
-                <input type="text" placeholder="123 Main Street"
-                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-              </label>
-              <label class="block">
-                <span class="block font-bold mb-1.5">City</span>
-                <input type="text" placeholder="Anytown"
-                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-              </label>
-              <label class="block">
-                <span class="block font-bold mb-1.5">State</span>
-                <input type="text" placeholder="CA"
-                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-              </label>
+          <!-- Website -->
+          <label class="block">
+            <span class="block font-bold mb-1.5">Website URL</span>
+            <div class="flex items-center gap-2 border border-line rounded-lg px-3 py-2.5">
+              <span class="text-slate-500 select-none">https://</span>
+              <input type="text" placeholder="www.marketconnectpro.com" class="w-full outline-none" />
             </div>
+          </label>
 
-            <!-- Postal/Country -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-              <label class="block">
-                <span class="block font-bold mb-1.5">Postal Code</span>
-                <input type="text" placeholder="90210"
-                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-              </label>
-              <label class="block">
-                <span class="block font-bold mb-1.5">Country</span>
-                <input type="text" placeholder="USA"
-                       class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30"/>
-              </label>
-            </div>
+          <!-- Actions -->
+          <div class="flex justify-end gap-2 pt-1">
+            <button type="button" class="px-4 py-2 rounded-lg font-extrabold bg-[#eef2f6] text-[#354a5e]">
+              Cancel
+            </button>
+            <button type="submit"
+              class="px-4 py-2 rounded-lg font-extrabold bg-[#1aa2dd] text-white hover:brightness-95">
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
 
-            <!-- Website -->
-            <label class="block">
-              <span class="block font-bold mb-1.5">Website URL</span>
-              <div class="flex items-center gap-2 border border-line rounded-lg px-3 py-2.5">
-                <span class="text-slate-500 select-none">https://</span>
-                <input type="text" placeholder="www.marketconnectpro.com" class="w-full outline-none"/>
-              </div>
-            </label>
-
-            <!-- Actions -->
-            <div class="flex justify-end gap-2 pt-1">
-              <button type="button" class="px-4 py-2 rounded-lg font-extrabold bg-[#eef2f6] text-[#354a5e]">
-                Cancel
-              </button>
-              <button type="submit" class="px-4 py-2 rounded-lg font-extrabold bg-[#1aa2dd] text-white hover:brightness-95">
-                Save Changes
-              </button>
-            </div>
-          </form>
-        </section>
-      </main>
-    </div>
+  <!-- Include Logout Modal -->
+  {% include 'accounts/logout_modal.html' %}
 
 </body>
+
 </html>
