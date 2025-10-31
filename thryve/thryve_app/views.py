@@ -10,6 +10,8 @@ def create_listing(request):
         if form.is_valid():
             listing = form.save(commit=False)
             listing.user = request.user
+            listing.your_name = request.user.email
+            listing.company = request.user.company_name
             listing.save()
             messages.success(request, 'Your listing has been created successfully!')
             return redirect('home')

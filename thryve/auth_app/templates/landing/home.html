@@ -3,696 +3,638 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Thryve • Marketplace</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Thryve • Marketplace</title>
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              sky: '#83e6f5',   /* landing page sky blue */
-              leaf: '#3ac363',   /* landing page light green */
-              ink: '#0f172a'
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            sky: '#83e6f5', /* landing page sky blue */
+                            leaf: '#3ac363', /* landing page light green */
+                            ink: '#0f172a'
+                        }
+                    },
+                    boxShadow: {
+                        soft: '0 10px 28px rgba(2, 8, 23, .06)'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+                    },
+                    borderRadius: {
+                        xl2: '1rem'
+                    }
+                }
             }
-          },
-          boxShadow: {
-            soft: '0 10px 28px rgba(2, 8, 23, .06)'
-          },
-          fontFamily: {
-            inter: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
-          },
-          borderRadius: {
-            xl2: '1rem'
-          }
         }
-      }
-    }
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <body class="font-inter bg-[#f7fbfd] text-brand-ink">
 
-  <!-- Header — subtle blue→green like landing -->
-  <!-- Clean, professional navbar (no pill buttons) -->
-  <!-- Professional Navbar with Icons -->
-  <header class="bg-[#23d3ee] text-white shadow">
-    <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
+    <header class="bg-[#23d3ee] text-white shadow">
+        <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
 
-      <!-- Left: Logo -->
-      <a href="{% url 'home' %}" class="flex items-center gap-2">
-        <span
-          class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
-        <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
-      </a>
+            <a href="{% url 'home' %}" class="flex items-center gap-2">
+                <span
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
+                <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
+            </a>
 
-      <!-- Center: Navigation Links -->
-      {% with active=request.resolver_match.url_name %}
-      <nav class="flex items-center gap-8 text-[15px] font-medium">
-        <!-- Marketplace -->
-        <a href="{% url 'home' %}"
-          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"></path>
-          </svg>
-          <span class="leading-none">Marketplace</span>
-          {% if active == 'home' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-          {% endif %}
-        </a>
+            {% with active=request.resolver_match.url_name %}
+            <nav class="flex items-center gap-8 text-[15px] font-medium">
+                <a href="{% url 'home' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"></path>
+                    </svg>
+                    <span class="leading-none">Marketplace</span>
+                    {% if active == 'home' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
 
-        <!-- Community -->
-        <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
-          </svg>
-          <span class="leading-none">Community</span>
-          {% if active == 'community' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-          {% endif %}
-        </a>
+                <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
+                    </svg>
+                    <span class="leading-none">Community</span>
+                    {% if active == 'community' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
 
-        <!-- Bookings -->
-        <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
-          </svg>
-          <span class="leading-none">Bookings</span>
-          {% if active == 'bookings' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-          {% endif %}
-        </a>
+                <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
+                    </svg>
+                    <span class="leading-none">Bookings</span>
+                    {% if active == 'bookings' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
 
-        <!-- Profile -->
-        <a href="{% url 'business_profile' %}"
-          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z" />
-          </svg>
-          <span class="leading-none">Profile</span>
-          {% if active == 'business_profile' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-          {% endif %}
-        </a>
-      </nav>
-      {% endwith %}
+                <a href="{% url 'business_profile' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z" />
+                    </svg>
+                    <span class="leading-none">Profile</span>
+                    {% if active == 'business_profile' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
+            </nav>
+            {% endwith %}
 
-      <!-- Right: Logout -->
-      <button onclick="openLogoutModal()" type="button"
-        class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
-        </svg>
-        <span class="leading-none">Logout</span>
-      </button>
-
-    </div>
-  </header>
-
-
-
-
-
-  <!-- Main -->
-  <main class="max-w-[1200px] mx-auto px-5 py-8">
-    <!-- Page header -->
-    <div class="flex items-start justify-between gap-4 mb-6">
-      <div>
-        <h1 class="text-[38px] leading-[1.1] font-extrabold">Marketplace</h1>
-        <p class="text-slate-600 mt-1">Buy, sell, or swap equipment and services with confidence.</p>
-      </div>
-<<<<<<< HEAD
-      <a href="#"
-        class="inline-flex items-center gap-2 rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold px-4 py-2.5 shadow-soft transition">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path stroke-width="2" d="M12 5v14M5 12h14" />
-        </svg>
-=======
-      <button id="add-listing-btn"
-         class="inline-flex items-center gap-2 rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold px-4 py-2.5 shadow-soft transition">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" d="M12 5v14M5 12h14"/></svg>
->>>>>>> ba53524 (feature(marketplace): add_marketplace_listing_form_with_modal_popup)
-        Add Listing
-      </button>
-    </div>
-
-    <!-- Search / Category -->
-    <section class="bg-white/90 backdrop-blur rounded-xl shadow-soft border border-slate-100 p-5 mb-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Search -->
-        <div>
-          <label class="block text-slate-700 font-semibold mb-2">Search</label>
-          <div class="relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="11" cy="11" r="7" stroke-width="2" />
-                <path stroke-width="2" d="M21 21l-4.3-4.3" />
-              </svg>
-            </span>
-            <input
-              class="w-full rounded-lg border border-slate-200 pl-10 pr-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
-              placeholder="Search items, services, or locations…" />
-          </div>
-        </div>
-
-        <!-- Category -->
-        <div>
-          <label class="block text-slate-700 font-semibold mb-2">Category</label>
-          <div class="relative">
-            <select
-              class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-brand-sky">
-              <option>All Categories</option>
-              <option>IT Equipment</option>
-              <option>Office</option>
-              <option>Machinery</option>
-              <option>Services</option>
-            </select>
-            <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">▾</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Type -->
-      <div class="mt-5">
-        <div class="text-slate-700 font-semibold mb-3">Type</div>
-        <div class="flex flex-wrap items-center gap-2">
-          <button
-            class="px-4 py-2 rounded-full bg-brand-sky text-slate-900 font-semibold hover:brightness-105 transition">All</button>
-          <button class="px-4 py-2 rounded-full border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10">For
-            Sale</button>
-          <button
-            class="px-4 py-2 rounded-full border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10">Swap</button>
-          <button
-            class="px-4 py-2 rounded-full border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10">Wanted</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Listings -->
-    <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {% for listing in listings %}
-      <!-- Dynamic Listing Card -->
-      <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
-        <!-- Image Section -->
-        <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
-          {% if listing.image %}
-            <img src="{{ listing.image.url }}" alt="{{ listing.title }}" class="w-full h-full object-cover">
-          {% else %}
-            <img src="{% static 'thryve_app/images/listing-placeholder.png' %}" alt="No image available" class="w-full h-full object-cover">
-          {% endif %}
-        </div>
-
-        <div class="flex items-center justify-between mb-3">
-          {% if listing.listing_type == 'sale' %}
-            <span class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">SALE</span>
-          {% elif listing.listing_type == 'swap' %}
-            <span class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">SWAP</span>
-          {% elif listing.listing_type == 'buy' %}
-            <span class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">BUY</span>
-          {% endif %}
-          <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
-        </div>
-        <h3 class="text-lg font-bold">{{ listing.title }}</h3>
-        <div class="mt-0.5 text-slate-500 font-medium">{{ listing.company }}</div>
-        <p class="mt-3 text-slate-700">{{ listing.description|truncatechars:120 }}</p>
-
-        {% if listing.listing_type == 'sale' and listing.price %}
-          <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">${{ listing.price }}</div>
-        {% elif listing.listing_type == 'swap' and listing.swap_for %}
-          <p class="mt-2 text-slate-700">Looking for: <span class="font-semibold">{{ listing.swap_for }}</span></p>
-        {% elif listing.listing_type == 'buy' and listing.budget %}
-          <div class="mt-2 text-slate-700">Budget: <span class="font-semibold">${{ listing.budget }}</span></div>
-        {% endif %}
-
-        <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
-          <span>📍 {{ listing.location }}</span>
-          <span>📅 {{ listing.created_at|date:"m/d/Y" }}</span>
-        </div>
-        <div class="mt-5 grid grid-cols-2 gap-3">
-          <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
-          <a href="#" class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
-        </div>
-      </article>
-      {% empty %}
-      <!-- Sample Cards (shown when no listings exist) -->
-      <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
-        <!-- Image Section -->
-        <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
-          <img src="{% static 'thryve_app/images/listing-placeholder.jpg' %}" alt="No image available" class="w-full h-full object-cover">
-        </div>
-
-        <div class="flex items-center justify-between mb-3">
-          <span
-            class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">SALE</span>
-          <span
-            class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
-        </div>
-        <h3 class="text-lg font-bold">Industrial 3D Printer</h3>
-        <div class="mt-0.5 text-slate-500 font-medium">TechFab Solutions</div>
-        <p class="mt-3 text-slate-700">High-precision industrial 3D printer, barely used. Ideal for prototyping and
-          small-scale production.</p>
-        <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">$8,500</div>
-        <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
-          <span>📍 New York, NY</span>
-          <span>📅 1/15/2024</span>
-        </div>
-        <div class="mt-5 grid grid-cols-2 gap-3">
-          <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
-          <a href="#"
-            class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
-        </div>
-      </article>
-
-      <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
-        <!-- Image Section -->
-        <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
-          <img src="{% static 'thryve_app/images/listing-placeholder.jpg' %}" alt="No image available" class="w-full h-full object-cover">
-        </div>
-
-        <div class="flex items-center justify-between mb-3">
-          <span
-            class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">SWAP</span>
-          <span
-            class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
-        </div>
-        <h3 class="text-lg font-bold">Office Furniture Set</h3>
-        <div class="mt-0.5 text-slate-500 font-medium">Creative Spaces Inc</div>
-        <p class="mt-3 text-slate-700">Complete set including 10 desks, chairs, and storage units. Modern design,
-          excellent condition.</p>
-        <p class="mt-2 text-slate-700">Looking for: <span class="font-semibold">IT equipment or professional
-            services</span></p>
-        <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
-          <span>📍 Los Angeles, CA</span>
-          <span>📅 1/14/2024</span>
-        </div>
-        <div class="mt-5 grid grid-cols-2 gap-3">
-          <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
-          <a href="#"
-            class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
-        </div>
-      </article>
-
-      <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
-        <!-- Image Section -->
-        <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
-          <img src="{% static 'thryve_app/images/listing-placeholder.png' %}" alt="No image available" class="w-full h-full object-cover">
-        </div>
-
-        <div class="flex items-center justify-between mb-3">
-          <span
-            class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">BUY</span>
-          <span
-            class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
-        </div>
-        <h3 class="text-lg font-bold">Looking for CNC Machine</h3>
-        <div class="mt-0.5 text-slate-500 font-medium">MetalWorks Ltd</div>
-        <p class="mt-3 text-slate-700">We need a CNC machine for metal fabrication. Budget up to $15,000 for the right
-          fit.</p>
-        <div class="mt-2 text-slate-700">Budget: <span class="font-semibold">$15,000</span></div>
-        <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
-          <span>📍 Chicago, IL</span>
-          <span>📅 1/13/2024</span>
-        </div>
-        <div class="mt-5 grid grid-cols-2 gap-3">
-          <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
-          <a href="#"
-            class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
-        </div>
-      </article>
-      {% endfor %}
-    </section>
-  </main>
-
-<<<<<<< HEAD
-  <!-- Logout Modal with Animation -->
-  {% include 'accounts/logout_modal.html' %}
-=======
-  <!-- Add Listing Modal -->
-  <div id="add-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 {% if show_modal %}flex{% else %}hidden{% endif %} z-50">
-    <div class="flex items-center justify-center min-h-screen p-4 w-full">
-      <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-bold text-slate-900">Create New Listing</h2>
-            <button id="close-modal" class="text-slate-400 hover:text-slate-600">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
+            <button onclick="openLogoutModal()" type="button"
+                class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
+                </svg>
+                <span class="leading-none">Logout</span>
             </button>
-          </div>
 
-          <form id="listing-form" method="post" action="{% url 'thryve_app:create_listing' %}" novalidate>
-            {% csrf_token %}
-
-            <!-- Listing Type -->
-            <div class="mb-4">
-              <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
-              <div class="space-y-2">
-                <label class="flex items-center">
-                  <input type="radio" name="listing_type" value="sale" class="text-brand-sky focus:ring-brand-sky" required>
-                  <span class="ml-2 text-slate-700">For Sale</span>
-                </label>
-                <label class="flex items-center">
-                  <input type="radio" name="listing_type" value="swap" class="text-brand-sky focus:ring-brand-sky" required>
-                  <span class="ml-2 text-slate-700">For Swap</span>
-                </label>
-                <label class="flex items-center">
-                  <input type="radio" name="listing_type" value="buy" class="text-brand-sky focus:ring-brand-sky" required>
-                  <span class="ml-2 text-slate-700">Looking to Buy</span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Category -->
-            <div class="mb-4">
-              <label for="{{ form.category.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Category *</label>
-              <select name="category" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" id="id_category">
-                <option value="">Choose Category</option>
-                <option value="electronics">Electronics</option>
-                <option value="furniture">Furniture</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            <!-- Title -->
-            <div class="mb-4">
-              <label for="{{ form.title.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Title *</label>
-              {{ form.title }}
-            </div>
-
-            <!-- Description -->
-            <div class="mb-4">
-              <label for="{{ form.description.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Description *</label>
-              {{ form.description }}
-            </div>
-
-            <!-- Price/Swap For/Budget Field -->
-            <div class="mb-4" id="dynamic-field-container">
-              <label id="dynamic-field-label" for="id_price" class="block text-slate-700 font-semibold mb-2">Price *</label>
-              <div class="relative" id="price-container">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-                <input type="number" name="price" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" step="0.01" id="id_price">
-              </div>
-              <div class="hidden" id="swap-container">
-                <input type="text" name="swap_for" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="What are you looking to swap for?" id="id_swap_for">
-              </div>
-              <div class="relative hidden" id="budget-container">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-                <input type="number" name="budget" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" step="0.01" id="id_budget">
-              </div>
-            </div>
-
-            <!-- Your Name -->
-            <div class="mb-4">
-              <label for="{{ form.your_name.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Your Name *</label>
-              {{ form.your_name }}
-            </div>
-
-            <!-- Company -->
-            <div class="mb-4">
-              <label for="{{ form.company.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Company *</label>
-              {{ form.company }}
-            </div>
-
-            <!-- Location -->
-            <div class="mb-4">
-              <label for="{{ form.location.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Location *</label>
-              {{ form.location }}
-            </div>
-
-            <!-- Image Upload -->
-            <div class="mb-6">
-              <label for="{{ form.image.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Listing Image</label>
-              <div class="relative">
-                <input type="file" name="image" accept="image/jpeg,image/png,image/gif,image/webp" id="id_image" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-medium file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
-                <div class="mt-2 text-sm text-slate-500">
-                  <p>Upload an image for your listing (optional)</p>
-                  <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB)</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Buttons -->
-            <div class="flex justify-end gap-3">
-              <button type="button" id="cancel-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-              <button type="submit" id="submit-btn" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Create Listing</button>
-            </div>
-          </form>
         </div>
-      </div>
+    </header>
+
+
+    <main class="max-w-[1200px] mx-auto px-5 py-8">
+        <div class="flex items-start justify-between gap-4 mb-6">
+            <div>
+                <h1 class="text-[38px] leading-[1.1] font-extrabold">Marketplace</h1>
+                <p class="text-slate-600 mt-1">Buy, sell, or swap equipment and services with confidence.</p>
+            </div>
+            <button id="add-listing-btn"
+                class="inline-flex items-center gap-2 rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold px-4 py-2.5 shadow-soft transition">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" d="M12 5v14M5 12h14"/></svg>
+                Add Listing
+            </button>
+        </div>
+
+        <section class="bg-white/90 backdrop-blur rounded-xl shadow-soft border border-slate-100 p-5 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-slate-700 font-semibold mb-2">Search</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="11" cy="11" r="7" stroke-width="2" />
+                                <path stroke-width="2" d="M21 21l-4.3-4.3" />
+                            </svg>
+                        </span>
+                        <input
+                            class="w-full rounded-lg border border-slate-200 pl-10 pr-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                            placeholder="Search items, services, or locations…" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-slate-700 font-semibold mb-2">Category</label>
+                    <div class="relative">
+                        <select
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-brand-sky">
+                            <option>All Categories</option>
+                            <option>IT Equipment</option>
+                            <option>Office</option>
+                            <option>Machinery</option>
+                            <option>Services</option>
+                        </select>
+                        <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">▾</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <div class="text-slate-700 font-semibold mb-3">Type</div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button
+                        class="px-4 py-2 rounded-full bg-brand-sky text-slate-900 font-semibold hover:brightness-105 transition">All</button>
+                    <button class="px-4 py-2 rounded-full border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10">For
+                        Sale</button>
+                    <button
+                        class="px-4 py-2 rounded-full border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10">Swap</button>
+                    <button
+                        class="px-4 py-2 rounded-full border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10">Wanted</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {% for listing in listings %}
+            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
+                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
+                    {% if listing.image %}
+                        <img src="{{ listing.image.url }}" alt="{{ listing.title }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <img src="{% static 'thryve_app/images/listing-placeholder.png' %}" alt="No image available" class="w-full h-full object-cover">
+                    {% endif %}
+                </div>
+
+                <div class="flex items-center justify-between mb-3">
+                    {% if listing.listing_type == 'sale' %}
+                        <span class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">SALE</span>
+                    {% elif listing.listing_type == 'swap' %}
+                        <span class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">SWAP</span>
+                    {% elif listing.listing_type == 'buy' %}
+                        <span class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">BUY</span>
+                    {% endif %}
+                    <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
+                </div>
+                <h3 class="text-lg font-bold">{{ listing.title }}</h3>
+                <div class="mt-0.5 text-slate-500 font-medium">{{ listing.company }}</div>
+                <p class="mt-3 text-slate-700">{{ listing.description|truncatechars:120 }}</p>
+
+                {% if listing.listing_type == 'sale' and listing.price %}
+                    <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">${{ listing.price }}</div>
+                {% elif listing.listing_type == 'swap' and listing.swap_for %}
+                    <p class="mt-2 text-slate-700">Looking for: <span class="font-semibold">{{ listing.swap_for }}</span></p>
+                {% elif listing.listing_type == 'buy' and listing.budget %}
+                    <div class="mt-2 text-slate-700">Budget: <span class="font-semibold">${{ listing.budget }}</span></div>
+                {% endif %}
+
+                <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
+                    <span>📍 {{ listing.location }}</span>
+                    <span>📅 {{ listing.created_at|date:"m/d/Y" }}</span>
+                </div>
+                <div class="mt-5 grid grid-cols-2 gap-3">
+                    <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
+                    <a href="#" class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
+                </div>
+            </article>
+            {% empty %}
+            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
+                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
+                    <img src="{% static 'thryve_app/images/listing-placeholder.jpg' %}" alt="No image available" class="w-full h-full object-cover">
+                </div>
+
+                <div class="flex items-center justify-between mb-3">
+                    <span
+                        class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">SALE</span>
+                    <span
+                        class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
+                </div>
+                <h3 class="text-lg font-bold">Industrial 3D Printer</h3>
+                <div class="mt-0.5 text-slate-500 font-medium">TechFab Solutions</div>
+                <p class="mt-3 text-slate-700">High-precision industrial 3D printer, barely used. Ideal for prototyping and
+                    small-scale production.</p>
+                <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">$8,500</div>
+                <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
+                    <span>📍 New York, NY</span>
+                    <span>📅 1/15/2024</span>
+                </div>
+                <div class="mt-5 grid grid-cols-2 gap-3">
+                    <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
+                    <a href="#"
+                        class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
+                </div>
+            </article>
+
+            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
+                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
+                    <img src="{% static 'thryve_app/images/listing-placeholder.jpg' %}" alt="No image available" class="w-full h-full object-cover">
+                </div>
+
+                <div class="flex items-center justify-between mb-3">
+                    <span
+                        class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">SWAP</span>
+                    <span
+                        class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
+                </div>
+                <h3 class="text-lg font-bold">Office Furniture Set</h3>
+                <div class="mt-0.5 text-slate-500 font-medium">Creative Spaces Inc</div>
+                <p class="mt-3 text-slate-700">Complete set including 10 desks, chairs, and storage units. Modern design,
+                    excellent condition.</p>
+                <p class="mt-2 text-slate-700">Looking for: <span class="font-semibold">IT equipment or professional
+                        services</span></p>
+                <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
+                    <span>📍 Los Angeles, CA</span>
+                    <span>📅 1/14/2024</span>
+                </div>
+                <div class="mt-5 grid grid-cols-2 gap-3">
+                    <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
+                    <a href="#"
+                        class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
+                </div>
+            </article>
+
+            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
+                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
+                    <img src="{% static 'thryve_app/images/listing-placeholder.png' %}" alt="No image available" class="w-full h-full object-cover">
+                </div>
+
+                <div class="flex items-center justify-between mb-3">
+                    <span
+                        class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">BUY</span>
+                    <span
+                        class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
+                </div>
+                <h3 class="text-lg font-bold">Looking for CNC Machine</h3>
+                <div class="mt-0.5 text-slate-500 font-medium">MetalWorks Ltd</div>
+                <p class="mt-3 text-slate-700">We need a CNC machine for metal fabrication. Budget up to $15,000 for the right
+                    fit.</p>
+                <div class="mt-2 text-slate-700">Budget: <span class="font-semibold">$15,000</span></div>
+                <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
+                    <span>📍 Chicago, IL</span>
+                    <span>📅 1/13/2024</span>
+                </div>
+                <div class="mt-5 grid grid-cols-2 gap-3">
+                    <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
+                    <a href="#"
+                        class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
+                </div>
+            </article>
+            {% endfor %}
+        </section>
+    </main>
+
+    <div id="add-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 {% if show_modal %}flex{% else %}hidden{% endif %} z-50">
+        <div class="flex items-center justify-center min-h-screen p-4 w-full">
+            <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-slate-900">Create New Listing</h2>
+                        <button id="close-modal" class="text-slate-400 hover:text-slate-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form id="listing-form" method="post" action="{% url 'thryve_app:create_listing' %}" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="listing_type" value="sale" class="text-brand-sky focus:ring-brand-sky" required>
+                                    <span class="ml-2 text-slate-700">For Sale</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="listing_type" value="swap" class="text-brand-sky focus:ring-brand-sky" required>
+                                    <span class="ml-2 text-slate-700">For Swap</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="listing_type" value="buy" class="text-brand-sky focus:ring-brand-sky" required>
+                                    <span class="ml-2 text-slate-700">Looking to Buy</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.category.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Category *</label>
+                            <select name="category" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" id="id_category">
+                                <option value="">Choose Category</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="furniture">Furniture</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.title.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Title *</label>
+                            {{ form.title }}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.description.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Description *</label>
+                            {{ form.description }}
+                        </div>
+
+                        <div class="mb-4" id="dynamic-field-container">
+                            <label id="dynamic-field-label" for="id_price" class="block text-slate-700 font-semibold mb-2">Price *</label>
+                            <div class="relative" id="price-container">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                                <input type="number" name="price" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" step="0.01" id="id_price">
+                            </div>
+                            <div class="hidden" id="swap-container">
+                                <input type="text" name="swap_for" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="What are you looking to swap for?" id="id_swap_for">
+                            </div>
+                            <div class="relative hidden" id="budget-container">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                                <input type="number" name="budget" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" step="0.01" id="id_budget">
+                            </div>
+                        </div>
+
+
+                        <div class="mb-4">
+                            <label for="{{ form.location.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Location *</label>
+                            {{ form.location }}
+                        </div>
+
+                        <div class="mb-6">
+                            <label for="{{ form.image.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Listing Image</label>
+                            <div class="relative">
+                                <input type="file" name="image" accept="image/jpeg,image/png,image/gif,image/webp" id="id_image" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-medium file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                                <div class="mt-2 text-sm text-slate-500">
+                                    <p>Upload an image for your listing (optional)</p>
+                                    <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end gap-3">
+                            <button type="button" id="cancel-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                            <button type="submit" id="submit-btn" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Create Listing</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('add-listing-modal');
+        const addListingBtn = document.getElementById('add-listing-btn');
+        const closeModalBtn = document.getElementById('close-modal');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const form = document.getElementById('listing-form');
 
-  <script>
-    // Modal functionality
-    const modal = document.getElementById('add-listing-modal');
-    const addListingBtn = document.getElementById('add-listing-btn');
-    const closeModalBtn = document.getElementById('close-modal');
-    const cancelBtn = document.getElementById('cancel-btn');
-    const submitBtn = document.getElementById('submit-btn');
-    const form = document.getElementById('listing-form');
-
-    // Open modal
-    addListingBtn.addEventListener('click', () => {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    });
-
-    // Close modal functions
-    const closeModal = () => {
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    };
-
-    closeModalBtn.addEventListener('click', closeModal);
-    cancelBtn.addEventListener('click', closeModal);
-
-    // Close modal when clicking outside
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        closeModal();
-      }
-    });
-
-    // Dynamic form fields based on listing type
-    const listingTypeRadios = form.querySelectorAll('input[name="listing_type"]');
-    const dynamicFieldLabel = document.getElementById('dynamic-field-label');
-    const priceContainer = document.getElementById('price-container');
-    const swapContainer = document.getElementById('swap-container');
-    const budgetContainer = document.getElementById('budget-container');
-
-    function updateDynamicField(selectedType) {
-      // Clear any existing errors for dynamic fields
-      document.querySelectorAll('.error-message').forEach(el => {
-        if (el.closest('#dynamic-field-container')) {
-          el.remove();
-        }
-      });
-
-      // Hide all containers first
-      priceContainer.classList.add('hidden');
-      swapContainer.classList.add('hidden');
-      budgetContainer.classList.add('hidden');
-
-      // Show the appropriate container and update label
-      if (selectedType === 'sale') {
-        priceContainer.classList.remove('hidden');
-        dynamicFieldLabel.textContent = 'Price *';
-        dynamicFieldLabel.setAttribute('for', 'id_price');
-      } else if (selectedType === 'swap') {
-        swapContainer.classList.remove('hidden');
-        dynamicFieldLabel.textContent = 'Looking to Swap For *';
-        dynamicFieldLabel.setAttribute('for', 'id_swap_for');
-      } else if (selectedType === 'buy') {
-        budgetContainer.classList.remove('hidden');
-        dynamicFieldLabel.textContent = 'Budget *';
-        dynamicFieldLabel.setAttribute('for', 'id_budget');
-      }
-    }
-
-    listingTypeRadios.forEach(radio => {
-      radio.addEventListener('change', (e) => {
-        updateDynamicField(e.target.value);
-      });
-    });
-
-    // Real-time validation - clear errors when user starts typing
-    function setupRealTimeValidation() {
-      const allInputs = form.querySelectorAll('input, select, textarea');
-      allInputs.forEach(input => {
-        input.addEventListener('input', (e) => {
-          const fieldName = e.target.id.replace('id_', '');
-          clearFieldError(fieldName);
+        // Open modal
+        addListingBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         });
-      });
-    }
 
-    // Clear error for a specific field
-    function clearFieldError(fieldName) {
-      let fieldContainer;
+        // Close modal functions
+        const closeModal = () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
 
-      if (fieldName === 'listing_type') {
-        fieldContainer = form.querySelector('.space-y-2').parentElement;
-      } else if (fieldName === 'price' || fieldName === 'swap_for' || fieldName === 'budget') {
-        fieldContainer = document.getElementById('dynamic-field-container');
-      } else {
-        const field = form.querySelector(`#id_${fieldName}`);
-        if (field) {
-          fieldContainer = field.closest('.mb-4') || field.closest('.mb-6');
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Dynamic form fields based on listing type
+        const listingTypeRadios = form.querySelectorAll('input[name="listing_type"]');
+        const dynamicFieldLabel = document.getElementById('dynamic-field-label');
+        const priceContainer = document.getElementById('price-container');
+        const swapContainer = document.getElementById('swap-container');
+        const budgetContainer = document.getElementById('budget-container');
+
+        function updateDynamicField(selectedType) {
+            // Clear any existing errors for dynamic fields
+            document.querySelectorAll('.error-message').forEach(el => {
+                if (el.closest('#dynamic-field-container')) {
+                    el.remove();
+                }
+            });
+
+            // Hide all containers first
+            priceContainer.classList.add('hidden');
+            swapContainer.classList.add('hidden');
+            budgetContainer.classList.add('hidden');
+
+            // Show the appropriate container and update label
+            if (selectedType === 'sale') {
+                priceContainer.classList.remove('hidden');
+                dynamicFieldLabel.textContent = 'Price *';
+                dynamicFieldLabel.setAttribute('for', 'id_price');
+            } else if (selectedType === 'swap') {
+                swapContainer.classList.remove('hidden');
+                dynamicFieldLabel.textContent = 'Looking to Swap For *';
+                dynamicFieldLabel.setAttribute('for', 'id_swap_for');
+            } else if (selectedType === 'buy') {
+                budgetContainer.classList.remove('hidden');
+                dynamicFieldLabel.textContent = 'Budget *';
+                dynamicFieldLabel.setAttribute('for', 'id_budget');
+            }
         }
-      }
 
-      if (fieldContainer) {
-        const errorMsg = fieldContainer.querySelector('.error-message');
-        if (errorMsg) {
-          errorMsg.remove();
+        listingTypeRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                updateDynamicField(e.target.value);
+            });
+        });
+
+        // Real-time validation - clear errors when user starts typing
+        function setupRealTimeValidation() {
+            const allInputs = form.querySelectorAll('input, select, textarea');
+            allInputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const fieldName = e.target.id.replace('id_', '');
+                    clearFieldError(fieldName);
+                });
+            });
         }
 
-        // Remove red border
-        const field = form.querySelector(`#id_${fieldName}`);
-        if (field) {
-          field.classList.remove('border-red-500');
+        // Clear error for a specific field
+        function clearFieldError(fieldName) {
+            let fieldContainer;
+
+            if (fieldName === 'listing_type') {
+                fieldContainer = form.querySelector('.space-y-2').parentElement;
+            } else if (fieldName === 'price' || fieldName === 'swap_for' || fieldName === 'budget') {
+                fieldContainer = document.getElementById('dynamic-field-container');
+            } else {
+                const field = form.querySelector(`#id_${fieldName}`);
+                if (field) {
+                    fieldContainer = field.closest('.mb-4') || field.closest('.mb-6');
+                }
+            }
+
+            if (fieldContainer) {
+                const errorMsg = fieldContainer.querySelector('.error-message');
+                if (errorMsg) {
+                    errorMsg.remove();
+                }
+
+                // Remove red border
+                const field = form.querySelector(`#id_${fieldName}`);
+                if (field) {
+                    field.classList.remove('border-red-500');
+                }
+            }
         }
-      }
-    }
 
-    // Form validation on submit
-    submitBtn.addEventListener('click', (e) => {
-      e.preventDefault(); // Always prevent default first
+        // Form validation on submit
+        submitBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Always prevent default first
 
-      // Clear previous errors
-      document.querySelectorAll('.error-message').forEach(el => el.remove());
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
 
-      let hasErrors = false;
+            let hasErrors = false;
 
-      // Check listing type
-      const listingType = form.querySelector('input[name="listing_type"]:checked');
-      if (!listingType) {
-        showError('listing_type', 'Please select a listing type');
-        hasErrors = true;
-      }
+            // Check listing type
+            const listingType = form.querySelector('input[name="listing_type"]:checked');
+            if (!listingType) {
+                showError('listing_type', 'Please select a listing type');
+                hasErrors = true;
+            }
 
-      // Check category
-      const category = form.querySelector('#id_category');
-      if (!category || !category.value || category.value === '') {
-        showError('category', 'Please select a category');
-        hasErrors = true;
-      }
+            // Check category
+            const category = form.querySelector('#id_category');
+            if (!category || !category.value || category.value === '') {
+                showError('category', 'Please select a category');
+                hasErrors = true;
+            }
 
-      // Check required text fields
-      const requiredFields = ['title', 'description', 'your_name', 'company', 'location'];
-      requiredFields.forEach(field => {
-        const input = form.querySelector(`#id_${field}`);
-        if (!input.value.trim()) {
-          showError(field, `Please enter ${field.replace('_', ' ')}`);
-          hasErrors = true;
+            // Check required text fields
+            const requiredFields = ['title', 'description', 'location'];
+            requiredFields.forEach(field => {
+                const input = form.querySelector(`#id_${field}`);
+                if (!input.value.trim()) {
+                    showError(field, `Please enter ${field.replace('_', ' ')}`);
+                    hasErrors = true;
+                }
+            });
+
+            // Check the dynamic field based on listing type
+            const selectedType = form.querySelector('input[name="listing_type"]:checked');
+            if (selectedType) {
+                if (selectedType.value === 'sale') {
+                    const priceInput = form.querySelector('#id_price');
+                    const priceValue = parseFloat(priceInput.value);
+                    if (!priceInput.value.trim()) {
+                        showError('price', 'Please enter price');
+                        hasErrors = true;
+                    } else if (priceValue <= 0) {
+                        showError('price', 'Price must be greater than 0');
+                        hasErrors = true;
+                    }
+                } else if (selectedType.value === 'swap') {
+                    const swapInput = form.querySelector('#id_swap_for');
+                    if (!swapInput.value.trim()) {
+                        showError('swap_for', 'Please enter what you are looking to swap for');
+                        hasErrors = true;
+                    }
+                } else if (selectedType.value === 'buy') {
+                    const budgetInput = form.querySelector('#id_budget');
+                    const budgetValue = parseFloat(budgetInput.value);
+                    if (!budgetInput.value.trim()) {
+                        showError('budget', 'Please enter budget');
+                        hasErrors = true;
+                    } else if (budgetValue <= 0) {
+                        showError('budget', 'Budget must be greater than 0');
+                        hasErrors = true;
+                    }
+                }
+            } else {
+                // If no listing type is selected, default to checking price (since For Sale is default)
+                const priceInput = form.querySelector('#id_price');
+                const priceValue = parseFloat(priceInput.value);
+                if (!priceInput.value.trim()) {
+                    showError('price', 'Please enter price');
+                    hasErrors = true;
+                } else if (priceValue <= 0) {
+                    showError('price', 'Price must be greater than 0');
+                    hasErrors = true;
+                }
+            }
+
+            if (!hasErrors) {
+                // If no errors, submit the form normally
+                form.submit();
+            }
+        });
+
+        // Initialize real-time validation
+        setupRealTimeValidation();
+
+        function showError(fieldName, message) {
+            let field;
+            let fieldContainer;
+
+            if (fieldName === 'listing_type') {
+                // For radio buttons, find the container div
+                fieldContainer = form.querySelector('.space-y-2').parentElement;
+                field = form.querySelector('input[name="listing_type"]'); // Just get first radio for styling
+            } else if (fieldName === 'price' || fieldName === 'swap_for' || fieldName === 'budget') {
+                // For dynamic fields, use the dynamic field container
+                fieldContainer = document.getElementById('dynamic-field-container');
+                field = form.querySelector(`#id_${fieldName}`);
+            } else {
+                field = form.querySelector(`#id_${fieldName}`);
+                fieldContainer = field.closest('.mb-4') || field.closest('.mb-6');
+            }
+
+            // Remove existing error for this field
+            const existingError = fieldContainer.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            // Add error message
+            const errorDiv = document.createElement('p');
+            errorDiv.className = 'error-message text-red-500 text-sm mt-1';
+            errorDiv.textContent = message;
+            fieldContainer.appendChild(errorDiv);
+
+            // Add red border to field (skip for radio buttons)
+            if (field && fieldName !== 'listing_type') {
+                field.classList.add('border-red-500');
+                setTimeout(() => field.classList.remove('border-red-500'), 3000);
+            }
         }
-      });
+    </script>
 
-      // Check the dynamic field based on listing type
-      const selectedType = form.querySelector('input[name="listing_type"]:checked');
-      if (selectedType) {
-        if (selectedType.value === 'sale') {
-          const priceInput = form.querySelector('#id_price');
-          const priceValue = parseFloat(priceInput.value);
-          if (!priceInput.value.trim()) {
-            showError('price', 'Please enter price');
-            hasErrors = true;
-          } else if (priceValue <= 0) {
-            showError('price', 'Price must be greater than 0');
-            hasErrors = true;
-          }
-        } else if (selectedType.value === 'swap') {
-          const swapInput = form.querySelector('#id_swap_for');
-          if (!swapInput.value.trim()) {
-            showError('swap_for', 'Please enter what you are looking to swap for');
-            hasErrors = true;
-          }
-        } else if (selectedType.value === 'buy') {
-          const budgetInput = form.querySelector('#id_budget');
-          const budgetValue = parseFloat(budgetInput.value);
-          if (!budgetInput.value.trim()) {
-            showError('budget', 'Please enter budget');
-            hasErrors = true;
-          } else if (budgetValue <= 0) {
-            showError('budget', 'Budget must be greater than 0');
-            hasErrors = true;
-          }
-        }
-      } else {
-        // If no listing type is selected, default to checking price (since For Sale is default)
-        const priceInput = form.querySelector('#id_price');
-        const priceValue = parseFloat(priceInput.value);
-        if (!priceInput.value.trim()) {
-          showError('price', 'Please enter price');
-          hasErrors = true;
-        } else if (priceValue <= 0) {
-          showError('price', 'Price must be greater than 0');
-          hasErrors = true;
-        }
-      }
-
-      if (!hasErrors) {
-        // If no errors, submit the form normally
-        form.submit();
-      }
-    });
-
-    // Initialize real-time validation
-    setupRealTimeValidation();
-
-    function showError(fieldName, message) {
-      let field;
-      let fieldContainer;
-
-      if (fieldName === 'listing_type') {
-        // For radio buttons, find the container div
-        fieldContainer = form.querySelector('.space-y-2').parentElement;
-        field = form.querySelector('input[name="listing_type"]'); // Just get first radio for styling
-      } else if (fieldName === 'price' || fieldName === 'swap_for' || fieldName === 'budget') {
-        // For dynamic fields, use the dynamic field container
-        fieldContainer = document.getElementById('dynamic-field-container');
-        field = form.querySelector(`#id_${fieldName}`);
-      } else {
-        field = form.querySelector(`#id_${fieldName}`);
-        fieldContainer = field.closest('.mb-4') || field.closest('.mb-6');
-      }
-
-      // Remove existing error for this field
-      const existingError = fieldContainer.querySelector('.error-message');
-      if (existingError) {
-        existingError.remove();
-      }
-
-      // Add error message
-      const errorDiv = document.createElement('p');
-      errorDiv.className = 'error-message text-red-500 text-sm mt-1';
-      errorDiv.textContent = message;
-      fieldContainer.appendChild(errorDiv);
-
-      // Add red border to field (skip for radio buttons)
-      if (field && fieldName !== 'listing_type') {
-        field.classList.add('border-red-500');
-        setTimeout(() => field.classList.remove('border-red-500'), 3000);
-      }
-    }
-  </script>
->>>>>>> ba53524 (feature(marketplace): add_marketplace_listing_form_with_modal_popup)
+    {% include 'accounts/logout_modal.html' %}
 </body>
 
 </html>
