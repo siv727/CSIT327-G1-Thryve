@@ -82,6 +82,13 @@ class Listing(models.Model):
     subcategory = models.CharField(max_length=30, blank=True, null=True)
     title = models.CharField(max_length=200)
     description = models.TextField()
+
+    def save(self, *args, **kwargs):
+        # Sanitize HTML content to prevent XSS attacks
+        allowed_tags = ['p', 'br', 'strong', 'em', 'b', 'i', 'ul', 'ol', 'li', 'a']
+        allowed_attributes = {'a': ['href', 'title']}
+        self.description = clean(self.description, tags=allowed_tags, attributes=allowed_attributes, strip=True)
+        super().save(*args, **kwargs)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     swap_for = models.TextField(null=True, blank=True)
     budget = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)

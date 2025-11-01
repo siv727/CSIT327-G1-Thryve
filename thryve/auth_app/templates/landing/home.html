@@ -8,6 +8,8 @@
     <title>Thryve • Marketplace</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -200,7 +202,7 @@
                 </div>
                 <h3 class="text-lg font-bold">{{ listing.title }}</h3>
                 <div class="mt-0.5 text-slate-500 font-medium">{{ listing.company }}</div>
-                <p class="mt-3 text-slate-700">{{ listing.description|truncatechars:120 }}</p>
+                <p class="mt-3 text-slate-700">{{ listing.description|safe|truncatechars:120 }}</p>
 
                 {% if listing.listing_type == 'sale' and listing.price %}
                     <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">${{ listing.price }}</div>
@@ -347,7 +349,7 @@
 
                                 <!-- Custom category selector trigger -->
                                 <div id="category-selector-trigger" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-sky flex items-center justify-between">
-                                    <span id="category-display-text" class="text-slate-500">Choose Category</span>
+                                    <span id="category-display-text" class="text-slate-400">Choose Category</span>
                                     <span class="text-slate-400">▾</span>
                                 </div>
 
@@ -390,20 +392,32 @@
 
                         <div class="mb-4">
                             <label for="{{ form.description.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Description *</label>
-                            {{ form.description }}
+                            <div id="description-editor" class="rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-brand-sky">
+                                <div id="description-toolbar" class="bg-gray-50 border-b border-slate-200 p-1 rounded-t-lg">
+                                    <button type="button" class="ql-bold text-slate-700 hover:text-slate-900 px-2 py-1 rounded"></button>
+                                    <button type="button" class="ql-italic text-slate-700 hover:text-slate-900 px-2 py-1 rounded"></button>
+                                    <button type="button" class="ql-list text-slate-700 hover:text-slate-900 px-2 py-1 rounded" value="bullet"></button>
+                                    <button type="button" class="ql-list text-slate-700 hover:text-slate-900 px-2 py-1 rounded" value="ordered"></button>
+                                    <button type="button" class="ql-link text-slate-700 hover:text-slate-900 px-2 py-1 rounded"></button>
+                                    <button type="button" class="ql-undo text-slate-700 hover:text-slate-900 px-2 py-1 rounded"></button>
+                                    <button type="button" class="ql-redo text-slate-700 hover:text-slate-900 px-2 py-1 rounded"></button>
+                                </div>
+                                <div id="description-editor-content" class="min-h-[120px] p-3 font-medium text-slate-900" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;"></div>
+                            </div>
+                            <input type="hidden" name="description" id="id_description">
                         </div>
 
                         <div class="mb-4" id="dynamic-field-container">
                             <label id="dynamic-field-label" for="id_price" class="block text-slate-700 font-semibold mb-2">Price *</label>
                             <div class="relative" id="price-container">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-                                <input type="number" name="price" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" step="0.01" id="id_price">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">$</span>
+                                <input type="number" name="price" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" placeholder="0.00" step="0.01" id="id_price">
                             </div>
                             <div class="hidden" id="swap-container">
                                 <input type="text" name="swap_for" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="What are you looking to swap for?" id="id_swap_for">
                             </div>
                             <div class="relative hidden" id="budget-container">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">$</span>
                                 <input type="number" name="budget" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" step="0.01" id="id_budget">
                             </div>
                         </div>
@@ -699,6 +713,126 @@
 
         // Initialize category selector
         categorySelector.init();
+
+        // Initialize Quill Rich Text Editor with snow theme
+        const quill = new Quill('#description-editor-content', {
+            theme: 'snow',
+            placeholder: 'Describe your item or service',
+            modules: {
+                toolbar: '#description-toolbar'
+            }
+        });
+
+        // Sync Quill content to hidden input
+        quill.on('text-change', function() {
+            const html = quill.root.innerHTML;
+            document.getElementById('id_description').value = html;
+            clearFieldError('description');
+        });
+
+        // Apply custom styling to match Thryve theme
+        const style = document.createElement('style');
+        style.textContent = `
+            /* --- Base Quill Overrides --- */
+
+            /* Remove the default top border/shadow from the toolbar that comes with quill.snow.css */
+            .ql-toolbar.ql-snow {
+                border: none;
+                padding: 0;
+                background-color: transparent; /* Use container's background */
+                border-radius: 0;
+            }
+
+            /* Remove the default border from the editor body container */
+            .ql-container.ql-snow {
+                border: none;
+            }
+
+            /* Remove the bottom border from the toolbar (which is often double-bordering) */
+            .ql-snow .ql-toolbar:after {
+                content: none;
+            }
+
+            /* --- Toolbar Button Styling --- */
+
+            /* Reset default padding and remove the button border/background */
+            .ql-snow .ql-toolbar button {
+                padding: 6px 8px; /* Adjusted padding for centered icons */
+                border-radius: 0.25rem;
+                border: none;
+                background: transparent;
+                transition: background-color 0.15s;
+                min-height: 36px; /* Increased min-height for better feel with larger icons */
+            }
+
+            /* ---------------------------------------------------- */
+            /* 🔥 NEW FIX: Set explicit width/height on the SVG icon */
+            /* ---------------------------------------------------- */
+            .ql-snow .ql-toolbar button svg {
+                width: 24px;
+                height: 24px;
+                transform: none;
+            }
+            /* ---------------------------------------------------- */
+
+            /* Ensure the active/hover state matches the Thryve theme colors */
+            .ql-snow .ql-toolbar button:hover,
+            .ql-snow .ql-toolbar button:focus {
+                background-color: #e2e8f0 !important; /* Tailwind's slate-200/300-ish */
+                color: #1e293b; /* Tailwind's slate-800-ish for icons */
+            }
+
+            /* Style for the active (clicked) state */
+            .ql-snow .ql-toolbar button.ql-active {
+                background-color: #83e6f5 !important; /* brand-sky color */
+                color: #0f172a !important; /* brand-ink color for high contrast */
+            }
+
+            /* --- Editor Content Styling (.ql-editor is the content area) --- */
+
+            /* Match font size to other form fields */
+            .ql-snow .ql-editor {
+                font-size: 16px;
+                line-height: 1.5;
+            }
+
+            /* Ensure list bullets/numbers are visible */
+            .ql-snow .ql-editor ul,
+            .ql-snow .ql-editor ol {
+                padding-left: 1.5em;
+            }
+
+            /* --- Placeholder Alignment and Color Fix --- */
+
+            .ql-snow .ql-editor.ql-blank::before {
+                /* Set the correct color to match the Title input placeholder */
+                color: #94a3b8 !important;
+
+                left: 0.75rem !important;
+                padding-left: 0 !important;
+
+                font-style: normal;
+                font-size: 16px;
+            }
+
+            /* Remove any default editor padding if your p-3 class is already handling it */
+            .ql-container .ql-editor {
+                padding: 0; /* Let your p-3 class handle the padding on the content div */
+            }
+
+            /* Additional formatting styles */
+            .ql-editor strong, .ql-editor b {
+                font-weight: 800;
+            }
+            .ql-editor em, .ql-editor i {
+                font-style: italic;
+            }
+            .ql-editor a {
+                color: #3b82f6;
+                text-decoration: underline;
+            }
+        `;
+        document.head.appendChild(style);
 
         // Real-time validation - clear errors when user starts typing
         function setupRealTimeValidation() {
