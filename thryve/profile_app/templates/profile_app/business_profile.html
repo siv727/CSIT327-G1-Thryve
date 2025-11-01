@@ -2,385 +2,353 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Thryve • Business Profile</title>
-
-  <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            brand: {
-              500: '#26a8e6',
-              600: '#199ad7',
-              700: '#148cc5',
-            },
+            brand: {500: '#26a8e6', 600: '#199ad7', 700: '#148cc5'},
             ink: '#0f172a',
-            muted: '#6b7280',
             line: '#e7edf4',
-            bg: '#f6f9fc'
+            bg: '#f7fbfd'
           },
-          boxShadow: {
-            card: '0 10px 24px rgba(15,23,42,.06)'
-          },
-          fontFamily: {
-            inter: ["Inter","system-ui","-apple-system","Segoe UI","Roboto","sans-serif"]
-          }
+          boxShadow: { card: '0 10px 24px rgba(15,23,42,.06)' },
+          fontFamily: { inter: ['Inter','system-ui','-apple-system','Segoe UI','Roboto','sans-serif'] }
         }
       }
     }
   </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body class="font-inter bg-[#f7fbfd] text-brand-ink">
 
-  <!-- Top Navigation -->
- <!-- Top Nav -->
-  <!-- Clean, professional navbar (no pill buttons) -->
-<!-- Professional Navbar with Icons -->
-<header class="bg-[#23d3ee] text-white shadow">
-  <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
+  <!-- Top header -->
+  <header class="bg-[#23d3ee] text-white shadow">
+    <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
 
-    <!-- Left: Logo -->
-    <a href="{% url 'home' %}" class="flex items-center gap-2">
-      <span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
-      <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
-    </a>
-
-    <!-- Center: Navigation Links -->
-    {% with active=request.resolver_match.url_name %}
-    <nav class="flex items-center gap-8 text-[15px] font-medium">
-      <!-- Marketplace/Home -->
-      <a href="{% url 'home' %}"
-         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"/>
-        </svg>
-        <span class="leading-none">Marketplace</span>
-        {% if active == 'home1' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-        {% endif %}
+      <!-- Left: Logo -->
+      <a href="{% url 'home' %}" class="flex items-center gap-2">
+        <span
+          class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
+        <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
       </a>
 
-      <!-- Community -->
-      <a href="#"
-         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17 20h5V4H2v16h5M17 8l-5 5-5-5"/>
-        </svg>
-        <span class="leading-none">Community</span>
-        {% if active == 'community' %}
+      <!-- Center: Navigation Links -->
+      {% with active=request.resolver_match.url_name %}
+      <nav class="flex items-center gap-8 text-[15px] font-medium">
+        <!-- Marketplace -->
+        <a href="{% url 'home' %}"
+          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"></path>
+          </svg>
+          <span class="leading-none">Marketplace</span>
+          {% if active == 'home' %}
           <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-        {% endif %}
-      </a>
+          {% endif %}
+        </a>
 
-      <!-- Bookings -->
-      <a href="#"
-         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"/>
-        </svg>
-        <span class="leading-none">Bookings</span>
-        {% if active == 'bookings' %}
+        <!-- Community -->
+        <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
+          </svg>
+          <span class="leading-none">Community</span>
+          {% if active == 'community' %}
           <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-        {% endif %}
-      </a>
+          {% endif %}
+        </a>
 
-      <!-- Profile -->
-      <a href="{% url 'business_profile' %}"
-         class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z"/>
-        </svg>
-        <span class="leading-none">Profile</span>
-        {% if active == 'business_profile' %}
+        <!-- Bookings -->
+        <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
+          </svg>
+          <span class="leading-none">Bookings</span>
+          {% if active == 'bookings' %}
           <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-        {% endif %}
-      </a>
-    </nav>
-    {% endwith %}
+          {% endif %}
+        </a>
 
-    <!-- Right: Logout -->
-    <a href="{% url 'logout' %}"
-       class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1"/>
-      </svg>
-      <span class="leading-none">Logout</span>
-    </a>
+        <!-- Profile -->
+        <a href="{% url 'business_profile' %}"
+          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z" />
+          </svg>
+          <span class="leading-none">Profile</span>
+          {% if active == 'business_profile' %}
+          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+          {% endif %}
+        </a>
+      </nav>
+      {% endwith %}
 
-  </div>
-</header>
+      <!-- Right: Logout -->
+      <button onclick="openLogoutModal()" type="button"
+        class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
+        </svg>
+        <span class="leading-none">Logout</span>
+      </button>
 
+    </div>
+  </header>
 
-  <!-- Layout -->
   <div class="max-w-6xl mx-auto px-5 py-7 grid grid-cols-[240px,1fr] gap-6">
-      <!-- Sidebar -->
-      <!-- Sidebar with clean line-style icons -->
-<!-- Sidebar with clean line-style icons -->
-<!-- Sidebar -->
-<aside class="md:pr-4">
-  {% with current=request.resolver_match.url_name %}
-  <nav class="space-y-1 text-[15px] font-medium">
-     <a href="#"
-       class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+    <!-- Sidebar -->
+    <aside class="md:pr-4">
+      {% with current=request.resolver_match.url_name %}
+      <nav class="space-y-1 text-[15px] font-medium">
+        <a href="#" class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
               {% if current == 'roles_permissions' %}
                 bg-sky-50 text-[#177fb3] border border-sky-100
               {% else %}
                 text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
               {% endif %}">
-      <!-- shield/check icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 4v5a9 9 0 11-16 0V7l8-4z"/>
-        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9.5 12.5l2 2 3.5-3.5"/>
-      </svg>
-      <span>Roles & Permissions</span>
-    </a>
-    <!-- Business Profile -->
-    <a href="{% url 'business_profile' %}"
-       class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
-              {% if current == 'business_profile' %}
-                bg-sky-50 text-[#177fb3] border border-sky-100
-              {% else %}
-                text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
-              {% endif %}">
-      <!-- Business icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M3 21h18M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 10h2m2 0h2M9 14h2m2 0h2M9 18h6"/>
-      </svg>
-      <span>Business Profile</span>
-    </a>
+          <!-- shield/check icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0 stroke-current" fill="none"
+            viewBox="0 0 24 24">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M12 3l8 4v5a9 9 0 11-16 0V7l8-4z" />
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9.5 12.5l2 2 3.5-3.5" />
+          </svg>
+          <span>Roles & Permissions</span>
+        </a>
+      <nav class="space-y-1 text-[15px] font-medium">
+        <a href="{% url 'business_profile' %}"
+           class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+                  {% if current == 'business_profile' %}
+                    bg-sky-50 text-[#177fb3] border border-sky-100
+                  {% else %}
+                    text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
+                  {% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  d="M3 21h18M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 10h2m2 0h2M9 14h2m2 0h2M9 18h6"/>
+          </svg>
+          <span>Business Profile</span>
+        </a>
 
-    <!-- Profile Customization -->
-    <a href="{% url 'profile_customization' %}"
-       class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
-              {% if current == 'profile_customization' %}
-                bg-sky-50 text-[#177fb3] border border-sky-100
-              {% else %}
-                text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
-              {% endif %}">
-      <!-- Pencil icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M9 13l-6 6h6l10-10a2.5 2.5 0 10-3.5-3.5L9 13z"/>
-      </svg>
-      <span>Profile Customization</span>
-    </a>
+        <a href="{% url 'profile_customization' %}"
+           class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+                  {% if current == 'profile_customization' %}
+                    bg-sky-50 text-[#177fb3] border border-sky-100
+                  {% else %}
+                    text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
+                  {% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 13l-6 6h6l10-10a2.5 2.5 0 10-3.5-3.5L9 13z"/>
+          </svg>
+          <span>Profile Customization</span>
+        </a>
+      </nav>
+      {% endwith %}
+    </aside>
 
-  </nav>
-  {% endwith %}
-</aside>
+    <!-- Main content -->
+    <main class="min-w-0">
+      <header class="mb-3">
+        <h1 class="text-[28px] leading-[1.1] font-extrabold">Manage Your Business Profile</h1>
+        <p class="text-slate-600 mb-4">Establish and refine your business's presence on Thryve.</p>
 
-      <!-- Content -->
-      <main class="min-w-0">
-        <header class="mb-3">
-          <h1 class="text-[28px] leading-[1.1] font-extrabold">Manage Your Business Profile</h1>
-          <p class="text-muted mb-4">
-            Establish and refine your business's presence on Thryve. Provide comprehensive details to
-            build trust and visibility with potential customers.
-          </p>
+        {% with active=request.resolver_match.url_name %}
+        <div class="mb-6 flex gap-3">
+          <a href="{% url 'business_profile' %}" class="px-4 py-2 rounded-lg border text-sm font-medium {% if active == 'business_profile' %}bg-[#e9f6ff] text-[#177fb3] border-transparent{% else %}bg-white text-slate-700 border border-slate-100 hover:bg-slate-50{% endif %}">Business Information</a>
+          <a href="{% url 'business_logo' %}" class="px-4 py-2 rounded-lg border text-sm font-medium {% if active == 'business_logo' %}bg-[#e9f6ff] text-[#177fb3] border-transparent{% else %}bg-white text-slate-700 border border-slate-100 hover:bg-slate-50{% endif %}">Business Logo</a>
+        </div>
+        {% endwith %}
+      </header>
 
-          <!-- Subtabs -->
-          {% with active=request.resolver_match.url_name %}
-<div class="mb-6 flex gap-3">
-  <a href="{% url 'business_profile' %}"
-     class="px-4 py-2 rounded-lg border text-sm font-medium
-            {% if active == 'business_profile' %}
-              bg-[#e9f6ff] text-[#177fb3] border-transparent
-            {% else %}
-              bg-white text-slate-700 border border-slate-100 hover:bg-slate-50
-            {% endif %}"
-     aria-current="{% if active == 'business_profile' %}page{% endif %}">
-    Business Information
-  </a>
+      <!-- Card -->
+      <section class="bg-white border border-line rounded-xl p-6 shadow-card">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <h2 class="text-lg font-semibold">Business Details</h2>
+            <p class="text-slate-500">Provide core information about your business.</p>
+          </div>
 
-  <a href="{% url 'business_logo' %}"
-     class="px-4 py-2 rounded-lg border text-sm font-medium
-            {% if active == 'business_logo' %}
-              bg-[#e9f6ff] text-[#177fb3] border-transparent
-            {% else %}
-              bg-white text-slate-700 border border-slate-100 hover:bg-slate-50
-            {% endif %}"
-     aria-current="{% if active == 'business_logo' %}page{% endif %}">
-    Business Logo
-  </a>
-</div>
-{% endwith %}
-        </header>
+          <!-- Edit toggle — inputs are disabled until this is clicked -->
+          <div>
+            <button id="editToggle" type="button" aria-pressed="false"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-300">
+              <svg id="editIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                   stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-slate-700">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M16.862 4.487l2.651 2.651m-9.193 9.192l-3.534.883.883-3.534 9.193-9.192a1.5 1.5 0 012.122 0l.877.877a1.5 1.5 0 010 2.122l-9.192 9.193z"/>
+              </svg>
+              <span id="editLabel" class="text-sm font-medium text-slate-700">Edit</span>
+            </button>
+          </div>
+        </div>
 
-        <!-- Card -->
-        <section class="bg-white border border-line rounded-xl p-5 shadow-card relative">
-  <!-- header row: title left, edit button right -->
-  <div class="flex items-start justify-between mb-2">
-    <div>
-      <h2 class="text-lg font-semibold">Business Details</h2>
-      <p class="text-[#6b7a90]">Provide core information about your business.</p>
-    </div>
+        <!-- Form: view MUST pass `form` in context (BusinessProfileForm) -->
+        <form id="businessForm" method="post" class="space-y-4" novalidate>
+          {% csrf_token %}
+          <!-- Grid: company / industry -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold mb-2">Company Name</label>
+              {{ form.company_name }}
+              {% if form.company_name.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.company_name.errors|join:", " }}</div>{% endif %}
+            </div>
+            <div>
+              <label class="block text-sm font-bold mb-2">Industry</label>
+              {{ form.industry }}
+              {% if form.industry.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.industry.errors|join:", " }}</div>{% endif %}
+            </div>
+          </div>
 
-    <!-- Edit / Save button -->
-    <div>
-      <!-- button type="button" so it doesn't submit until in "save" mode -->
-      <button id="editToggle" type="button"
-              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-300"
-              aria-pressed="false" title="Edit business details">
-        <!-- pencil icon (default) -->
-        <svg id="editIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-slate-700">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M16.862 4.487l2.651 2.651m-9.193 9.192l-3.534.883.883-3.534 9.193-9.192a1.5 1.5 0 012.122 0l.877.877a1.5 1.5 0 010 2.122l-9.192 9.193z" />
-        </svg>
-        <span id="editLabel" class="text-sm font-medium text-slate-700">Edit</span>
-      </button>
-    </div>
+          <div>
+            <label class="block text-sm font-bold mb-2">Business Description</label>
+            {{ form.description }}
+            {% if form.description.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.description.errors|join:", " }}</div>{% endif %}
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold mb-2">Street Address</label>
+            {{ form.street_address }}
+            {% if form.street_address.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.street_address.errors|join:", " }}</div>{% endif %}
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-bold mb-2">City</label>
+              {{ form.city }}
+            </div>
+            <div>
+              <label class="block text-sm font-bold mb-2">State</label>
+              {{ form.state }}
+            </div>
+            <div>
+              <label class="block text-sm font-bold mb-2">Zip Code</label>
+              {{ form.zip_code }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold mb-2">Country</label>
+            {{ form.country }}
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold mb-2">Website URL</label>
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500 select-none px-3 py-2 rounded-l-md border border-line bg-white">https://</span>
+                <div class="flex-1">{{ form.website_url }}</div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold mb-2">Contact Email</label>
+              {{ form.contact_email }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold mb-2">Contact Phone</label>
+            {{ form.contact_phone }}
+          </div>
+
+          <!-- Actions: hidden until edit mode -->
+          <div id="actionRow" class="flex justify-end gap-2 pt-2 hidden">
+            <button id="cancelBtn" type="button" class="px-4 py-2 rounded-lg bg-[#eef2f6] text-[#354a5e]">Cancel</button>
+            <button id="saveBtn" type="submit" class="px-4 py-2 rounded-lg bg-[#1aa2dd] text-white">Save Changes</button>
+          </div>
+        </form>
+
+      </section>
+    </main>
   </div>
 
-  <!-- Form (fields start disabled via JS) -->
-  <form id="businessForm" method="post" class="mt-4 space-y-4">
-    {% csrf_token %}
+  <script>
+    (function () {
+      const form = document.getElementById('businessForm');
+      const editToggle = document.getElementById('editToggle');
+      const editLabel = document.getElementById('editLabel');
+      const editIcon = document.getElementById('editIcon');
+      const actionRow = document.getElementById('actionRow');
+      const cancelBtn = document.getElementById('cancelBtn');
 
-    <!-- Company Name -->
-    <label class="block">
-      <span class="block font-bold mb-1.5">Company Name</span>
-      {{ form.company_name }}
-      {% if form.company_name.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.company_name.errors|join:", " }}</div>{% endif %}
-    </label>
+      if (!form || !editToggle) return;
 
-    <!-- Industry -->
-    <label class="block">
-      <span class="block font-bold mb-1.5">Industry</span>
-      {{ form.industry }}
-      {% if form.industry.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.industry.errors|join:", " }}</div>{% endif %}
-    </label>
+      // Helper: set readonly/disabled on all inputs
+      function setReadonly(readonly) {
+        const controls = form.querySelectorAll('input, textarea, select, button[type="file"]');
+        controls.forEach(el => {
+          if (readonly) {
+            el.setAttribute('disabled', 'disabled');
+            el.classList.add('bg-[#f8fafc]');
+          } else {
+            el.removeAttribute('disabled');
+            el.classList.remove('bg-[#f8fafc]');
+          }
+        });
 
-    <!-- Description -->
-    <label class="block">
-      <span class="block font-bold mb-1.5">Business Description</span>
-      {{ form.description }}
-      {% if form.description.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.description.errors|join:", " }}</div>{% endif %}
-    </label>
+        // keep the Edit button enabled
+        editToggle.removeAttribute('disabled');
+      }
 
-    <!-- Address grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-      <label class="block">
-        <span class="block font-bold mb-1.5">Street Address</span>
-        {{ form.street_address }}
-      </label>
-      <label class="block">
-        <span class="block font-bold mb-1.5">City</span>
-        {{ form.city }}
-      </label>
-      <label class="block">
-        <span class="block font-bold mb-1.5">State</span>
-        {{ form.state }}
-      </label>
-    </div>
+      // initialize: start read-only
+      setReadonly(true);
 
-    <!-- Postal / Country -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-      <label class="block">
-        <span class="block font-bold mb-1.5">Zip Code</span>
-        {{ form.zip_code }}
-      </label>
-      <label class="block">
-        <span class="block font-bold mb-1.5">Country</span>
-        {{ form.country }}
-      </label>
-    </div>
+      let editing = false;
 
-    <!-- Website -->
-    <label class="block">
-      <span class="block font-bold mb-1.5">Website URL</span>
-      <div class="flex items-center gap-2 border border-line rounded-lg px-3 py-2.5">
-        <span class="text-slate-500 select-none">https://</span>
-        {{ form.website_url }}
-      </div>
-    </label>
-
-    <!-- Contact Information -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-      <label class="block">
-        <span class="block font-bold mb-1.5">Contact Phone</span>
-        {{ form.contact_phone }}
-      </label>
-      <label class="block">
-        <span class="block font-bold mb-1.5">Contact Email</span>
-        {{ form.contact_email }}
-      </label>
-    </div>
-
-    <!-- Actions: Save/Cancel appear only while editing (JS toggles) -->
-    <div id="actionRow" class="flex justify-end gap-2 pt-1 hidden">
-      <button id="cancelBtn" type="button" class="px-4 py-2 rounded-lg font-extrabold bg-[#eef2f6] text-[#354a5e]">Cancel</button>
-      <button id="saveBtn" type="submit" class="px-4 py-2 rounded-lg font-extrabold bg-[#1aa2dd] text-white hover:brightness-95">Save Changes</button>
-    </div>
-  </form>
-</section>
-<script>
-  (function () {
-    const editToggle = document.getElementById('editToggle');
-    const editLabel  = document.getElementById('editLabel');
-    const editIcon   = document.getElementById('editIcon');
-    const form       = document.getElementById('businessForm');
-    const actionRow  = document.getElementById('actionRow');
-    const cancelBtn  = document.getElementById('cancelBtn');
-
-    // Helper: enable/disable all inputs
-    function setReadonly(readonly) {
-      const controls = form.querySelectorAll('input, textarea, select');
-      controls.forEach(el => {
-        if (readonly) {
-          el.setAttribute('disabled', 'disabled');
-          el.classList.add('bg-[#f8fafc]');
+      editToggle.addEventListener('click', function () {
+        editing = !editing;
+        if (editing) {
+          editLabel.textContent = 'Editing...';
+          editIcon.classList.add('text-sky-600');
+          setReadonly(false);
+          actionRow.classList.remove('hidden');
+          editToggle.setAttribute('aria-pressed', 'true');
         } else {
-          el.removeAttribute('disabled');
-          el.classList.remove('bg-[#f8fafc]');
+          // cancel edit mode (revert UI to original values)
+          editLabel.textContent = 'Edit';
+          editIcon.classList.remove('text-sky-600');
+          setReadonly(true);
+          actionRow.classList.add('hidden');
+          editToggle.setAttribute('aria-pressed', 'false');
+          form.reset(); // revert unsaved changes
         }
       });
-    }
 
-    // Start readonly
-    setReadonly(true);
-    let editing = false;
-
-    // EDIT button behavior
-    editToggle.addEventListener('click', function () {
-      editing = !editing;
-
-      if (editing) {
-        // enter edit mode
-        editLabel.textContent = 'Editing...';
-        editIcon.classList.add('text-sky-600');
-        setReadonly(false);
-        actionRow.classList.remove('hidden');
-        editToggle.setAttribute('aria-pressed', 'true');
-      } else {
-        // return to readonly
-        editLabel.textContent = 'Edit';
-        editIcon.classList.remove('text-sky-600');
-        setReadonly(true);
-        actionRow.classList.add('hidden');
-        editToggle.setAttribute('aria-pressed', 'false');
+      // Cancel button: revert and exit edit mode
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', function () {
+          form.reset();
+          editing = false;
+          editLabel.textContent = 'Edit';
+          editIcon.classList.remove('text-sky-600');
+          setReadonly(true);
+          actionRow.classList.add('hidden');
+          editToggle.setAttribute('aria-pressed', 'false');
+        });
       }
-    });
 
-    // Cancel button reloads page to discard edits
-    cancelBtn.addEventListener('click', function () {
-      window.location.reload();
-    });
-  })();
-</script>
-      </main>
-    </div>
-
+      // Keep submit behavior normal (POST will be handled by view)
+      // But ensure inputs are enabled when submitting:
+      form.addEventListener('submit', function () {
+        // remove disabled attributes before submission so POST includes values
+        form.querySelectorAll('input, textarea, select').forEach(el => el.removeAttribute('disabled'));
+      });
+    })();
+  </script>
 </body>
 </html>
