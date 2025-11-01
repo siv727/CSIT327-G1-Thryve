@@ -24,12 +24,62 @@ class Listing(models.Model):
     CATEGORY_CHOICES = [
         ('electronics', 'Electronics'),
         ('furniture', 'Furniture'),
+        ('tools_equipment', 'Tools & Equipment'),
+        ('raw_materials', 'Raw Materials'),
+        ('services', 'Services'),
         ('other', 'Other'),
     ]
+
+    SUBCATEGORY_CHOICES = {
+        'electronics': [
+            ('computers', 'Computers'),
+            ('phones', 'Phones'),
+            ('tablets', 'Tablets'),
+            ('audio_video', 'Audio/Video Equipment'),
+            ('cameras', 'Cameras'),
+            ('other_electronics', 'Other Electronics'),
+        ],
+        'furniture': [
+            ('office_chairs', 'Office Chairs'),
+            ('desks', 'Desks'),
+            ('cabinets', 'Cabinets'),
+            ('tables', 'Tables'),
+            ('seating', 'Seating'),
+            ('other_furniture', 'Other Furniture'),
+        ],
+        'tools_equipment': [
+            ('power_tools', 'Power Tools'),
+            ('hand_tools', 'Hand Tools'),
+            ('machinery', 'Machinery'),
+            ('safety_equipment', 'Safety Equipment'),
+            ('measuring_tools', 'Measuring Tools'),
+            ('other_tools', 'Other Tools & Equipment'),
+        ],
+        'raw_materials': [
+            ('metals', 'Metals'),
+            ('plastics', 'Plastics'),
+            ('woods', 'Woods'),
+            ('chemicals', 'Chemicals'),
+            ('fabrics', 'Fabrics'),
+            ('other_materials', 'Other Raw Materials'),
+        ],
+        'services': [
+            ('consulting', 'Consulting'),
+            ('maintenance', 'Maintenance'),
+            ('installation', 'Installation'),
+            ('training', 'Training'),
+            ('design', 'Design'),
+            ('other_services', 'Other Services'),
+        ],
+        'other': [
+            ('miscellaneous', 'Miscellaneous'),
+        ],
+    }
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     listing_type = models.CharField(max_length=10, choices=LISTING_TYPE_CHOICES)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='other')
+    subcategory = models.CharField(max_length=30, blank=True, null=True)
     title = models.CharField(max_length=200)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
