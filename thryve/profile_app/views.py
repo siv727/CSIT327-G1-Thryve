@@ -3,8 +3,6 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.cache import cache_control
 
-from django.views.decorators.cache import cache_control
-
 from .forms import ProfileCustomizationForm
 from django.shortcuts import render, redirect, HttpResponse
 from .models import UserProfile
@@ -12,8 +10,6 @@ from .forms import BusinessProfileForm
 from .models import BusinessProfile
 from .forms import BusinessLogoForm
 
-@login_required(login_url='login')
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def business_profile_view(request):
