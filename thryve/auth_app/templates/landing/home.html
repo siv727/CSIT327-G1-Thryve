@@ -192,29 +192,65 @@
 
                 <div class="flex items-center justify-between mb-3">
                     {% if listing.listing_type == 'sale' %}
-                        <span class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">SALE</span>
+                        <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                            </svg>
+                            SALE
+                        </span>
                     {% elif listing.listing_type == 'swap' %}
-                        <span class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">SWAP</span>
+                        <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                            </svg>
+                            SWAP
+                        </span>
                     {% elif listing.listing_type == 'buy' %}
-                        <span class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">BUY</span>
+                        <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                            </svg>
+                            BUY
+                        </span>
                     {% endif %}
-                    <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
+                    <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">
+                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Available
+                    </span>
                 </div>
                 <h3 class="text-lg font-bold">{{ listing.title }}</h3>
-                <div class="mt-0.5 text-slate-500 font-medium">{{ listing.company }}</div>
+                <div class="mt-0.5 text-slate-500 font-medium flex items-center gap-1">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <strong>{{ listing.your_name }}</strong> | {{ listing.company }}
+                </div>
                 <p class="mt-3 text-slate-700">{{ listing.description|safe|truncatechars:120 }}</p>
 
                 {% if listing.listing_type == 'sale' and listing.price %}
                     <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">₱{{ listing.price }}</div>
                 {% elif listing.listing_type == 'swap' and listing.swap_for %}
-                    <p class="mt-2 text-slate-700">Looking for: <span class="font-semibold">{{ listing.swap_for }}</span></p>
+                    <div class="mt-4 text-[22px] font-extrabold"><span class="text-slate-700">Looking for:</span> <span class="text-brand-leaf">{{ listing.swap_for }}</span></div>
                 {% elif listing.listing_type == 'buy' and listing.budget %}
-                    <div class="mt-2 text-slate-700">Budget: <span class="font-semibold">₱{{ listing.budget }}</span></div>
+                    <div class="mt-4 text-[22px] font-extrabold"><span class="text-slate-700">Budget:</span> <span class="text-brand-leaf">₱{{ listing.budget }}</span></div>
                 {% endif %}
 
                 <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
-                    <span>📍 {{ listing.location }}</span>
-                    <span>📅 {{ listing.created_at|date:"m/d/Y" }}</span>
+                    <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        {{ listing.location }}
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"></path>
+                        </svg>
+                        {{ listing.created_at|date:"m/d/Y" }}
+                    </span>
                 </div>
                 <div class="mt-5 grid grid-cols-2 gap-3">
                     <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
