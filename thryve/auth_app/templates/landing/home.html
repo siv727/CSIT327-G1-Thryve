@@ -424,8 +424,12 @@
 
 
                         <div class="mb-4">
-                            <label for="{{ form.location.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Location *</label>
-                            {{ form.location }}
+                            <label for="id_location" class="block text-slate-700 font-semibold mb-2">Location *</label>
+                            <div class="relative">
+                                <input type="text" name="location" id="id_location"
+                                       class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                       placeholder="City, State/Country">
+                            </div>
                         </div>
 
                         <div class="mb-6">
@@ -450,6 +454,148 @@
     </div>
     
     <script>
+        // Nominatim Geocoder Implementation - OPTIMIZED
+        function initLocationAutocomplete() {
+            const locationInput = document.getElementById('id_location');
+
+            if (!locationInput || locationInput.dataset.geocoderInitialized === 'true') {
+                return;
+            }
+
+            locationInput.dataset.geocoderInitialized = 'true';
+
+            // Cache for previous searches
+            const searchCache = new Map();
+
+            // Common Philippine locations for instant results
+            const commonLocations = {
+                'cebu': [
+                    { display_name: 'Cebu City, Cebu, Philippines' },
+                    { display_name: 'Mandaue City, Cebu, Philippines' },
+                    { display_name: 'Lapu-Lapu City, Cebu, Philippines' },
+                    { display_name: 'Talisay City, Cebu, Philippines' }
+                ],
+                'manila': [
+                    { display_name: 'Manila, Metro Manila, Philippines' },
+                    { display_name: 'Quezon City, Metro Manila, Philippines' },
+                    { display_name: 'Makati, Metro Manila, Philippines' },
+                    { display_name: 'Taguig, Metro Manila, Philippines' }
+                ],
+                'davao': [
+                    { display_name: 'Davao City, Davao del Sur, Philippines' }
+                ],
+                'cebu city': [
+                    { display_name: 'Cebu City, Cebu, Philippines' }
+                ]
+            };
+
+            let geocodeTimeout;
+            let currentDropdown = null;
+            let lastQuery = '';
+
+            locationInput.addEventListener('input', function() {
+                clearTimeout(geocodeTimeout);
+                const query = this.value.trim();
+
+                // Don't search if same query or too short
+                if (query === lastQuery || query.length < 2) {
+                    removeDropdown();
+                    return;
+                }
+
+                lastQuery = query;
+
+                // Reduced debounce for faster response
+                geocodeTimeout = setTimeout(() => {
+                    searchLocations(query, locationInput);
+                }, 150); // Much faster response
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!locationInput.parentNode.contains(e.target)) {
+                    removeDropdown();
+                }
+            });
+
+            function searchLocations(query, input) {
+                const lowerQuery = query.toLowerCase();
+
+                // 1. Check common locations first (INSTANT)
+                if (commonLocations[lowerQuery]) {
+                    showLocationSuggestions(commonLocations[lowerQuery], input);
+                    return;
+                }
+
+                // 2. Check cache
+                if (searchCache.has(query)) {
+                    showLocationSuggestions(searchCache.get(query), input);
+                    return;
+                }
+
+                // 3. API call with optimized parameters
+                const searchUrl = `https://nominatim.openstreetmap.org/search?` +
+                    `format=json&` +
+                    `q=${encodeURIComponent(query)}+Philippines&` + // Add Philippines for better results
+                    `countrycodes=ph&` +
+                    `limit=4&` + // Fewer results = faster
+                    `addressdetails=1&` +
+                    `dedupe=1`;
+
+                fetch(searchUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        searchCache.set(query, data);
+                        showLocationSuggestions(data, input);
+                    })
+                    .catch(error => {
+                        console.error('Geocoding error:', error);
+                        removeDropdown();
+                    });
+            }
+
+            function showLocationSuggestions(suggestions, input) {
+                removeDropdown();
+
+                if (suggestions.length === 0) return;
+
+                const dropdown = document.createElement('div');
+                dropdown.className = 'suggestions-dropdown absolute top-full left-0 right-0 bg-white border border-slate-200 rounded-lg shadow-lg z-50 mt-1 max-h-48 overflow-y-auto';
+
+                suggestions.forEach(suggestion => {
+                    const item = document.createElement('div');
+                    item.className = 'px-3 py-2 hover:bg-slate-100 cursor-pointer text-sm border-b border-slate-100 last:border-b-0 transition-colors';
+
+                    const displayName = formatDisplayName(suggestion.display_name);
+                    item.textContent = displayName;
+
+                    item.addEventListener('click', () => {
+                        input.value = displayName;
+                        removeDropdown();
+                    });
+                    dropdown.appendChild(item);
+                });
+
+                input.parentNode.appendChild(dropdown);
+                currentDropdown = dropdown;
+            }
+
+            function formatDisplayName(fullName) {
+                const parts = fullName.split(',');
+                if (parts.length > 3) {
+                    return parts.slice(0, 3).join(', ').trim();
+                }
+                return fullName;
+            }
+
+            function removeDropdown() {
+                if (currentDropdown) {
+                    currentDropdown.remove();
+                    currentDropdown = null;
+                }
+            }
+        }
+
         // Modal functionality
         const modal = document.getElementById('add-listing-modal');
         const addListingBtn = document.getElementById('add-listing-btn');
@@ -462,6 +608,11 @@
         addListingBtn.addEventListener('click', () => {
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            // Initialize geocoder after a short delay to ensure DOM is ready
+            setTimeout(() => {
+                console.log('Modal opened, initializing geocoder...');
+                initLocationAutocomplete();
+            }, 300);
         });
 
         // Close modal functions
@@ -830,6 +981,24 @@
             .ql-editor a {
                 color: #3b82f6;
                 text-decoration: underline;
+            }
+            .suggestions-dropdown {
+                scrollbar-width: thin;
+                scrollbar-color: #cbd5e1 #f1f5f9;
+            }
+            .suggestions-dropdown::-webkit-scrollbar {
+                width: 6px;
+            }
+            .suggestions-dropdown::-webkit-scrollbar-track {
+                background: #f1f5f9;
+                border-radius: 0 0 8px 0;
+            }
+            .suggestions-dropdown::-webkit-scrollbar-thumb {
+                background: #cbd5e1;
+                border-radius: 3px;
+            }
+            .suggestions-dropdown::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
             }
         `;
         document.head.appendChild(style);
