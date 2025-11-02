@@ -409,14 +409,14 @@
                             <label id="dynamic-field-label" for="id_price" class="block text-slate-700 font-semibold mb-2">Price *</label>
                             <div class="relative" id="price-container">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                <input type="number" name="price" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" placeholder="0.00" step="0.01" id="id_price">
+                                <input type="text" name="price" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" placeholder="0.00" id="id_price">
                             </div>
                             <div class="hidden" id="swap-container">
                                 <input type="text" name="swap_for" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="What are you looking to swap for?" id="id_swap_for">
                             </div>
                             <div class="relative hidden" id="budget-container">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                <input type="number" name="budget" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" step="0.01" id="id_budget">
+                                <input type="text" name="budget" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" id="id_budget">
                             </div>
                         </div>
 
@@ -430,7 +430,7 @@
                             </div>
                         </div>
 
-                        <div class="mb-6">
+                        <div class="mb-4">
                             <label for="id_images" class="block text-slate-700 font-semibold mb-2">Listing Images</label>
 
                             <!-- Drag and Drop Upload Area -->
@@ -899,6 +899,49 @@
             }
         });
 
+        // Function to format number with commas
+        function formatNumberWithCommas(value) {
+            // Remove any existing commas and non-numeric characters except decimal point
+            const numericValue = value.replace(/[^\d.]/g, '');
+            // Split into integer and decimal parts
+            const parts = numericValue.split('.');
+            // Add commas to integer part
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            // Rejoin with decimal part if it exists
+            return parts.join('.');
+        }
+
+        // Function to handle price input formatting
+        function handlePriceInput(event) {
+            const input = event.target;
+            const cursorPosition = input.selectionStart;
+            const originalValue = input.value;
+
+            // Format the value
+            const formattedValue = formatNumberWithCommas(originalValue);
+
+            // Only update if the value changed
+            if (formattedValue !== originalValue) {
+                input.value = formattedValue;
+
+                // Adjust cursor position to account for added commas
+                const commaCountDiff = (formattedValue.match(/,/g) || []).length - (originalValue.match(/,/g) || []).length;
+                input.setSelectionRange(cursorPosition + commaCountDiff, cursorPosition + commaCountDiff);
+            }
+        }
+
+        // Add event listeners to price and budget inputs
+        const priceInput = document.getElementById('id_price');
+        const budgetInput = document.getElementById('id_budget');
+
+        if (priceInput) {
+            priceInput.addEventListener('input', handlePriceInput);
+        }
+
+        if (budgetInput) {
+            budgetInput.addEventListener('input', handlePriceInput);
+        }
+
         // Sync Quill content to hidden input
         quill.on('text-change', function() {
             const html = quill.root.innerHTML;
@@ -1108,7 +1151,7 @@
             if (selectedType) {
                 if (selectedType.value === 'sale') {
                     const priceInput = form.querySelector('#id_price');
-                    const priceValue = parseFloat(priceInput.value);
+                    const priceValue = parseFloat(priceInput.value.replace(/,/g, ''));
                     if (!priceInput.value.trim()) {
                         showError('price', 'Please enter price');
                         hasErrors = true;
@@ -1124,7 +1167,7 @@
                     }
                 } else if (selectedType.value === 'buy') {
                     const budgetInput = form.querySelector('#id_budget');
-                    const budgetValue = parseFloat(budgetInput.value);
+                    const budgetValue = parseFloat(budgetInput.value.replace(/,/g, ''));
                     if (!budgetInput.value.trim()) {
                         showError('budget', 'Please enter budget');
                         hasErrors = true;
@@ -1136,7 +1179,7 @@
             } else {
                 // If no listing type is selected, default to checking price (since For Sale is default)
                 const priceInput = form.querySelector('#id_price');
-                const priceValue = parseFloat(priceInput.value);
+                const priceValue = parseFloat(priceInput.value.replace(/,/g, ''));
                 if (!priceInput.value.trim()) {
                     showError('price', 'Please enter price');
                     hasErrors = true;
