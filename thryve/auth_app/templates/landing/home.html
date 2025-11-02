@@ -433,13 +433,40 @@
                         </div>
 
                         <div class="mb-6">
-                            <label for="{{ form.image.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Listing Image</label>
-                            <div class="relative">
-                                <input type="file" name="image" accept="image/jpeg,image/png,image/gif,image/webp" id="id_image" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-medium file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
-                                <div class="mt-2 text-sm text-slate-500">
-                                    <p>Upload an image for your listing (optional)</p>
-                                    <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB)</p>
+                            <label for="id_images" class="block text-slate-700 font-semibold mb-2">Listing Images</label>
+
+                            <!-- Drag and Drop Upload Area -->
+                            <div id="upload-area" class="relative border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors cursor-pointer bg-slate-50 hover:bg-slate-100/50">
+                                <div class="flex flex-col items-center justify-center space-y-4">
+                                    <div id="upload-icon" class="w-12 h-12 text-slate-400">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                        </svg>
+                                    </div>
+                                    <div id="upload-text">
+                                        <p class="text-lg font-medium text-slate-700">Drag and drop your images here</p>
+                                        <p class="text-sm text-slate-500">or <span class="text-brand-sky font-medium">click to browse</span></p>
+                                    </div>
+                                    <div id="image-counter" class="text-sm font-medium text-slate-600">
+                                        Photos: 0/5
+                                    </div>
                                 </div>
+                                <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp" id="id_images" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            </div>
+
+                            <!-- Upload Info -->
+                            <div class="mt-2 text-sm text-slate-500">
+                                <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
+                            </div>
+
+                            <!-- Image Previews Container -->
+                            <div id="image-previews" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                <!-- Thumbnails will be added here dynamically -->
+                            </div>
+
+                            <!-- Drag and Drop Instructions -->
+                            <div id="reorder-instructions" class="mt-2 text-xs text-slate-500 text-center hidden">
+                                Drag thumbnails to reorder • First image becomes the main photo
                             </div>
                         </div>
 
@@ -1129,6 +1156,338 @@
 
         // Initialize real-time validation
         setupRealTimeValidation();
+
+        // Initialize drag-and-drop image upload
+        const uploadArea = document.getElementById('upload-area');
+        const imageInput = document.getElementById('id_images');
+        const imageCounter = document.getElementById('image-counter');
+        const imagePreviews = document.getElementById('image-previews');
+        const reorderInstructions = document.getElementById('reorder-instructions');
+        let selectedFiles = [];
+        let draggedElement = null;
+
+        // Add this new event listener
+        // This prevents the browser from loading the dropped file directly in the window,
+        // which is what causes the screen to go blank/images to vanish.
+        document.addEventListener('drop', function(e) {
+            e.preventDefault();
+        }, false);
+
+        // Drag and drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            uploadArea.classList.add('border-brand-sky', 'bg-brand-sky/5');
+        }
+
+        function unhighlight(e) {
+            uploadArea.classList.remove('border-brand-sky', 'bg-brand-sky/5');
+        }
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        // File input change
+        imageInput.addEventListener('change', function(e) {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            // Convert FileList to Array and filter for images
+            const imageFiles = Array.from(files).filter(file => {
+                return file.type.startsWith('image/') &&
+                       ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type);
+            });
+
+            // Add new files to selectedFiles, avoiding duplicates
+            imageFiles.forEach(file => {
+                if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                    selectedFiles.push(file);
+                }
+            });
+
+            // Limit to 5 files
+            if (selectedFiles.length > 5) {
+                selectedFiles = selectedFiles.slice(0, 5);
+            }
+
+            updateImageDisplay();
+        }
+
+        function updateImageDisplay() {
+            // Update counter
+            const count = selectedFiles.length;
+            imageCounter.textContent = `Photos: ${count}/5`;
+
+            // Change color if over limit
+            if (count > 5) {
+                imageCounter.classList.add('text-red-500');
+                imageCounter.classList.remove('text-slate-600');
+            } else {
+                imageCounter.classList.remove('text-red-500');
+                imageCounter.classList.add('text-slate-600');
+            }
+
+            // Update upload area state when max reached
+            if (count >= 5) {
+                // Disable upload area
+                uploadArea.classList.add('opacity-50', 'cursor-not-allowed');
+                uploadArea.classList.remove('hover:border-brand-sky', 'hover:bg-slate-100/50', 'cursor-pointer');
+
+                // Update text and icon
+                const uploadText = document.getElementById('upload-text');
+                const uploadIcon = document.getElementById('upload-icon');
+                uploadText.innerHTML = `
+                    <p class="text-lg font-medium text-slate-500">You have reached the maximum of 5 photos.</p>
+                    <p class="text-sm text-slate-400">Delete a photo below to upload a new one.</p>
+                `;
+                uploadIcon.classList.add('text-slate-400');
+                uploadIcon.classList.remove('text-slate-400'); // Keep it gray
+
+                // Disable file input
+                imageInput.disabled = true;
+            } else {
+                // Re-enable upload area
+                uploadArea.classList.remove('opacity-50', 'cursor-not-allowed');
+                uploadArea.classList.add('hover:border-brand-sky', 'hover:bg-slate-100/50', 'cursor-pointer');
+
+                // Reset text and icon
+                const uploadText = document.getElementById('upload-text');
+                const uploadIcon = document.getElementById('upload-icon');
+                uploadText.innerHTML = `
+                    <p class="text-lg font-medium text-slate-700">Drag and drop your images here</p>
+                    <p class="text-sm text-slate-500">or <span class="text-brand-sky font-medium">click to browse</span></p>
+                `;
+                uploadIcon.classList.remove('text-slate-400');
+                uploadIcon.classList.add('text-slate-400');
+
+                // Re-enable file input
+                imageInput.disabled = false;
+            }
+
+            // Clear existing previews
+            imagePreviews.innerHTML = '';
+
+            // Create thumbnails
+            selectedFiles.forEach((file, index) => {
+                const thumbnail = createThumbnail(file, index);
+                imagePreviews.appendChild(thumbnail);
+            });
+
+            // Show/hide reorder instructions
+            if (selectedFiles.length > 1) {
+                reorderInstructions.classList.remove('hidden');
+            } else {
+                reorderInstructions.classList.add('hidden');
+            }
+
+            // Update the actual file input with selected files
+            updateFileInput();
+        }
+
+        function createThumbnail(file, index) {
+            const div = document.createElement('div');
+            div.className = 'relative group cursor-move';
+            div.draggable = true;
+            div.dataset.index = index;
+
+            const img = document.createElement('img');
+            img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
+
+            // Create object URL for preview
+            const url = URL.createObjectURL(file);
+            img.src = url;
+
+            // Add "MAIN" indicator for first image
+            if (index === 0) {
+                const mainBadge = document.createElement('div');
+                mainBadge.className = 'absolute top-1 left-1 bg-brand-leaf text-white text-xs font-bold px-1.5 py-0.5 rounded';
+                mainBadge.textContent = 'MAIN';
+                div.appendChild(mainBadge);
+            }
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = (e) => {
+                e.stopPropagation();
+                removeImage(index);
+            };
+
+            div.appendChild(img);
+            div.appendChild(removeBtn);
+
+            // Add drag event listeners
+            div.addEventListener('dragstart', handleDragStart);
+            div.addEventListener('dragend', handleDragEnd);
+            div.addEventListener('dragover', handleDragOver);
+            div.addEventListener('drop', handleDropOnThumbnail);
+
+            return div;
+        }
+
+        function removeImage(index) {
+            selectedFiles.splice(index, 1);
+            updateImageDisplay();
+        }
+
+        function updateFileInput() {
+            // Create a new DataTransfer object to update the file input
+            const dt = new DataTransfer();
+            selectedFiles.forEach(file => dt.items.add(file));
+            imageInput.files = dt.files;
+        }
+
+        // --- Start of CORRECTED DRAG & DROP REORDERING SECTION ---
+
+        // Utility function to determine the closest element to drop AFTER
+        function getDropAfterElement(container, clientX, clientY, draggedElement) {
+            // Get all valid drop targets (thumbnails that aren't the one currently dragging)
+            const draggableElements = [...container.querySelectorAll('.cursor-move:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+
+                // Calculate the difference from the center line of the child element.
+                // We use the center of the child element to define the drop zone boundary.
+                const center_x = box.left + box.width / 2;
+                const center_y = box.top + box.height / 2;
+
+                // Calculate offset in both dimensions
+                // Offset Y is the most important for multi-row grids
+                const offset_y = clientY - center_y;
+
+                // Only consider elements that are in the right direction (above/left of the drop point)
+                if (offset_y < 0) {
+                    // The drop is above the center of this element (valid place to insert before)
+                    if (offset_y > closest.offset_y) {
+                         return { offset_y: offset_y, element: child };
+                    }
+                } else if (offset_y >= 0 && clientX < center_x) {
+                    // Drop is on the same row, to the left of the center, or past the last element on the row
+                    // We rely more on Y, but X provides tie-breaking on the same row.
+                    // This logic is complex in a dynamic grid, so we simplify to finding the closest "preceding" element.
+                }
+
+                return closest;
+            }, { offset_y: Number.NEGATIVE_INFINITY, element: null }).element;
+        }
+
+
+        // Drag and drop reordering functions
+        function handleDragStart(e) {
+            // Store the original index of the file being dragged
+            e.dataTransfer.setData('text/plain', e.currentTarget.dataset.index);
+            draggedElement = e.currentTarget;
+            e.currentTarget.classList.add('opacity-50', 'dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            e.currentTarget.classList.remove('opacity-50', 'dragging');
+            draggedElement = null;
+
+            // Clear all drag over styling
+            document.querySelectorAll('#image-previews > div').forEach(div => {
+                div.classList.remove('shadow-lg', 'shadow-brand-sky/50', 'bg-brand-sky/5', 'scale-90');
+            });
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+
+            const target = e.currentTarget;
+
+            // Clear feedback from all except the dragged element
+            document.querySelectorAll('#image-previews > div:not(.dragging)').forEach(div => {
+                div.classList.remove('border-2', 'border-brand-sky', 'bg-brand-sky/10');
+            });
+
+            // Add visual indicator to the element you are hovering over
+            if (target && target !== draggedElement) {
+                target.classList.add('shadow-lg', 'shadow-brand-sky/50', 'bg-brand-sky/5', 'scale-90');
+            }
+        }
+
+
+        function handleDropOnThumbnail(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // The element that received the drop
+            const dropTarget = e.currentTarget;
+
+            // 1. Get initial indices and data
+            const draggedFileOriginalIndex = parseInt(e.dataTransfer.getData('text/plain'));
+
+            // Safety check for dropping on self or invalid file
+            if (isNaN(draggedFileOriginalIndex) || draggedFileOriginalIndex < 0 || dropTarget === draggedElement) {
+                handleDragEnd(e);
+                return false;
+            }
+
+            const draggedFile = selectedFiles[draggedFileOriginalIndex];
+
+            // Get the index of the target element in the CURRENT DOM NodeList
+            // This correctly gives the visual position (0, 1, 2, 3...)
+            const thumbnails = Array.from(imagePreviews.children);
+            let targetVisualIndex = thumbnails.indexOf(dropTarget);
+
+            // 2. Calculate Insertion Point
+            let newInsertIndex = targetVisualIndex;
+
+            // Use drop position to determine if we should insert BEFORE or AFTER the target thumbnail
+            const rect = dropTarget.getBoundingClientRect();
+            const dropX = e.clientX;
+
+            // If dropped on the right half of the target, insert AFTER (targetVisualIndex + 1)
+            if (dropX > rect.left + rect.width / 2) {
+                newInsertIndex++;
+            }
+
+            // 3. Reorder the array using a more reliable approach
+
+            // Create a new array without the dragged item
+            const remainingFiles = selectedFiles.filter((_, index) => index !== draggedFileOriginalIndex);
+
+            // Insert the dragged file at the new position
+            remainingFiles.splice(newInsertIndex, 0, draggedFile);
+
+            // Update the selectedFiles array
+            selectedFiles.length = 0;
+            selectedFiles.push(...remainingFiles);
+
+            // 4. Re-render and cleanup
+            updateImageDisplay();
+            handleDragEnd(e);
+
+            return false;
+        }
+
+        // --- End of CORRECTED DRAG & DROP REORDERING SECTION ---
+
 
         function showError(fieldName, message) {
             let field;

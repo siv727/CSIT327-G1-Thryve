@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import ListingForm
+from .models import ListingImage
 
 @login_required(login_url='login')
 def create_listing(request):
@@ -24,6 +25,17 @@ def create_listing(request):
                 listing.subcategory = None
 
             listing.save()
+
+            # Handle multiple image uploads
+            images = request.FILES.getlist('images')
+            if images:
+                for i, image_file in enumerate(images[:5]):  # Limit to 5 images
+                    ListingImage.objects.create(
+                        listing=listing,
+                        image=image_file,
+                        is_main=(i == 0)  # First image is main
+                    )
+
             messages.success(request, 'Your listing has been created successfully!')
             return redirect('home')
         else:

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Listing
+from .models import Listing, ListingImage
 
 class ListingForm(forms.ModelForm):
     swap_for = forms.CharField(
@@ -18,17 +18,11 @@ class ListingForm(forms.ModelForm):
         })
     )
 
-    image = forms.ImageField(
-        required=False,
-        widget=forms.FileInput(attrs={
-            'id': 'id_image',
-            'accept': 'image/jpeg,image/png,image/gif,image/webp'
-        })
-    )
+    # Remove images field from form - we'll handle it manually in the view
 
     class Meta:
         model = Listing
-        fields = ['listing_type', 'category', 'title', 'description', 'price', 'swap_for', 'budget', 'location', 'image']
+        fields = ['listing_type', 'category', 'title', 'description', 'price', 'swap_for', 'budget', 'location']
         widgets = {
             'listing_type': forms.Select(attrs={'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400'}),
             'title': forms.TextInput(attrs={'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400', 'placeholder': 'Enter listing title'}),
@@ -51,4 +45,4 @@ class ListingForm(forms.ModelForm):
         self.fields['price'].required = False
         self.fields['swap_for'].required = False
         self.fields['budget'].required = False
-        self.fields['image'].required = False
+        # self.fields['image'].required = False  # Removed since we removed the image field

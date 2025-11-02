@@ -95,15 +95,31 @@ class Listing(models.Model):
     your_name = models.CharField(max_length=100)
     company = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
-    image = models.ImageField(
-        upload_to='listings/',
-        blank=True,
-        null=True,
-        validators=[validate_listing_image_size, validate_listing_image_format],
-        help_text='Upload a listing image (max 5MB, JPEG/PNG/GIF/WebP only)'
-    )
     created_at = models.DateTimeField(auto_now_add=True)
     is_available = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
+
+
+class ListingImage(models.Model):
+    listing = models.ForeignKey(Listing, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(
+        upload_to='listings/',
+        validators=[validate_listing_image_size, validate_listing_image_format],
+        help_text='Upload a listing image (max 5MB, JPEG/PNG/GIF/WebP only)'
+    )
+    is_main = models.BooleanField(default=False)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-is_main', 'uploaded_at']
+
+    def __str__(self):
+        return f"Image for {self.listing.title}"
+
+    def save(self, *args, **kwargs):
+        # Ensure only one main image per listing
+        if self.is_main:
+            ListingImage.objects.filter(listing=self.listing, is_main=True).update(is_main=False)
+        super().save(*args, **kwargs)
