@@ -227,6 +227,27 @@
                     </svg>
                     <strong>{{ listing.your_name }}</strong> | {{ listing.company }}
                 </div>
+                {% if listing.category %}
+                <div class="mt-1 text-xs text-slate-400 font-medium">
+                    {% if listing.category == 'electronics' %}Electronics{% elif listing.category == 'furniture' %}Furniture{% elif listing.category == 'tools_equipment' %}Tools & Equipment{% elif listing.category == 'raw_materials' %}Raw Materials{% elif listing.category == 'services' %}Services{% else %}Other{% endif %}
+                    {% if listing.subcategory %}
+                        •
+                        {% if listing.category == 'electronics' %}
+                            {% if listing.subcategory == 'computers' %}Computers{% elif listing.subcategory == 'phones' %}Phones{% elif listing.subcategory == 'tablets' %}Tablets{% elif listing.subcategory == 'audio_video' %}Audio/Video Equipment{% elif listing.subcategory == 'cameras' %}Cameras{% else %}Other Electronics{% endif %}
+                        {% elif listing.category == 'furniture' %}
+                            {% if listing.subcategory == 'office_chairs' %}Office Chairs{% elif listing.subcategory == 'desks' %}Desks{% elif listing.subcategory == 'cabinets' %}Cabinets{% elif listing.subcategory == 'tables' %}Tables{% elif listing.subcategory == 'seating' %}Seating{% else %}Other Furniture{% endif %}
+                        {% elif listing.category == 'tools_equipment' %}
+                            {% if listing.subcategory == 'power_tools' %}Power Tools{% elif listing.subcategory == 'hand_tools' %}Hand Tools{% elif listing.subcategory == 'machinery' %}Machinery{% elif listing.subcategory == 'safety_equipment' %}Safety Equipment{% elif listing.subcategory == 'measuring_tools' %}Measuring Tools{% else %}Other Tools & Equipment{% endif %}
+                        {% elif listing.category == 'raw_materials' %}
+                            {% if listing.subcategory == 'metals' %}Metals{% elif listing.subcategory == 'plastics' %}Plastics{% elif listing.subcategory == 'woods' %}Woods{% elif listing.subcategory == 'chemicals' %}Chemicals{% elif listing.subcategory == 'fabrics' %}Fabrics{% else %}Other Raw Materials{% endif %}
+                        {% elif listing.category == 'services' %}
+                            {% if listing.subcategory == 'consulting' %}Consulting{% elif listing.subcategory == 'maintenance' %}Maintenance{% elif listing.subcategory == 'installation' %}Installation{% elif listing.subcategory == 'training' %}Training{% elif listing.subcategory == 'design' %}Design{% else %}Other Services{% endif %}
+                        {% else %}
+                            Miscellaneous
+                        {% endif %}
+                    {% endif %}
+                </div>
+                {% endif %}
                 <p class="mt-3 text-slate-700">{{ listing.description|safe|truncatechars:120 }}</p>
 
                 {% if listing.listing_type == 'sale' and listing.price %}
@@ -356,7 +377,7 @@
                         </button>
                     </div>
 
-                    <form id="listing-form" method="post" action="{% url 'thryve_app:create_listing' %}" novalidate>
+                    <form id="listing-form" method="post" action="{% url 'thryve_app:create_listing' %}" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
 
                         <div class="mb-4">
@@ -1226,13 +1247,90 @@
             }
 
             if (!hasErrors) {
-                // If no errors, submit the form normally
-                form.submit();
+                // Submit the form via AJAX instead of normal submission
+                submitFormViaAjax();
             }
         });
 
         // Initialize real-time validation
         setupRealTimeValidation();
+
+        // Function to submit form via AJAX
+        function submitFormViaAjax() {
+            const formData = new FormData(form);
+
+            // Remove commas from price and budget fields before submission
+            const priceInput = document.getElementById('id_price');
+            const budgetInput = document.getElementById('id_budget');
+
+            if (priceInput && priceInput.value) {
+                formData.set('price', priceInput.value.replace(/,/g, ''));
+            }
+            if (budgetInput && budgetInput.value) {
+                formData.set('budget', budgetInput.value.replace(/,/g, ''));
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating...';
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Success: close modal and redirect to home page immediately
+                    closeModal();
+                    // Use replace to avoid adding to browser history
+                    window.location.replace('/home/');
+                } else {
+                    // Error: show form errors
+                    showFormErrors(data.errors);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('general', 'An error occurred. Please try again.');
+            })
+            .finally(() => {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create Listing';
+            });
+        }
+
+        // Function to refresh listings section (no longer needed)
+        function refreshListings() {
+            // This function is no longer used since we redirect instead
+        }
+
+        // Function to show success message (no longer needed)
+        function showSuccessMessage(message) {
+            // This function is no longer used since we redirect instead
+        }
+
+        // Function to show form errors from AJAX response
+        function showFormErrors(errors) {
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
+
+            // Show new errors
+            for (const [field, messages] of Object.entries(errors)) {
+                if (Array.isArray(messages)) {
+                    messages.forEach(message => {
+                        showError(field, message);
+                    });
+                } else {
+                    showError(field, messages);
+                }
+            }
+        }
 
         // Initialize drag-and-drop image upload
         const uploadArea = document.getElementById('upload-area');

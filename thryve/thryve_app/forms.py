@@ -22,7 +22,7 @@ class ListingForm(forms.ModelForm):
 
     class Meta:
         model = Listing
-        fields = ['listing_type', 'category', 'title', 'description', 'price', 'swap_for', 'budget', 'location']
+        fields = ['listing_type', 'title', 'description', 'price', 'swap_for', 'budget', 'location']
         widgets = {
             'listing_type': forms.Select(attrs={'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400'}),
             'title': forms.TextInput(attrs={'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400', 'placeholder': 'Enter listing title'}),
@@ -33,11 +33,11 @@ class ListingForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Set default category display
-        self.fields['category'].empty_label = "Choose Category"
+        # Remove category from form fields since we handle it with JavaScript
+        if 'category' in self.fields:
+            del self.fields['category']
         # Make specific fields required based on listing type
         self.fields['listing_type'].required = True
-        self.fields['category'].required = True
         self.fields['title'].required = True
         self.fields['description'].required = True
         self.fields['location'].required = True
@@ -46,3 +46,33 @@ class ListingForm(forms.ModelForm):
         self.fields['swap_for'].required = False
         self.fields['budget'].required = False
         # self.fields['image'].required = False  # Removed since we removed the image field
+
+    def clean(self):
+        cleaned_data = super().clean()
+        listing_type = cleaned_data.get('listing_type')
+
+        # Validate category and subcategory from POST data
+        if hasattr(self, 'data') and 'category' in self.data:
+            category_value = self.data.get('category', '')
+            if not category_value or category_value == '':
+                raise forms.ValidationError("Please select a category")
+
+            if '-' in category_value:
+                main_category, subcategory = category_value.split('-', 1)
+                # Validate that the main category is valid
+                valid_categories = [choice[0] for choice in Listing.CATEGORY_CHOICES]
+                if main_category not in valid_categories:
+                    raise forms.ValidationError(f"Invalid category '{main_category}'")
+
+                # Validate that the subcategory exists for this category
+                valid_subcategories = Listing.SUBCATEGORY_CHOICES.get(main_category, [])
+                valid_subcategory_values = [sub[0] for sub in valid_subcategories]
+                if subcategory not in valid_subcategory_values:
+                    raise forms.ValidationError(f"Invalid subcategory '{subcategory}' for category '{main_category}'")
+            else:
+                # Just a main category, validate it's valid
+                valid_categories = [choice[0] for choice in Listing.CATEGORY_CHOICES]
+                if category_value not in valid_categories:
+                    raise forms.ValidationError(f"Invalid category '{category_value}'")
+
+        return cleaned_data
