@@ -101,6 +101,11 @@ class Listing(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_available = models.BooleanField(default=True)
 
+    @property
+    def main_image(self):
+        """Return the main image for this listing"""
+        return self.images.filter(is_main=True).first()
+
     def __str__(self):
         return self.title
 

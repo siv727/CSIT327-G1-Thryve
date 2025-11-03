@@ -58,8 +58,8 @@ def home(request):
     from thryve_app.models import Listing
 
     form = ListingForm()
-    # Get all listings to display on the page
-    listings = Listing.objects.all().order_by('-created_at')
+    # Get all listings to display on the page with prefetched images
+    listings = Listing.objects.prefetch_related('images').all().order_by('-created_at')
 
     return render(request, 'landing/home.html', {
         'form': form,

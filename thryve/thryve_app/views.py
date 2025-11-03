@@ -12,7 +12,10 @@ def create_listing(request):
         if form.is_valid():
             listing = form.save(commit=False)
             listing.user = request.user
-            listing.your_name = request.user.email
+            try:
+                listing.your_name = request.user.profile.display_name or f"{request.user.first_name} {request.user.last_name}"
+            except:
+                listing.your_name = f"{request.user.first_name} {request.user.last_name}"
             listing.company = request.user.company_name
 
             # Parse category and subcategory from the POST data

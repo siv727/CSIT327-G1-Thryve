@@ -181,38 +181,63 @@
 
         <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {% for listing in listings %}
-            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
-                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
-                    {% if listing.image %}
-                        <img src="{{ listing.image.url }}" alt="{{ listing.title }}" class="w-full h-full object-cover">
+            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col" data-listing-id="{{ listing.id }}" data-images="{% for image in listing.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4 cursor-pointer" onclick="openImageGallery('{{ listing.id }}')">
+                    {% if listing.main_image %}
+                        <img src="{{ listing.main_image.image.url }}" alt="{{ listing.title }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-200">
                     {% else %}
                         <img src="{% static 'thryve_app/images/listing-placeholder.png' %}" alt="No image available" class="w-full h-full object-cover">
                     {% endif %}
                 </div>
 
                 <div class="flex items-center justify-between mb-3">
-                    {% if listing.listing_type == 'sale' %}
-                        <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                            </svg>
-                            SALE
-                        </span>
-                    {% elif listing.listing_type == 'swap' %}
-                        <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-                            </svg>
-                            SWAP
-                        </span>
-                    {% elif listing.listing_type == 'buy' %}
-                        <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                            </svg>
-                            BUY
-                        </span>
-                    {% endif %}
+                    <div class="flex items-center gap-2">
+                        {% if listing.listing_type == 'sale' %}
+                            <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                </svg>
+                                SALE
+                            </span>
+                        {% elif listing.listing_type == 'swap' %}
+                            <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                                </svg>
+                                SWAP
+                            </span>
+                        {% elif listing.listing_type == 'buy' %}
+                            <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                                BUY
+                            </span>
+                        {% endif %}
+                        {% if listing.category %}
+                            {% if listing.subcategory %}
+                                <span class="inline-flex items-center text-[11px] font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
+                                    {% if listing.category == 'electronics' %}
+                                        {% if listing.subcategory == 'computers' %}Computers{% elif listing.subcategory == 'phones' %}Phones{% elif listing.subcategory == 'tablets' %}Tablets{% elif listing.subcategory == 'audio_video' %}Audio/Video Equipment{% elif listing.subcategory == 'cameras' %}Cameras{% else %}Other Electronics{% endif %}
+                                    {% elif listing.category == 'furniture' %}
+                                        {% if listing.subcategory == 'office_chairs' %}Office Chairs{% elif listing.subcategory == 'desks' %}Desks{% elif listing.subcategory == 'cabinets' %}Cabinets{% elif listing.subcategory == 'tables' %}Tables{% elif listing.subcategory == 'seating' %}Seating{% else %}Other Furniture{% endif %}
+                                    {% elif listing.category == 'tools_equipment' %}
+                                        {% if listing.subcategory == 'power_tools' %}Power Tools{% elif listing.subcategory == 'hand_tools' %}Hand Tools{% elif listing.subcategory == 'machinery' %}Machinery{% elif listing.subcategory == 'safety_equipment' %}Safety Equipment{% elif listing.subcategory == 'measuring_tools' %}Measuring Tools{% else %}Other Tools & Equipment{% endif %}
+                                    {% elif listing.category == 'raw_materials' %}
+                                        {% if listing.subcategory == 'metals' %}Metals{% elif listing.subcategory == 'plastics' %}Plastics{% elif listing.subcategory == 'woods' %}Woods{% elif listing.subcategory == 'chemicals' %}Chemicals{% elif listing.subcategory == 'fabrics' %}Fabrics{% else %}Other Raw Materials{% endif %}
+                                    {% elif listing.category == 'services' %}
+                                        {% if listing.subcategory == 'consulting' %}Consulting{% elif listing.subcategory == 'maintenance' %}Maintenance{% elif listing.subcategory == 'installation' %}Installation{% elif listing.subcategory == 'training' %}Training{% elif listing.subcategory == 'design' %}Design{% else %}Other Services{% endif %}
+                                    {% else %}
+                                        Miscellaneous
+                                    {% endif %}
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center text-[11px] font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
+                                    {% if listing.category == 'electronics' %}Electronics{% elif listing.category == 'furniture' %}Furniture{% elif listing.category == 'tools_equipment' %}Tools & Equipment{% elif listing.category == 'raw_materials' %}Raw Materials{% elif listing.category == 'services' %}Services{% else %}Other{% endif %}
+                                </span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
                     <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">
                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
@@ -227,27 +252,6 @@
                     </svg>
                     <strong>{{ listing.your_name }}</strong> | {{ listing.company }}
                 </div>
-                {% if listing.category %}
-                <div class="mt-1 text-xs text-slate-400 font-medium">
-                    {% if listing.category == 'electronics' %}Electronics{% elif listing.category == 'furniture' %}Furniture{% elif listing.category == 'tools_equipment' %}Tools & Equipment{% elif listing.category == 'raw_materials' %}Raw Materials{% elif listing.category == 'services' %}Services{% else %}Other{% endif %}
-                    {% if listing.subcategory %}
-                        •
-                        {% if listing.category == 'electronics' %}
-                            {% if listing.subcategory == 'computers' %}Computers{% elif listing.subcategory == 'phones' %}Phones{% elif listing.subcategory == 'tablets' %}Tablets{% elif listing.subcategory == 'audio_video' %}Audio/Video Equipment{% elif listing.subcategory == 'cameras' %}Cameras{% else %}Other Electronics{% endif %}
-                        {% elif listing.category == 'furniture' %}
-                            {% if listing.subcategory == 'office_chairs' %}Office Chairs{% elif listing.subcategory == 'desks' %}Desks{% elif listing.subcategory == 'cabinets' %}Cabinets{% elif listing.subcategory == 'tables' %}Tables{% elif listing.subcategory == 'seating' %}Seating{% else %}Other Furniture{% endif %}
-                        {% elif listing.category == 'tools_equipment' %}
-                            {% if listing.subcategory == 'power_tools' %}Power Tools{% elif listing.subcategory == 'hand_tools' %}Hand Tools{% elif listing.subcategory == 'machinery' %}Machinery{% elif listing.subcategory == 'safety_equipment' %}Safety Equipment{% elif listing.subcategory == 'measuring_tools' %}Measuring Tools{% else %}Other Tools & Equipment{% endif %}
-                        {% elif listing.category == 'raw_materials' %}
-                            {% if listing.subcategory == 'metals' %}Metals{% elif listing.subcategory == 'plastics' %}Plastics{% elif listing.subcategory == 'woods' %}Woods{% elif listing.subcategory == 'chemicals' %}Chemicals{% elif listing.subcategory == 'fabrics' %}Fabrics{% else %}Other Raw Materials{% endif %}
-                        {% elif listing.category == 'services' %}
-                            {% if listing.subcategory == 'consulting' %}Consulting{% elif listing.subcategory == 'maintenance' %}Maintenance{% elif listing.subcategory == 'installation' %}Installation{% elif listing.subcategory == 'training' %}Training{% elif listing.subcategory == 'design' %}Design{% else %}Other Services{% endif %}
-                        {% else %}
-                            Miscellaneous
-                        {% endif %}
-                    {% endif %}
-                </div>
-                {% endif %}
                 <p class="mt-3 text-slate-700">{{ listing.description|safe|truncatechars:120 }}</p>
 
                 {% if listing.listing_type == 'sale' and listing.price %}
@@ -264,7 +268,16 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        {{ listing.location }}
+                        {% if listing.location|length > 45 %}
+                        <div class="location-scroll-container">
+                            <div class="location-scroll-text">
+                                <span>{{ listing.location }}</span>
+                                <span class="location-spacer">{{ listing.location }}</span>
+                            </div>
+                        </div>
+                        {% else %}
+                        <span>{{ listing.location }}</span>
+                        {% endif %}
                     </span>
                     <span class="flex items-center gap-1">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -333,8 +346,6 @@
                         class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
                 </div>
             </article>
-
-            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
                 <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
                     <img src="{% static 'thryve_app/images/listing-placeholder.png' %}" alt="No image available" class="w-full h-full object-cover">
                 </div>
@@ -350,7 +361,7 @@
                 <p class="mt-3 text-slate-700">We need a CNC machine for metal fabrication. Budget up to ₱15,000 for the right
                     fit.</p>
                 <div class="mt-2 text-slate-700">Budget: <span class="font-semibold">₱15,000</span></div>
-                <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
+                <div class="mt-2 flex items-center justify-between text-sm text-slate-500">
                     <span>📍 Chicago, IL</span>
                     <span>📅 1/13/2024</span>
                 </div>
@@ -363,6 +374,53 @@
             {% endfor %}
         </section>
     </main>
+
+    <!-- Image Gallery Modal -->
+    <div id="image-gallery-modal" class="fixed inset-0 bg-black bg-opacity-90 hidden z-50 flex items-center justify-center">
+        <div class="relative w-full max-w-4xl mx-4 flex flex-col items-center">
+            <!-- Close button -->
+            <button id="close-gallery" class="absolute -top-12 right-0 text-white hover:text-slate-300 text-2xl font-bold z-10">
+                ✕
+            </button>
+
+            <!-- Main image container -->
+            <div class="relative w-full h-[70vh] flex items-center justify-center bg-transparent rounded-lg overflow-hidden">
+                <img id="gallery-main-image" src="" alt="" class="max-w-full max-h-full object-contain rounded-lg transition-transform duration-300 ease-out cursor-grab" style="transform: scale(1) translate(0, 0); transform-origin: center center;" onwheel="handleWheelZoom(event)">
+
+                <!-- Navigation arrows -->
+                <button id="prev-image" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl transition-all z-10">
+                    ‹
+                </button>
+                <button id="next-image" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl transition-all z-10">
+                    ›
+                </button>
+
+                <!-- Zoom controls -->
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                    <button id="zoom-out" class="bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg transition-all" title="Zoom Out">
+                        −
+                    </button>
+                    <button id="zoom-reset" class="bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-10 h-10 flex items-center justify-center text-sm transition-all" title="Reset Zoom">
+                        1:1
+                    </button>
+                    <button id="zoom-in" class="bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg transition-all" title="Zoom In">
+                        +
+                    </button>
+                </div>
+            </div>
+
+                <!-- Image counter -->
+                <div class="text-center mt-4">
+                    <span id="image-counter" class="text-white text-sm bg-black bg-opacity-50 px-3 py-1 rounded-full"></span>
+                </div>
+
+                <!-- Thumbnail strip -->
+                <div id="thumbnail-strip" class="flex justify-center gap-2 mt-4 max-w-full overflow-x-auto">
+                    <!-- Thumbnails will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="add-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 {% if show_modal %}flex{% else %}hidden{% endif %} z-50">
         <div class="flex items-center justify-center min-h-screen p-4 w-full">
@@ -947,6 +1005,229 @@
         // Initialize category selector
         categorySelector.init();
 
+        // Image Gallery Modal functionality
+        let currentGalleryImages = [];
+        let currentImageIndex = 0;
+
+        function openImageGallery(listingId) {
+            // Get all images for this listing dynamically
+            currentGalleryImages = [];
+            // We'll populate this from data attributes on the listing cards
+            const listingCard = document.querySelector(`[data-listing-id="${listingId}"]`);
+            if (listingCard) {
+                const imagesData = listingCard.dataset.images;
+                if (imagesData) {
+                    // Split by comma and create image objects
+                    const imageUrls = imagesData.split(',');
+                    currentGalleryImages = imageUrls.map(url => ({
+                        url: url.trim(),
+                        alt: 'Listing image'
+                    }));
+                }
+            }
+
+            if (currentGalleryImages.length === 0) {
+                // Fallback: show placeholder
+                currentGalleryImages = [{
+                    url: '{% static "thryve_app/images/listing-placeholder.png" %}',
+                    alt: 'No image available'
+                }];
+            }
+
+            currentImageIndex = 0;
+            updateGalleryDisplay();
+            document.getElementById('image-gallery-modal').classList.remove('hidden');
+            document.getElementById('image-gallery-modal').classList.add('flex');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        let currentZoom = 1;
+        let currentTranslateX = 0;
+        let currentTranslateY = 0;
+        const minZoom = 0.5;
+        const maxZoom = 3;
+        const zoomStep = 0.1;
+        let isDragging = false;
+        let startX, startY, startTranslateX, startTranslateY;
+
+        function updateGalleryDisplay() {
+            const mainImage = document.getElementById('gallery-main-image');
+            const counter = document.getElementById('image-counter');
+            const thumbnailStrip = document.getElementById('thumbnail-strip');
+
+            // Reset zoom and position when changing images
+            currentZoom = 1;
+            currentTranslateX = 0;
+            currentTranslateY = 0;
+            mainImage.style.transform = `scale(${currentZoom}) translate(${currentTranslateX}px, ${currentTranslateY}px)`;
+            mainImage.style.cursor = 'grab';
+
+            // Update main image
+            mainImage.src = currentGalleryImages[currentImageIndex].url;
+            mainImage.alt = currentGalleryImages[currentImageIndex].alt;
+
+            // Update counter
+            counter.textContent = `${currentImageIndex + 1} / ${currentGalleryImages.length}`;
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prev-image');
+            const nextBtn = document.getElementById('next-image');
+
+            prevBtn.style.opacity = currentImageIndex === 0 ? '0.3' : '1';
+            prevBtn.disabled = currentImageIndex === 0;
+            nextBtn.style.opacity = currentImageIndex === currentGalleryImages.length - 1 ? '0.3' : '1';
+            nextBtn.disabled = currentImageIndex === currentGalleryImages.length - 1;
+
+            // Update thumbnails
+            thumbnailStrip.innerHTML = '';
+            currentGalleryImages.forEach((image, index) => {
+                const thumb = document.createElement('img');
+                thumb.src = image.url;
+                thumb.alt = image.alt;
+                thumb.className = `w-16 h-16 object-cover rounded cursor-pointer border-2 ${index === currentImageIndex ? 'border-brand-sky' : 'border-transparent'} hover:border-slate-400 transition-all`;
+                thumb.onclick = () => {
+                    currentImageIndex = index;
+                    updateGalleryDisplay();
+                };
+                thumbnailStrip.appendChild(thumb);
+            });
+        }
+
+        function zoomImage(direction, event = null) {
+            const mainImage = document.getElementById('gallery-main-image');
+            const container = mainImage.parentElement;
+            const containerRect = container.getBoundingClientRect();
+
+            if (direction === 'reset') {
+                currentZoom = 1;
+                currentTranslateX = 0;
+                currentTranslateY = 0;
+                mainImage.style.transform = `scale(${currentZoom}) translate(${currentTranslateX}px, ${currentTranslateY}px)`;
+                mainImage.style.cursor = 'grab';
+                return;
+            }
+
+            // Calculate mouse position relative to container center
+            let originX = 50; // percentage from left
+            let originY = 50; // percentage from top
+
+            if (event) {
+                const mouseX = event.clientX - containerRect.left;
+                const mouseY = event.clientY - containerRect.top;
+                originX = (mouseX / containerRect.width) * 100;
+                originY = (mouseY / containerRect.height) * 100;
+            }
+
+            // Set transform origin
+            mainImage.style.transformOrigin = `${originX}% ${originY}%`;
+
+            const oldZoom = currentZoom;
+
+            if (direction === 'in' && currentZoom < maxZoom) {
+                currentZoom = Math.min(currentZoom + zoomStep, maxZoom);
+            } else if (direction === 'out' && currentZoom > minZoom) {
+                currentZoom = Math.max(currentZoom - zoomStep, minZoom);
+            }
+
+            // Update cursor
+            mainImage.style.cursor = currentZoom > 1 ? 'grab' : 'grab';
+
+            mainImage.style.transform = `scale(${currentZoom}) translate(${currentTranslateX}px, ${currentTranslateY}px)`;
+        }
+
+        function handleMouseDown(e) {
+            if (currentZoom <= 1) return;
+
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            startTranslateX = currentTranslateX;
+            startTranslateY = currentTranslateY;
+
+            const mainImage = document.getElementById('gallery-main-image');
+            mainImage.style.cursor = 'grabbing';
+            e.preventDefault();
+        }
+
+        function handleMouseMove(e) {
+            if (!isDragging || currentZoom <= 1) return;
+
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+
+            currentTranslateX = startTranslateX + deltaX;
+            currentTranslateY = startTranslateY + deltaY;
+
+            const mainImage = document.getElementById('gallery-main-image');
+            mainImage.style.transform = `scale(${currentZoom}) translate(${currentTranslateX}px, ${currentTranslateY}px)`;
+        }
+
+        function handleMouseUp() {
+            if (isDragging) {
+                isDragging = false;
+                const mainImage = document.getElementById('gallery-main-image');
+                mainImage.style.cursor = currentZoom > 1 ? 'grab' : 'grab';
+            }
+        }
+
+        function handleWheelZoom(event) {
+            event.preventDefault();
+
+            const direction = event.deltaY > 0 ? 'out' : 'in';
+            zoomImage(direction, event);
+        }
+
+        function closeImageGallery() {
+            document.getElementById('image-gallery-modal').classList.add('hidden');
+            document.getElementById('image-gallery-modal').classList.remove('flex');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        function navigateImage(direction) {
+            if (direction === 'prev' && currentImageIndex > 0) {
+                currentImageIndex--;
+            } else if (direction === 'next' && currentImageIndex < currentGalleryImages.length - 1) {
+                currentImageIndex++;
+            }
+            updateGalleryDisplay();
+        }
+
+        // Event listeners for gallery modal
+        document.getElementById('close-gallery').addEventListener('click', closeImageGallery);
+        document.getElementById('prev-image').addEventListener('click', () => navigateImage('prev'));
+        document.getElementById('next-image').addEventListener('click', () => navigateImage('next'));
+
+        // Zoom controls
+        document.getElementById('zoom-in').addEventListener('click', (e) => zoomImage('in', e));
+        document.getElementById('zoom-out').addEventListener('click', (e) => zoomImage('out', e));
+        document.getElementById('zoom-reset').addEventListener('click', () => zoomImage('reset'));
+
+        // Pan/drag functionality
+        const mainImage = document.getElementById('gallery-main-image');
+        mainImage.addEventListener('mousedown', handleMouseDown);
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+
+        // Close gallery on background click
+        document.getElementById('image-gallery-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('image-gallery-modal')) {
+                closeImageGallery();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('image-gallery-modal').classList.contains('flex')) {
+                if (e.key === 'Escape') {
+                    closeImageGallery();
+                } else if (e.key === 'ArrowLeft') {
+                    navigateImage('prev');
+                } else if (e.key === 'ArrowRight') {
+                    navigateImage('next');
+                }
+            }
+        });
+
         // Initialize Quill Rich Text Editor with snow theme
         const quill = new Quill('#description-editor-content', {
             theme: 'snow',
@@ -1124,6 +1405,38 @@
             }
             .suggestions-dropdown::-webkit-scrollbar-thumb:hover {
                 background: #94a3b8;
+            }
+
+            /* Location scrolling animation */
+            .location-scroll-container {
+                width: 160px;
+                overflow: hidden;
+                white-space: nowrap;
+                position: relative;
+            }
+
+            .location-spacer {
+                margin-left: 3rem;
+            }
+
+            .location-scroll-text {
+                display: inline-flex;
+                width: max-content;
+                animation: scroll-left 15s linear infinite;
+                animation-delay: 1s;
+            }
+
+            .location-scroll-text:hover {
+                animation-play-state: paused;
+            }
+
+            @keyframes scroll-left {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(calc(-50% - 1.5rem));
+                }
             }
         `;
         document.head.appendChild(style);
