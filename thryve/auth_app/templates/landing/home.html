@@ -181,7 +181,7 @@
 
         <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {% for listing in listings %}
-            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col" data-listing-id="{{ listing.id }}" data-images="{% for image in listing.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}" data-title="{{ listing.title }}" data-description="{{ listing.description|safe }}" data-price="{% if listing.listing_type == 'sale' and listing.price %}₱{{ listing.price }}{% endif %}" data-swap-for="{% if listing.listing_type == 'swap' and listing.swap_for %}{{ listing.swap_for }}{% endif %}" data-budget="{% if listing.listing_type == 'buy' and listing.budget %}₱{{ listing.budget }}{% endif %}" data-location="{{ listing.location }}" data-created-at="{{ listing.created_at|date:'m/d/Y' }}" data-your-name="{{ listing.your_name }}" data-company="{{ listing.company }}" data-listing-type="{{ listing.listing_type }}" data-category="{% if listing.category %}{{ listing.category }}{% endif %}" data-subcategory="{% if listing.subcategory %}{{ listing.subcategory }}{% endif %}">
+            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col hover:-translate-y-2 hover:shadow-lg transition-all duration-300" data-listing-id="{{ listing.id }}" data-images="{% for image in listing.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}" data-title="{{ listing.title }}" data-description="{{ listing.description|safe }}" data-price="{% if listing.listing_type == 'sale' and listing.price %}₱{{ listing.price }}{% endif %}" data-swap-for="{% if listing.listing_type == 'swap' and listing.swap_for %}{{ listing.swap_for }}{% endif %}" data-budget="{% if listing.listing_type == 'buy' and listing.budget %}₱{{ listing.budget }}{% endif %}" data-location="{{ listing.location }}" data-created-at="{{ listing.created_at|date:'m/d/Y' }}" data-your-name="{{ listing.your_name }}" data-company="{{ listing.company }}" data-listing-type="{{ listing.listing_type }}" data-category="{% if listing.category %}{{ listing.category }}{% endif %}" data-subcategory="{% if listing.subcategory %}{{ listing.subcategory }}{% endif %}">
                 <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4 cursor-pointer" onclick="openImageGallery('{{ listing.id }}')">
                     {% if listing.main_image %}
                         <img src="{{ listing.main_image.image.url }}" alt="{{ listing.title }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-200">
@@ -261,16 +261,22 @@
                     </svg>
                     <strong>{{ listing.your_name }}</strong> | {{ listing.company }}
                 </div>
-                {% if listing.description|length > 80 %}
-                <div class="description-scroll-container mt-3">
-                    <div class="description-scroll-text text-slate-700">
-                        <span>{{ listing.description|safe|truncatechars:120 }}</span>
-                        <span class="description-spacer">{{ listing.description|safe|truncatechars:120 }}</span>
-                    </div>
+                <div class="relative mt-3 text-slate-700 h-[1.5rem] overflow-hidden">
+                    {% with stripped_desc=listing.description|striptags %}
+                        {% if stripped_desc|length > 120 %}
+
+                            <p class="whitespace-nowrap inline-block pr-16">
+                                 {{ stripped_desc|slice:":95" }}
+                            </p>
+
+                            <span class="absolute right-0 bottom-0 bg-white pl-2 z-10 cursor-pointer" onclick="openListingDetailsModal('{{ listing.id }}')">
+                                <span class="font-semibold text-slate-700 hover:text-brand-leaf transition-colors duration-200">... See More</span>
+                            </span>
+                        {% else %}
+                            <p>{{ stripped_desc }}</p>
+                        {% endif %}
+                    {% endwith %}
                 </div>
-                {% else %}
-                <p class="mt-3 text-slate-700">{{ listing.description|safe|truncatechars:120 }}</p>
-                {% endif %}
 
                 {% if listing.listing_type == 'sale' and listing.price %}
                     <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">₱{{ listing.price }}</div>
@@ -1701,7 +1707,7 @@
                 transform: translateX(0);
             }
 
-            .title-scroll-container:hover .title-scroll-text {
+            article:hover .title-scroll-text {
                 animation: scroll-left-title 8s linear infinite;
                 animation-delay: 1s;
             }
