@@ -521,12 +521,189 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-slate-900">Delete Listing</h2>
+                    <button id="close-delete-modal" class="text-slate-400 hover:text-slate-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-slate-700">Are you sure you want to delete this listing? This action cannot be undone.</p>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button id="cancel-delete-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                    <button id="confirm-delete-btn" class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">Delete Listing</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Listing Modal -->
+    <div id="edit-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4 w-full">
+            <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-slate-900">Edit Listing</h2>
+                        <button id="close-edit-modal" class="text-slate-400 hover:text-slate-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form id="edit-listing-form" method="post" action="" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="listing_type" value="sale" class="text-brand-sky focus:ring-brand-sky" required>
+                                    <span class="ml-2 text-slate-700">For Sale</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="listing_type" value="swap" class="text-brand-sky focus:ring-brand-sky" required>
+                                    <span class="ml-2 text-slate-700">For Swap</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="listing_type" value="buy" class="text-brand-sky focus:ring-brand-sky" required>
+                                    <span class="ml-2 text-slate-700">Looking to Buy</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="edit_id_category" class="block text-slate-700 font-semibold mb-2">Category *</label>
+                            <div class="relative">
+                                <input type="hidden" name="category" id="edit_id_category" value="">
+                                <div id="edit-category-selector-trigger" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-sky flex items-center justify-between">
+                                    <span id="edit-category-display-text" class="text-slate-400">Choose Category</span>
+                                    <span class="text-slate-400">▾</span>
+                                </div>
+
+                                <div id="edit-category-selector" class="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg z-10 hidden">
+                                    <div class="flex">
+                                        <div class="w-1/2 border-r border-slate-200 max-h-64 overflow-y-auto">
+                                            <div class="p-2">
+                                                <div class="text-xs text-slate-500 font-medium mb-2 px-2">CATEGORIES</div>
+                                                <div id="edit-main-categories" class="space-y-1">
+                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="electronics">Electronics</button>
+                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="furniture">Furniture</button>
+                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="tools_equipment">Tools & Equipment</button>
+                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="raw_materials">Raw Materials</button>
+                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="services">Services</button>
+                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="other">Other</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="w-1/2 max-h-64 overflow-y-auto">
+                                            <div class="p-2">
+                                                <div class="text-xs text-slate-500 font-medium mb-2 px-2">SUBCATEGORIES</div>
+                                                <div id="edit-subcategories" class="space-y-1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="edit_id_title" class="block text-slate-700 font-semibold mb-2">Title *</label>
+                            <input type="text" name="title" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" placeholder="Enter listing title" id="edit_id_title">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="edit_id_description" class="block text-slate-700 font-semibold mb-2">Description *</label>
+                            <div id="edit-description-editor" class="rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-brand-sky">
+                                <div id="edit-description-toolbar" class="bg-gray-50 border-b border-slate-200 p-1 rounded-t-lg">
+                                    <button type="button" class="ql-bold text-slate-700 hover:text-slate-900 px-2 py-1 rounded" title="Bold"></button>
+                                    <button type="button" class="ql-italic text-slate-700 hover:text-slate-900 px-2 py-1 rounded" title="Italicize"></button>
+                                    <button type="button" class="ql-list text-slate-700 hover:text-slate-900 px-2 py-1 rounded" value="bullet" title="Bullet List"></button>
+                                    <button type="button" class="ql-list text-slate-700 hover:text-slate-900 px-2 py-1 rounded" value="ordered" title="Numbered List"></button>
+                                    <button type="button" class="ql-link text-slate-700 hover:text-slate-900 px-2 py-1 rounded" title="Link"></button>
+                                </div>
+                                <div id="edit-description-editor-content" class="min-h-[120px] p-3 font-medium text-slate-900" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;"></div>
+                            </div>
+                            <input type="hidden" name="description" id="edit_id_description">
+                        </div>
+
+                        <div class="mb-4" id="edit-dynamic-field-container">
+                            <label id="edit-dynamic-field-label" for="edit_id_price" class="block text-slate-700 font-semibold mb-2">Price *</label>
+                            <div class="relative" id="edit-price-container">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
+                                <input type="text" name="price" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" placeholder="0.00" id="edit_id_price">
+                            </div>
+                            <div class="hidden" id="edit-swap-container">
+                                <input type="text" name="swap_for" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="What are you looking to swap for?" id="edit_id_swap_for">
+                            </div>
+                            <div class="relative hidden" id="edit-budget-container">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
+                                <input type="text" name="budget" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" id="edit_id_budget">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="edit_id_location" class="block text-slate-700 font-semibold mb-2">Location *</label>
+                            <div class="relative">
+                                <input type="text" name="location" id="edit_id_location" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" placeholder="City, State/Country">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="edit_id_images" class="block text-slate-700 font-semibold mb-2">Add More Images</label>
+                            <div id="edit-upload-area" class="relative border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors cursor-pointer bg-slate-50 hover:bg-slate-100/50">
+                                <div class="flex flex-col items-center justify-center space-y-4">
+                                    <div id="edit-upload-icon" class="w-12 h-12 text-slate-400">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                        </svg>
+                                    </div>
+                                    <div id="edit-upload-text">
+                                        <p class="text-lg font-medium text-slate-700">Drag and drop your images here</p>
+                                        <p class="text-sm text-slate-500">or <span class="text-brand-sky font-medium">click to browse</span></p>
+                                    </div>
+                                    <div id="edit-image-counter" class="text-sm font-medium text-slate-600">
+                                        Photos: 0/5
+                                    </div>
+                                </div>
+                                <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp" id="edit_id_images" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            </div>
+
+                            <div class="mt-2 text-sm text-slate-500">
+                                <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
+                            </div>
+
+                            <div id="edit-image-previews" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+                            <div id="edit-reorder-instructions" class="mt-2 text-xs text-slate-500 text-center hidden">Drag thumbnails to reorder • First image becomes the main photo</div>
+                        </div>
+
+                        <div class="flex justify-end gap-3">
+                            <button type="button" id="edit-cancel-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                            <button type="submit" id="edit-submit-btn" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update Listing</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="add-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 {% if show_modal %}flex{% else %}hidden{% endif %} z-50">
         <div class="flex items-center justify-center min-h-screen p-4 w-full">
             <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 id="modal-title" class="text-xl font-bold text-slate-900">{% if edit_listing_id %}Edit Listing{% else %}Create New Listing{% endif %}</h2>
+                        <h2 class="text-xl font-bold text-slate-900">Create New Listing</h2>
                         <button id="close-modal" class="text-slate-400 hover:text-slate-600">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -534,7 +711,7 @@
                         </button>
                     </div>
 
-                    <form id="listing-form" method="post" action="{% if edit_listing_id %}{% url 'thryve_app:edit_listing' edit_listing_id %}{% else %}{% url 'thryve_app:create_listing' %}{% endif %}" enctype="multipart/form-data" novalidate>
+                    <form id="listing-form" method="post" action="{% url 'thryve_app:create_listing' %}" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
 
                         <div class="mb-4">
@@ -684,43 +861,14 @@
 
                         <div class="flex justify-end gap-3">
                             <button type="button" id="cancel-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                            <button type="submit" id="submit-btn" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">{% if edit_listing_id %}Update Listing{% else %}Create Listing{% endif %}</button>
+                            <button type="submit" id="submit-btn" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Create Listing</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Delete Listing Modal -->
-    <div id="delete-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-auto">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-slate-900">Delete Listing</h2>
-                    <button id="close-delete-modal" class="text-slate-400 hover:text-slate-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="mb-6">
-                    <p class="text-slate-700 mb-4">Are you sure you want to delete "<span id="delete-listing-title" class="font-semibold"></span>"?</p>
-                    <p class="text-slate-500 text-sm">This action cannot be undone. All listing data and images will be permanently removed.</p>
-                </div>
-
-                <form id="delete-listing-form" method="post">
-                    {% csrf_token %}
-                    <div class="flex justify-end gap-3">
-                        <button type="button" id="cancel-delete-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                        <button type="submit" class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">Delete Listing</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
+    
     <script>
         // Nominatim Geocoder Implementation - OPTIMIZED
         function initLocationAutocomplete() {
@@ -864,6 +1012,62 @@
             }
         }
 
+        // Delete listing modal variables
+        let currentDeleteListingId = null;
+
+        // Edit listing modal variables
+        let currentEditListingId = null;
+
+        // Delete modal event listeners
+        document.getElementById('close-delete-modal').addEventListener('click', closeDeleteListingModal);
+        document.getElementById('cancel-delete-btn').addEventListener('click', closeDeleteListingModal);
+        document.getElementById('confirm-delete-btn').addEventListener('click', function() {
+            if (currentDeleteListingId) {
+                // Create a form to submit DELETE request
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/listings/delete-listing/${currentDeleteListingId}/`;
+
+                // Add CSRF token
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = 'csrfmiddlewaretoken';
+                    csrfInput.value = csrfToken.value;
+                    form.appendChild(csrfInput);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+
+        // Close delete modal when clicking outside
+        document.getElementById('delete-listing-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('delete-listing-modal')) {
+                closeDeleteListingModal();
+            }
+        });
+
+        // Edit modal event listeners
+        document.getElementById('close-edit-modal').addEventListener('click', closeEditListingModal);
+        document.getElementById('edit-cancel-btn').addEventListener('click', closeEditListingModal);
+
+        // Close edit modal when clicking outside
+        document.getElementById('edit-listing-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('edit-listing-modal')) {
+                closeEditListingModal();
+            }
+        });
+
+        // Edit listing type change handler
+        document.querySelectorAll('#edit-listing-modal input[name="listing_type"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                updateEditDynamicField(e.target.value);
+            });
+        });
+
         // Modal functionality
         const modal = document.getElementById('add-listing-modal');
         const addListingBtn = document.getElementById('add-listing-btn');
@@ -871,16 +1075,9 @@
         const cancelBtn = document.getElementById('cancel-btn');
         const submitBtn = document.getElementById('submit-btn');
         const form = document.getElementById('listing-form');
-        const modalTitle = document.getElementById('modal-title');
-
-        // Delete modal functionality
-        const deleteModal = document.getElementById('delete-listing-modal');
-        const closeDeleteModalBtn = document.getElementById('close-delete-modal');
-        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
 
         // Open modal
         addListingBtn.addEventListener('click', () => {
-            resetModalToCreateMode();
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             // Initialize geocoder after a short delay to ensure DOM is ready
@@ -894,18 +1091,10 @@
         const closeModal = () => {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
-            resetModalToCreateMode();
-        };
-
-        const closeDeleteModal = () => {
-            deleteModal.classList.add('hidden');
-            deleteModal.classList.remove('flex');
         };
 
         closeModalBtn.addEventListener('click', closeModal);
         cancelBtn.addEventListener('click', closeModal);
-        closeDeleteModalBtn.addEventListener('click', closeDeleteModal);
-        cancelDeleteBtn.addEventListener('click', closeDeleteModal);
 
         // Close modal when clicking outside
         modal.addEventListener('click', (e) => {
@@ -913,32 +1102,6 @@
                 closeModal();
             }
         });
-
-        deleteModal.addEventListener('click', (e) => {
-            if (e.target === deleteModal) {
-                closeDeleteModal();
-            }
-        });
-
-        // Function to reset modal to create mode
-        function resetModalToCreateMode() {
-            modalTitle.textContent = 'Create New Listing';
-            form.action = '{% url "thryve_app:create_listing" %}';
-            submitBtn.textContent = 'Create Listing';
-            form.reset();
-            // Reset category selector
-            categorySelector.displayText.textContent = 'Choose Category';
-            categorySelector.displayText.classList.remove('text-slate-900');
-            categorySelector.displayText.classList.add('text-slate-400');
-            categorySelector.hiddenInput.value = '';
-            // Clear subcategories
-            categorySelector.subcategories.innerHTML = '';
-            // Reset dynamic fields
-            updateDynamicField('sale');
-            // Clear images
-            selectedFiles = [];
-            updateImageDisplay();
-        }
 
         // Dynamic form fields based on listing type
         const listingTypeRadios = form.querySelectorAll('input[name="listing_type"]');
@@ -1575,59 +1738,143 @@
             }
         });
 
-        // Edit listing modal function
-        function openEditListingModal(listingId) {
-            // Find the listing data from the data attributes
-            const listingCard = document.querySelector(`[data-listing-id="${listingId}"]`);
-            if (!listingCard) return;
-
-            // Get data from attributes
-            const title = listingCard.dataset.title;
-            const description = listingCard.dataset.description;
-            const price = listingCard.dataset.price;
-            const swapFor = listingCard.dataset.swapFor;
-            const budget = listingCard.dataset.budget;
-            const location = listingCard.dataset.location;
-            const listingType = listingCard.dataset.listingType;
-            const category = listingCard.dataset.category;
-            const subcategory = listingCard.dataset.subcategory;
-            const images = listingCard.dataset.images;
-
-            // Populate the add listing modal with existing data
-            populateEditModal(listingId, {
-                title, description, price, swapFor, budget, location,
-                listingType, category, subcategory, images
-            });
-
-            // Show the modal
-            const modal = document.getElementById('add-listing-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-
-            // Initialize geocoder after a short delay
-            setTimeout(() => {
-                initLocationAutocomplete();
-            }, 300);
+        // Delete listing modal functions
+        function openDeleteListingModal(listingId) {
+            currentDeleteListingId = listingId;
+            document.getElementById('delete-listing-modal').classList.remove('hidden');
+            document.getElementById('delete-listing-modal').classList.add('flex');
         }
 
-        // Delete listing modal function
-        function openDeleteListingModal(listingId) {
-            // Find the listing data
-            const listingCard = document.querySelector(`[data-listing-id="${listingId}"]`);
-            if (!listingCard) return;
+        function closeDeleteListingModal() {
+            document.getElementById('delete-listing-modal').classList.add('hidden');
+            document.getElementById('delete-listing-modal').classList.remove('flex');
+            currentDeleteListingId = null;
+        }
 
-            const title = listingCard.dataset.title;
+        // Edit listing modal functions
+        function openEditListingModal(listingId) {
+            currentEditListingId = listingId;
 
-            // Populate and show delete modal
-            const deleteModal = document.getElementById('delete-listing-modal');
-            const deleteTitle = document.getElementById('delete-listing-title');
-            const deleteForm = document.getElementById('delete-listing-form');
+            // Fetch listing data and populate modal
+            fetch(`/listings/edit-listing/${listingId}/`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    populateEditModal(data.listing);
+                    document.getElementById('edit-listing-modal').classList.remove('hidden');
+                    document.getElementById('edit-listing-modal').classList.add('flex');
+                } else {
+                    alert('Error loading listing data');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error loading listing data');
+            });
+        }
 
-            deleteTitle.textContent = title;
-            deleteForm.action = `/listings/delete-listing/${listingId}/`;
+        function closeEditListingModal() {
+            document.getElementById('edit-listing-modal').classList.add('hidden');
+            document.getElementById('edit-listing-modal').classList.remove('flex');
+            currentEditListingId = null;
+        }
 
-            deleteModal.classList.remove('hidden');
-            deleteModal.classList.add('flex');
+        function openEditListingModal(listingId) {
+            currentEditListingId = listingId;
+
+            // Fetch listing data and populate modal
+            fetch(`/listings/edit-listing/${listingId}/`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    populateEditModal(data.listing);
+                    document.getElementById('edit-listing-modal').classList.remove('hidden');
+                    document.getElementById('edit-listing-modal').classList.add('flex');
+                } else {
+                    alert('Error loading listing data');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error loading listing data');
+            });
+        }
+
+        function closeEditListingModal() {
+            document.getElementById('edit-listing-modal').classList.add('hidden');
+            document.getElementById('edit-listing-modal').classList.remove('flex');
+            currentEditListingId = null;
+        }
+
+        function populateEditModal(listing) {
+            // Populate form fields
+            document.querySelector(`input[name="listing_type"][value="${listing.listing_type}"]`).checked = true;
+
+            // Set category
+            const categoryValue = listing.subcategory ? `${listing.category}-${listing.subcategory}` : listing.category;
+            document.getElementById('edit_id_category').value = categoryValue;
+            document.getElementById('edit-category-display-text').textContent = getCategoryDisplayText(listing.category, listing.subcategory);
+            document.getElementById('edit-category-display-text').classList.remove('text-slate-400');
+            document.getElementById('edit-category-display-text').classList.add('text-slate-900');
+
+            document.getElementById('edit_id_title').value = listing.title;
+            document.getElementById('edit_id_description').value = listing.description;
+            document.getElementById('edit-description-editor-content').innerHTML = listing.description;
+
+            // Set dynamic field
+            if (listing.listing_type === 'sale' && listing.price) {
+                document.getElementById('edit_id_price').value = listing.price;
+            } else if (listing.listing_type === 'swap' && listing.swap_for) {
+                document.getElementById('edit_id_swap_for').value = listing.swap_for;
+            } else if (listing.listing_type === 'buy' && listing.budget) {
+                document.getElementById('edit_id_budget').value = listing.budget;
+            }
+
+            document.getElementById('edit_id_location').value = listing.location;
+
+            // Update form action
+            document.getElementById('edit-listing-form').action = `/listings/edit-listing/${listing.id}/`;
+
+            // Trigger dynamic field update
+            updateEditDynamicField(listing.listing_type);
+        }
+
+        function getCategoryDisplayText(category, subcategory) {
+            // This would need to match the category display logic from the template
+            // For simplicity, return a basic version
+            return subcategory || category;
+        }
+
+        function updateEditDynamicField(selectedType) {
+            const priceContainer = document.getElementById('edit-price-container');
+            const swapContainer = document.getElementById('edit-swap-container');
+            const budgetContainer = document.getElementById('edit-budget-container');
+            const label = document.getElementById('edit-dynamic-field-label');
+
+            priceContainer.classList.add('hidden');
+            swapContainer.classList.add('hidden');
+            budgetContainer.classList.add('hidden');
+
+            if (selectedType === 'sale') {
+                priceContainer.classList.remove('hidden');
+                label.textContent = 'Price *';
+            } else if (selectedType === 'swap') {
+                swapContainer.classList.remove('hidden');
+                label.textContent = 'Looking to Swap For *';
+            } else if (selectedType === 'buy') {
+                budgetContainer.classList.remove('hidden');
+                label.textContent = 'Budget *';
+            }
         }
 
         // Initialize Quill Rich Text Editor with snow theme
@@ -1637,6 +1884,21 @@
             modules: {
                 toolbar: '#description-toolbar'
             }
+        });
+
+        // Initialize Quill for edit modal
+        const editQuill = new Quill('#edit-description-editor-content', {
+            theme: 'snow',
+            placeholder: 'Describe your item or service',
+            modules: {
+                toolbar: '#edit-description-toolbar'
+            }
+        });
+
+        // Sync edit Quill content to hidden input
+        editQuill.on('text-change', function() {
+            const html = editQuill.root.innerHTML;
+            document.getElementById('edit_id_description').value = html;
         });
 
         // Function to format number with commas
@@ -1970,73 +2232,6 @@
         // Initialize real-time validation
         setupRealTimeValidation();
 
-        // Function to populate edit modal with listing data
-        function populateEditModal(listingId, data) {
-            // Set modal title and form action
-            modalTitle.textContent = 'Edit Listing';
-            form.action = `/listings/edit-listing/${listingId}/`;
-            submitBtn.textContent = 'Update Listing';
-
-            // Populate form fields
-            document.getElementById('id_title').value = data.title || '';
-            document.getElementById('id_location').value = data.location || '';
-
-            // Set listing type radio buttons
-            const listingTypeRadios = form.querySelectorAll('input[name="listing_type"]');
-            listingTypeRadios.forEach(radio => {
-                radio.checked = radio.value === data.listingType;
-            });
-
-            // Set category
-            let categoryValue = data.category;
-            if (data.subcategory) {
-                categoryValue = `${data.category}-${data.subcategory}`;
-            }
-            categorySelector.hiddenInput.value = categoryValue;
-            categorySelector.displayText.textContent = categoryValue || 'Choose Category';
-            categorySelector.displayText.classList.remove('text-slate-400');
-            categorySelector.displayText.classList.add('text-slate-900');
-
-            // Update category selector visual state
-            categorySelector.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('bg-brand-sky', 'text-white');
-                btn.classList.add('hover:bg-brand-sky/10');
-                if (btn.dataset.category === data.category) {
-                    btn.classList.add('bg-brand-sky', 'text-white');
-                    btn.classList.remove('hover:bg-brand-sky/10');
-                }
-            });
-
-            // Populate subcategories
-            if (data.category) {
-                categorySelector.selectCategory(data.category);
-            }
-
-            // Populate dynamic fields based on listing type
-            updateDynamicField(data.listingType);
-
-            if (data.listingType === 'sale' && data.price) {
-                document.getElementById('id_price').value = data.price.replace('₱', '').replace(/,/g, '');
-            } else if (data.listingType === 'swap' && data.swapFor) {
-                document.getElementById('id_swap_for').value = data.swapFor;
-            } else if (data.listingType === 'buy' && data.budget) {
-                document.getElementById('id_budget').value = data.budget.replace('₱', '').replace(/,/g, '');
-            }
-
-            // Populate Quill editor with description
-            if (data.description) {
-                quill.root.innerHTML = data.description;
-                document.getElementById('id_description').value = data.description;
-            }
-
-            // Clear existing images and populate with current listing images
-            selectedFiles = [];
-            updateImageDisplay();
-
-            // Note: For editing, we don't pre-populate the image upload area with existing images
-            // as that would be complex. Users can add new images which will be appended to existing ones.
-        }
-
         // Function to submit form via AJAX
         function submitFormViaAjax() {
             const formData = new FormData(form);
@@ -2053,9 +2248,8 @@
             }
 
             // Show loading state
-            const originalText = submitBtn.textContent;
             submitBtn.disabled = true;
-            submitBtn.textContent = modalTitle.textContent.includes('Edit') ? 'Updating...' : 'Creating...';
+            submitBtn.textContent = 'Creating...';
 
             fetch(form.action, {
                 method: 'POST',
@@ -2068,10 +2262,10 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Success: close modal and redirect to current page
+                    // Success: close modal and redirect to home page immediately
                     closeModal();
-                    // Reload the page to show updated listings
-                    window.location.reload();
+                    // Use replace to avoid adding to browser history
+                    window.location.replace('/home/');
                 } else {
                     // Error: show form errors
                     showFormErrors(data.errors);
@@ -2084,7 +2278,7 @@
             .finally(() => {
                 // Reset button state
                 submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
+                submitBtn.textContent = 'Create Listing';
             });
         }
 

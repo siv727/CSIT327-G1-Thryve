@@ -114,8 +114,11 @@ def edit_listing(request, listing_id):
                         is_main=(current_images_count == 0 and i == 0)  # First image is main if no images exist
                     )
 
-            messages.success(request, 'Your listing has been updated successfully!')
-            return redirect('thryve_app:my_listings')
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': True, 'message': 'Your listing has been updated successfully!'})
+            else:
+                messages.success(request, 'Your listing has been updated successfully!')
+                return redirect('thryve_app:my_listings')
         else:
             # Form is invalid
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -125,6 +128,23 @@ def edit_listing(request, listing_id):
                     errors[field] = [str(error) for error in error_list]
                 return JsonResponse({'success': False, 'errors': errors})
     else:
+        # Handle AJAX request for modal data
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            listing_data = {
+                'id': listing.id,
+                'listing_type': listing.listing_type,
+                'category': listing.category,
+                'subcategory': listing.subcategory,
+                'title': listing.title,
+                'description': listing.description,
+                'price': str(listing.price) if listing.price else None,
+                'swap_for': listing.swap_for,
+                'budget': str(listing.budget) if listing.budget else None,
+                'location': listing.location,
+                'images': [{'id': img.id, 'url': img.image.url, 'is_main': img.is_main} for img in listing.images.all()]
+            }
+            return JsonResponse({'success': True, 'listing': listing_data})
+
         form = ListingForm(instance=listing)
 
     # Prepare category value for the form
