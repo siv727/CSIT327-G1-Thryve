@@ -64,6 +64,19 @@
                     {% endif %}
                 </a>
 
+                <a href="{% url 'thryve_app:my_listings' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <span class="leading-none">My Listings</span>
+                    {% if active == 'my_listings' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
+
                 <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -119,14 +132,16 @@
     <main class="max-w-[1200px] mx-auto px-5 py-8">
         <div class="flex items-start justify-between gap-4 mb-6">
             <div>
-                <h1 class="text-[38px] leading-[1.1] font-extrabold">Marketplace</h1>
-                <p class="text-slate-600 mt-1">Buy, sell, or swap equipment and services with confidence.</p>
+                <h1 class="text-[38px] leading-[1.1] font-extrabold">{% if is_my_listings %}My Listings{% else %}Marketplace{% endif %}</h1>
+                <p class="text-slate-600 mt-1">{% if is_my_listings %}Manage your equipment and service listings.{% else %}Buy, sell, or swap equipment and services with confidence.{% endif %}</p>
             </div>
+            {% if not is_my_listings %}
             <button id="add-listing-btn"
                 class="inline-flex items-center gap-2 rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold px-4 py-2.5 shadow-soft transition">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" d="M12 5v14M5 12h14"/></svg>
                 Add Listing
             </button>
+            {% endif %}
         </div>
 
         <section class="bg-white/90 backdrop-blur rounded-xl shadow-soft border border-slate-100 p-5 mb-8">
@@ -182,7 +197,7 @@
         <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {% for listing in listings %}
             <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col hover:-translate-y-2 hover:shadow-lg transition-all duration-300" data-listing-id="{{ listing.id }}" data-images="{% for image in listing.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}" data-title="{{ listing.title }}" data-description="{{ listing.description|safe }}" data-price="{% if listing.listing_type == 'sale' and listing.price %}₱{{ listing.price }}{% endif %}" data-swap-for="{% if listing.listing_type == 'swap' and listing.swap_for %}{{ listing.swap_for }}{% endif %}" data-budget="{% if listing.listing_type == 'buy' and listing.budget %}₱{{ listing.budget }}{% endif %}" data-location="{{ listing.location }}" data-created-at="{{ listing.created_at|date:'m/d/Y' }}" data-your-name="{{ listing.your_name }}" data-company="{{ listing.company }}" data-listing-type="{{ listing.listing_type }}" data-category="{% if listing.category %}{{ listing.category }}{% endif %}" data-subcategory="{% if listing.subcategory %}{{ listing.subcategory }}{% endif %}">
-                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4 cursor-pointer" onclick="openImageGallery('{{ listing.id }}')">
+                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4 cursor-pointer" onclick="openListingDetailsModal('{{ listing.id }}')">
                     {% if listing.main_image %}
                         <img src="{{ listing.main_image.image.url }}" alt="{{ listing.title }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-200">
                     {% else %}
@@ -246,14 +261,14 @@
                     </span>
                 </div>
                 {% if listing.title|length > 25 %}
-                <div class="title-scroll-container">
-                    <div class="title-scroll-text">
-                        <span class="text-lg font-bold">{{ listing.title }}</span>
-                        <span class="title-spacer text-lg font-bold">{{ listing.title }}</span>
+                <div class="title-scroll-container relative">
+                    <div class="title-scroll-text whitespace-nowrap">
+                        <h3 class="text-lg font-bold inline-block">{{ listing.title }}</h3>
+                        <span class="title-spacer text-lg font-bold inline-block" aria-hidden="true">{{ listing.title }}</span>
                     </div>
                 </div>
                 {% else %}
-                <h3 class="text-lg font-bold">{{ listing.title }}</h3>
+                <h3 class="text-lg font-bold truncate">{{ listing.title }}</h3>
                 {% endif %}
                 <div class="mt-0.5 text-slate-500 font-medium flex items-center gap-1">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -287,20 +302,20 @@
                 {% endif %}
 
                 <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
-                    <span class="flex items-center gap-1">
+                    <span class="flex items-center gap-1 max-w-[60%]">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        {% if listing.location|length > 45 %}
+                        {% if listing.location|length > 20 %}
                         <div class="location-scroll-container">
-                            <div class="location-scroll-text">
-                                <span>{{ listing.location }}</span>
-                                <span class="location-spacer">{{ listing.location }}</span>
+                            <div class="location-scroll-text whitespace-nowrap">
+                                <span class="inline-block">{{ listing.location }}</span>
+                                <span class="location-spacer inline-block" aria-hidden="true">{{ listing.location }}</span>
                             </div>
                         </div>
                         {% else %}
-                        <span>{{ listing.location }}</span>
+                        <span class="truncate">{{ listing.location }}</span>
                         {% endif %}
                     </span>
                     <span class="flex items-center gap-1">
@@ -311,8 +326,13 @@
                     </span>
                 </div>
                 <div class="mt-5 grid grid-cols-2 gap-3">
-                    <button onclick="openListingDetailsModal('{{ listing.id }}')" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</button>
-                    <a href="#" class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
+                    {% if is_my_listings %}
+                        <button onclick="openEditListingModal('{{ listing.id }}')" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">Edit Details</button>
+                        <button onclick="openDeleteListingModal('{{ listing.id }}')" class="text-center rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5">Delete</button>
+                    {% else %}
+                        <button onclick="openListingDetailsModal('{{ listing.id }}')" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</button>
+                        <a href="#" class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
+                    {% endif %}
                 </div>
             </article>
             {% empty %}
@@ -506,7 +526,7 @@
             <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-bold text-slate-900">Create New Listing</h2>
+                        <h2 id="modal-title" class="text-xl font-bold text-slate-900">{% if edit_listing_id %}Edit Listing{% else %}Create New Listing{% endif %}</h2>
                         <button id="close-modal" class="text-slate-400 hover:text-slate-600">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -514,7 +534,7 @@
                         </button>
                     </div>
 
-                    <form id="listing-form" method="post" action="{% url 'thryve_app:create_listing' %}" enctype="multipart/form-data" novalidate>
+                    <form id="listing-form" method="post" action="{% if edit_listing_id %}{% url 'thryve_app:edit_listing' edit_listing_id %}{% else %}{% url 'thryve_app:create_listing' %}{% endif %}" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
 
                         <div class="mb-4">
@@ -664,14 +684,43 @@
 
                         <div class="flex justify-end gap-3">
                             <button type="button" id="cancel-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                            <button type="submit" id="submit-btn" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Create Listing</button>
+                            <button type="submit" id="submit-btn" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">{% if edit_listing_id %}Update Listing{% else %}Create Listing{% endif %}</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <!-- Delete Listing Modal -->
+    <div id="delete-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-slate-900">Delete Listing</h2>
+                    <button id="close-delete-modal" class="text-slate-400 hover:text-slate-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-slate-700 mb-4">Are you sure you want to delete "<span id="delete-listing-title" class="font-semibold"></span>"?</p>
+                    <p class="text-slate-500 text-sm">This action cannot be undone. All listing data and images will be permanently removed.</p>
+                </div>
+
+                <form id="delete-listing-form" method="post">
+                    {% csrf_token %}
+                    <div class="flex justify-end gap-3">
+                        <button type="button" id="cancel-delete-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                        <button type="submit" class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">Delete Listing</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Nominatim Geocoder Implementation - OPTIMIZED
         function initLocationAutocomplete() {
@@ -822,9 +871,16 @@
         const cancelBtn = document.getElementById('cancel-btn');
         const submitBtn = document.getElementById('submit-btn');
         const form = document.getElementById('listing-form');
+        const modalTitle = document.getElementById('modal-title');
+
+        // Delete modal functionality
+        const deleteModal = document.getElementById('delete-listing-modal');
+        const closeDeleteModalBtn = document.getElementById('close-delete-modal');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
 
         // Open modal
         addListingBtn.addEventListener('click', () => {
+            resetModalToCreateMode();
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             // Initialize geocoder after a short delay to ensure DOM is ready
@@ -838,10 +894,18 @@
         const closeModal = () => {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
+            resetModalToCreateMode();
+        };
+
+        const closeDeleteModal = () => {
+            deleteModal.classList.add('hidden');
+            deleteModal.classList.remove('flex');
         };
 
         closeModalBtn.addEventListener('click', closeModal);
         cancelBtn.addEventListener('click', closeModal);
+        closeDeleteModalBtn.addEventListener('click', closeDeleteModal);
+        cancelDeleteBtn.addEventListener('click', closeDeleteModal);
 
         // Close modal when clicking outside
         modal.addEventListener('click', (e) => {
@@ -849,6 +913,32 @@
                 closeModal();
             }
         });
+
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target === deleteModal) {
+                closeDeleteModal();
+            }
+        });
+
+        // Function to reset modal to create mode
+        function resetModalToCreateMode() {
+            modalTitle.textContent = 'Create New Listing';
+            form.action = '{% url "thryve_app:create_listing" %}';
+            submitBtn.textContent = 'Create Listing';
+            form.reset();
+            // Reset category selector
+            categorySelector.displayText.textContent = 'Choose Category';
+            categorySelector.displayText.classList.remove('text-slate-900');
+            categorySelector.displayText.classList.add('text-slate-400');
+            categorySelector.hiddenInput.value = '';
+            // Clear subcategories
+            categorySelector.subcategories.innerHTML = '';
+            // Reset dynamic fields
+            updateDynamicField('sale');
+            // Clear images
+            selectedFiles = [];
+            updateImageDisplay();
+        }
 
         // Dynamic form fields based on listing type
         const listingTypeRadios = form.querySelectorAll('input[name="listing_type"]');
@@ -1485,6 +1575,61 @@
             }
         });
 
+        // Edit listing modal function
+        function openEditListingModal(listingId) {
+            // Find the listing data from the data attributes
+            const listingCard = document.querySelector(`[data-listing-id="${listingId}"]`);
+            if (!listingCard) return;
+
+            // Get data from attributes
+            const title = listingCard.dataset.title;
+            const description = listingCard.dataset.description;
+            const price = listingCard.dataset.price;
+            const swapFor = listingCard.dataset.swapFor;
+            const budget = listingCard.dataset.budget;
+            const location = listingCard.dataset.location;
+            const listingType = listingCard.dataset.listingType;
+            const category = listingCard.dataset.category;
+            const subcategory = listingCard.dataset.subcategory;
+            const images = listingCard.dataset.images;
+
+            // Populate the add listing modal with existing data
+            populateEditModal(listingId, {
+                title, description, price, swapFor, budget, location,
+                listingType, category, subcategory, images
+            });
+
+            // Show the modal
+            const modal = document.getElementById('add-listing-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            // Initialize geocoder after a short delay
+            setTimeout(() => {
+                initLocationAutocomplete();
+            }, 300);
+        }
+
+        // Delete listing modal function
+        function openDeleteListingModal(listingId) {
+            // Find the listing data
+            const listingCard = document.querySelector(`[data-listing-id="${listingId}"]`);
+            if (!listingCard) return;
+
+            const title = listingCard.dataset.title;
+
+            // Populate and show delete modal
+            const deleteModal = document.getElementById('delete-listing-modal');
+            const deleteTitle = document.getElementById('delete-listing-title');
+            const deleteForm = document.getElementById('delete-listing-form');
+
+            deleteTitle.textContent = title;
+            deleteForm.action = `/listings/delete-listing/${listingId}/`;
+
+            deleteModal.classList.remove('hidden');
+            deleteModal.classList.add('flex');
+        }
+
         // Initialize Quill Rich Text Editor with snow theme
         const quill = new Quill('#description-editor-content', {
             theme: 'snow',
@@ -1547,153 +1692,35 @@
         // Apply custom styling to match Thryve theme
         const style = document.createElement('style');
         style.textContent = `
-            /* --- Base Quill Overrides --- */
+            /* --- Base Quill Overrides (No changes needed for animation) --- */
+            .ql-toolbar.ql-snow { border: none; padding: 0; background-color: transparent; border-radius: 0; }
+            .ql-container.ql-snow { border: none; }
+            .ql-snow .ql-toolbar:after { content: none; }
+            .ql-snow .ql-toolbar button { padding: 6px 8px; border-radius: 0.25rem; border: none; background: transparent; transition: background-color 0.15s; min-height: 36px; }
+            .ql-snow .ql-toolbar button svg { width: 24px; height: 24px; transform: none; }
+            .ql-snow .ql-toolbar button:hover, .ql-snow .ql-toolbar button:focus { background-color: #e2e8f0 !important; color: #1e293b; }
+            .ql-snow .ql-toolbar button.ql-active { background-color: #83e6f5 !important; color: #0f172a !important; }
+            .ql-snow .ql-editor { font-size: 16px; line-height: 1.5; }
+            .ql-snow .ql-editor ul, .ql-snow .ql-editor ol { padding-left: 1.5em; }
+            .ql-snow .ql-editor.ql-blank::before { color: #94a3b8 !important; left: 0.75rem !important; padding-left: 0 !important; font-style: normal; font-size: 16px; }
+            .ql-container .ql-editor { padding: 0; }
+            .ql-editor strong, .ql-editor b { font-weight: 800; }
+            .ql-editor em, .ql-editor i { font-style: italic; }
+            .ql-editor a { color: #3b82f6; text-decoration: underline; }
+            .suggestions-dropdown { scrollbar-width: thin; scrollbar-color: #cbd5e1 #f1f5f9; }
+            .suggestions-dropdown::-webkit-scrollbar { width: 6px; }
+            .suggestions-dropdown::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 0 0 8px 0; }
+            .suggestions-dropdown::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+            .suggestions-dropdown::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-            /* Remove the default top border/shadow from the toolbar that comes with quill.snow.css */
-            .ql-toolbar.ql-snow {
-                border: none;
-                padding: 0;
-                background-color: transparent; /* Use container's background */
-                border-radius: 0;
-            }
-
-            /* Remove the default border from the editor body container */
-            .ql-container.ql-snow {
-                border: none;
-            }
-
-            /* Remove the bottom border from the toolbar (which is often double-bordering) */
-            .ql-snow .ql-toolbar:after {
-                content: none;
-            }
-
-            /* --- Toolbar Button Styling --- */
-
-            /* Reset default padding and remove the button border/background */
-            .ql-snow .ql-toolbar button {
-                padding: 6px 8px; /* Adjusted padding for centered icons */
-                border-radius: 0.25rem;
-                border: none;
-                background: transparent;
-                transition: background-color 0.15s;
-                min-height: 36px; /* Increased min-height for better feel with larger icons */
-            }
-
-            /* ---------------------------------------------------- */
-            /* 🔥 NEW FIX: Set explicit width/height on the SVG icon */
-            /* ---------------------------------------------------- */
-            .ql-snow .ql-toolbar button svg {
-                width: 24px;
-                height: 24px;
-                transform: none;
-            }
-            /* ---------------------------------------------------- */
-
-            /* Ensure the active/hover state matches the Thryve theme colors */
-            .ql-snow .ql-toolbar button:hover,
-            .ql-snow .ql-toolbar button:focus {
-                background-color: #e2e8f0 !important; /* Tailwind's slate-200/300-ish */
-                color: #1e293b; /* Tailwind's slate-800-ish for icons */
-            }
-
-            /* Style for the active (clicked) state */
-            .ql-snow .ql-toolbar button.ql-active {
-                background-color: #83e6f5 !important; /* brand-sky color */
-                color: #0f172a !important; /* brand-ink color for high contrast */
-            }
-
-            /* --- Editor Content Styling (.ql-editor is the content area) --- */
-
-            /* Match font size to other form fields */
-            .ql-snow .ql-editor {
-                font-size: 16px;
-                line-height: 1.5;
-            }
-
-            /* Ensure list bullets/numbers are visible */
-            .ql-snow .ql-editor ul,
-            .ql-snow .ql-editor ol {
-                padding-left: 1.5em;
-            }
-
-            /* --- Placeholder Alignment and Color Fix --- */
-
-            .ql-snow .ql-editor.ql-blank::before {
-                /* Set the correct color to match the Title input placeholder */
-                color: #94a3b8 !important;
-
-                left: 0.75rem !important;
-                padding-left: 0 !important;
-
-                font-style: normal;
-                font-size: 16px;
-            }
-
-            /* Remove any default editor padding if your p-3 class is already handling it */
-            .ql-container .ql-editor {
-                padding: 0; /* Let your p-3 class handle the padding on the content div */
-            }
-
-            /* Additional formatting styles */
-            .ql-editor strong, .ql-editor b {
-                font-weight: 800;
-            }
-            .ql-editor em, .ql-editor i {
-                font-style: italic;
-            }
-            .ql-editor a {
-                color: #3b82f6;
-                text-decoration: underline;
-            }
-            .suggestions-dropdown {
-                scrollbar-width: thin;
-                scrollbar-color: #cbd5e1 #f1f5f9;
-            }
-            .suggestions-dropdown::-webkit-scrollbar {
-                width: 6px;
-            }
-            .suggestions-dropdown::-webkit-scrollbar-track {
-                background: #f1f5f9;
-                border-radius: 0 0 8px 0;
-            }
-            .suggestions-dropdown::-webkit-scrollbar-thumb {
-                background: #cbd5e1;
-                border-radius: 3px;
-            }
-            .suggestions-dropdown::-webkit-scrollbar-thumb:hover {
-                background: #94a3b8;
-            }
-
-            /* Location scrolling animation */
-            .location-scroll-container {
-                width: 160px;
-                overflow: hidden;
-                white-space: nowrap;
-                position: relative;
-            }
-
-            .location-spacer {
-                margin-left: 3rem;
-            }
-
-            .location-scroll-text {
-                display: inline-flex;
-                width: max-content;
-                transition: transform 0.5s ease-out;
-                transform: translateX(0);
-            }
-
-            .location-scroll-container:hover .location-scroll-text {
-                animation: scroll-left-location 15s linear infinite;
-                animation-delay: 1s;
-            }
+            /* --- ENHANCED ANIMATION CONTAINERS --- */
 
             /* Title scrolling animation */
             .title-scroll-container {
-                width: 200px;
+                width: 100%;
                 overflow: hidden;
-                white-space: nowrap;
                 position: relative;
+                max-width: 100%; /* Prevent container from expanding */
             }
 
             .title-spacer {
@@ -1705,63 +1732,113 @@
                 width: max-content;
                 transition: transform 0.5s ease-out;
                 transform: translateX(0);
+                -webkit-transform: translateX(0);
             }
 
+            /* Trigger animation on parent article hover */
             article:hover .title-scroll-text {
                 animation: scroll-left-title 8s linear infinite;
+                -webkit-animation: scroll-left-title 8s linear infinite;
                 animation-delay: 1s;
+                -webkit-animation-delay: 1s;
             }
 
-            /* Description scrolling animation */
-            .description-scroll-container {
+            /* Location scrolling animation */
+            .location-scroll-container {
                 width: 100%;
                 overflow: hidden;
-                white-space: nowrap;
                 position: relative;
+                display: inline-block;
+                max-width: 100%; /* Prevent container from expanding */
             }
 
-            .description-spacer {
-                margin-left: 2rem;
+            .location-spacer {
+                margin-left: 3rem;
             }
 
-            .description-scroll-text {
+            .location-scroll-text {
                 display: inline-flex;
                 width: max-content;
                 transition: transform 0.5s ease-out;
                 transform: translateX(0);
+                -webkit-transform: translateX(0);
             }
 
-            .description-scroll-container:hover .description-scroll-text {
-                animation: scroll-left-description 12s linear infinite;
-                animation-delay: 2s;
+            /* Trigger animation on parent article hover */
+            article:hover .location-scroll-text {
+                animation: scroll-left-location 15s linear infinite;
+                -webkit-animation: scroll-left-location 15s linear infinite;
+                animation-delay: 1s;
+                -webkit-animation-delay: 1s;
             }
 
-            /* Separate keyframes for each animation type */
+            /* Keyframes remain the same */
             @keyframes scroll-left-location {
-                0% {
-                    transform: translateX(0);
-                }
-                100% {
-                    transform: translateX(calc(-50% - 1.5rem));
-                }
+                0% { transform: translateX(0); }
+                100% { transform: translateX(calc(-50% - 1.5rem)); }
+            }
+
+            @-webkit-keyframes scroll-left-location {
+                0% { -webkit-transform: translateX(0); }
+                100% { -webkit-transform: translateX(calc(-50% - 1.5rem)); }
             }
 
             @keyframes scroll-left-title {
-                0% {
-                    transform: translateX(0);
-                }
-                100% {
-                    transform: translateX(calc(-50% - 1rem));
-                }
+                0% { transform: translateX(0); }
+                100% { transform: translateX(calc(-50% - 1rem)); }
+            }
+
+            @-webkit-keyframes scroll-left-title {
+                0% { -webkit-transform: translateX(0); }
+                100% { -webkit-transform: translateX(calc(-50% - 1rem)); }
+            }
+
+            /* CRITICAL FIX: Force containers to not expand beyond parent */
+            article .title-scroll-container,
+            article .location-scroll-container {
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            /* Ensure parent containers have proper width constraints */
+            article h3,
+            article .text-lg.font-bold {
+                max-width: 100%;
+            }
+
+            article .flex.items-center.gap-1.max-w-\[60\%\] {
+                overflow: hidden;
+            }
+
+            /* Separate keyframes for each animation type (CRITICAL: Needs prefixes) */
+            @keyframes scroll-left-location {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(calc(-50% - 1.5rem)); }
+            }
+
+            @-webkit-keyframes scroll-left-location {
+                0% { -webkit-transform: translateX(0); }
+                100% { -webkit-transform: translateX(calc(-50% - 1.5rem)); }
+            }
+
+            @keyframes scroll-left-title {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(calc(-50% - 1rem)); }
+            }
+
+            @-webkit-keyframes scroll-left-title {
+                0% { -webkit-transform: translateX(0); }
+                100% { -webkit-transform: translateX(calc(-50% - 1rem)); }
             }
 
             @keyframes scroll-left-description {
-                0% {
-                    transform: translateX(0);
-                }
-                100% {
-                    transform: translateX(calc(-50% - 1rem));
-                }
+                0% { transform: translateX(0); }
+                100% { transform: translateX(calc(-50% - 1rem)); }
+            }
+
+            @-webkit-keyframes scroll-left-description {
+                0% { -webkit-transform: translateX(0); }
+                100% { -webkit-transform: translateX(calc(-50% - 1rem)); }
             }
         `;
         document.head.appendChild(style);
@@ -1893,6 +1970,73 @@
         // Initialize real-time validation
         setupRealTimeValidation();
 
+        // Function to populate edit modal with listing data
+        function populateEditModal(listingId, data) {
+            // Set modal title and form action
+            modalTitle.textContent = 'Edit Listing';
+            form.action = `/listings/edit-listing/${listingId}/`;
+            submitBtn.textContent = 'Update Listing';
+
+            // Populate form fields
+            document.getElementById('id_title').value = data.title || '';
+            document.getElementById('id_location').value = data.location || '';
+
+            // Set listing type radio buttons
+            const listingTypeRadios = form.querySelectorAll('input[name="listing_type"]');
+            listingTypeRadios.forEach(radio => {
+                radio.checked = radio.value === data.listingType;
+            });
+
+            // Set category
+            let categoryValue = data.category;
+            if (data.subcategory) {
+                categoryValue = `${data.category}-${data.subcategory}`;
+            }
+            categorySelector.hiddenInput.value = categoryValue;
+            categorySelector.displayText.textContent = categoryValue || 'Choose Category';
+            categorySelector.displayText.classList.remove('text-slate-400');
+            categorySelector.displayText.classList.add('text-slate-900');
+
+            // Update category selector visual state
+            categorySelector.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-sky', 'text-white');
+                btn.classList.add('hover:bg-brand-sky/10');
+                if (btn.dataset.category === data.category) {
+                    btn.classList.add('bg-brand-sky', 'text-white');
+                    btn.classList.remove('hover:bg-brand-sky/10');
+                }
+            });
+
+            // Populate subcategories
+            if (data.category) {
+                categorySelector.selectCategory(data.category);
+            }
+
+            // Populate dynamic fields based on listing type
+            updateDynamicField(data.listingType);
+
+            if (data.listingType === 'sale' && data.price) {
+                document.getElementById('id_price').value = data.price.replace('₱', '').replace(/,/g, '');
+            } else if (data.listingType === 'swap' && data.swapFor) {
+                document.getElementById('id_swap_for').value = data.swapFor;
+            } else if (data.listingType === 'buy' && data.budget) {
+                document.getElementById('id_budget').value = data.budget.replace('₱', '').replace(/,/g, '');
+            }
+
+            // Populate Quill editor with description
+            if (data.description) {
+                quill.root.innerHTML = data.description;
+                document.getElementById('id_description').value = data.description;
+            }
+
+            // Clear existing images and populate with current listing images
+            selectedFiles = [];
+            updateImageDisplay();
+
+            // Note: For editing, we don't pre-populate the image upload area with existing images
+            // as that would be complex. Users can add new images which will be appended to existing ones.
+        }
+
         // Function to submit form via AJAX
         function submitFormViaAjax() {
             const formData = new FormData(form);
@@ -1909,8 +2053,9 @@
             }
 
             // Show loading state
+            const originalText = submitBtn.textContent;
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Creating...';
+            submitBtn.textContent = modalTitle.textContent.includes('Edit') ? 'Updating...' : 'Creating...';
 
             fetch(form.action, {
                 method: 'POST',
@@ -1923,10 +2068,10 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Success: close modal and redirect to home page immediately
+                    // Success: close modal and redirect to current page
                     closeModal();
-                    // Use replace to avoid adding to browser history
-                    window.location.replace('/home/');
+                    // Reload the page to show updated listings
+                    window.location.reload();
                 } else {
                     // Error: show form errors
                     showFormErrors(data.errors);
@@ -1939,7 +2084,7 @@
             .finally(() => {
                 // Reset button state
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Create Listing';
+                submitBtn.textContent = originalText;
             });
         }
 
