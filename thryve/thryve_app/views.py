@@ -85,50 +85,8 @@ def edit_listing(request, listing_id):
         messages.error(request, 'Listing not found.')
         return redirect('thryve_app:my_listings')
 
-    if request.method == 'POST':
-        form = ListingForm(request.POST, request.FILES, instance=listing)
-        if form.is_valid():
-            listing = form.save(commit=False)
-
-            # Parse category and subcategory from the POST data
-            category_value = request.POST.get('category', '')
-            if '-' in category_value:
-                main_category, subcategory = category_value.split('-', 1)
-                listing.category = main_category
-                listing.subcategory = subcategory
-            else:
-                listing.category = category_value
-                listing.subcategory = None
-
-            listing.save()
-
-            # Handle multiple image uploads (only add new ones, don't replace existing)
-            images = request.FILES.getlist('images')
-            if images:
-                # Get current image count
-                current_images_count = listing.images.count()
-                for i, image_file in enumerate(images[:5 - current_images_count]):  # Limit to remaining slots
-                    ListingImage.objects.create(
-                        listing=listing,
-                        image=image_file,
-                        is_main=(current_images_count == 0 and i == 0)  # First image is main if no images exist
-                    )
-
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': True, 'message': 'Your listing has been updated successfully!'})
-            else:
-                messages.success(request, 'Your listing has been updated successfully!')
-                return redirect('thryve_app:my_listings')
-        else:
-            # Form is invalid
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                # Return JSON error response for AJAX
-                errors = {}
-                for field, error_list in form.errors.items():
-                    errors[field] = [str(error) for error in error_list]
-                return JsonResponse({'success': False, 'errors': errors})
-    else:
-        # Handle AJAX request for modal data
+    if request.method == 'GET':
+        # Handle AJAX GET request for modal data
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             listing_data = {
                 'id': listing.id,
@@ -137,26 +95,89 @@ def edit_listing(request, listing_id):
                 'subcategory': listing.subcategory,
                 'title': listing.title,
                 'description': listing.description,
-                'price': str(listing.price) if listing.price else None,
-                'swap_for': listing.swap_for,
-                'budget': str(listing.budget) if listing.budget else None,
+                'price': str(listing.price) if listing.price else '',
+                'swap_for': listing.swap_for or '',
+                'budget': str(listing.budget) if listing.budget else '',
                 'location': listing.location,
-                'images': [{'id': img.id, 'url': img.image.url, 'is_main': img.is_main} for img in listing.images.all()]
+                'images': [{'id': img.id, 'image': img.image.url, 'is_main': img.is_main} for img in listing.images.all()]
             }
             return JsonResponse({'success': True, 'listing': listing_data})
+        else:
+            form = ListingForm(instance=listing)
+            # Prepare category value for the form
+            category_value = listing.category
+            if listing.subcategory:
+                category_value = f"{listing.category}-{listing.subcategory}"
+            return render(request, 'thryve_app/edit_listing.html', {
+                'form': form,
+                'listing': listing,
+                'category_value': category_value
+            })
 
-        form = ListingForm(instance=listing)
+    # Handle POST request for updating
+    form = ListingForm(request.POST, request.FILES, instance=listing)
+    if form.is_valid():
+        listing = form.save(commit=False)
 
-    # Prepare category value for the form
-    category_value = listing.category
-    if listing.subcategory:
-        category_value = f"{listing.category}-{listing.subcategory}"
+        # Parse category and subcategory from the POST data
+        category_value = request.POST.get('category', '')
+        if '-' in category_value:
+            main_category, subcategory = category_value.split('-', 1)
+            listing.category = main_category
+            listing.subcategory = subcategory
+        else:
+            listing.category = category_value
+            listing.subcategory = None
 
-    return render(request, 'thryve_app/edit_listing.html', {
-        'form': form,
-        'listing': listing,
-        'category_value': category_value
-    })
+        listing.save()
+
+        # Handle image reordering first (from POST data)
+        image_order = request.POST.get('image_order', '')
+        if image_order:
+            image_ids = [int(id.strip()) for id in image_order.split(',') if id.strip()]
+            for index, image_id in enumerate(image_ids):
+                try:
+                    image_obj = ListingImage.objects.get(id=image_id, listing=listing)
+                    image_obj.is_main = (index == 0)  # First image is main
+                    image_obj.save()
+                except ListingImage.DoesNotExist:
+                    pass  # Skip if image doesn't exist
+
+        # Handle multiple image uploads (only add new ones, don't replace existing)
+        images = request.FILES.getlist('images')
+        if images:
+            # Get current image count
+            current_images_count = listing.images.count()
+            for i, image_file in enumerate(images[:5 - current_images_count]):  # Limit to remaining slots
+                ListingImage.objects.create(
+                    listing=listing,
+                    image=image_file,
+                    is_main=(current_images_count == 0 and i == 0)  # First image is main if no images exist
+                )
+
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'message': 'Your listing has been updated successfully!'})
+        else:
+            messages.success(request, 'Your listing has been updated successfully!')
+            return redirect('thryve_app:my_listings')
+    else:
+        # Form is invalid
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Return JSON error response for AJAX
+            errors = {}
+            for field, error_list in form.errors.items():
+                errors[field] = [str(error) for error in error_list]
+            return JsonResponse({'success': False, 'errors': errors})
+        else:
+            # Prepare category value for the form
+            category_value = listing.category
+            if listing.subcategory:
+                category_value = f"{listing.category}-{listing.subcategory}"
+            return render(request, 'thryve_app/edit_listing.html', {
+                'form': form,
+                'listing': listing,
+                'category_value': category_value
+            })
 
 @login_required(login_url='login')
 def delete_listing(request, listing_id):

@@ -197,7 +197,7 @@
         <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {% for listing in listings %}
             <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col hover:-translate-y-2 hover:shadow-lg transition-all duration-300" data-listing-id="{{ listing.id }}" data-images="{% for image in listing.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}" data-title="{{ listing.title }}" data-description="{{ listing.description|safe }}" data-price="{% if listing.listing_type == 'sale' and listing.price %}₱{{ listing.price }}{% endif %}" data-swap-for="{% if listing.listing_type == 'swap' and listing.swap_for %}{{ listing.swap_for }}{% endif %}" data-budget="{% if listing.listing_type == 'buy' and listing.budget %}₱{{ listing.budget }}{% endif %}" data-location="{{ listing.location }}" data-created-at="{{ listing.created_at|date:'m/d/Y' }}" data-your-name="{{ listing.your_name }}" data-company="{{ listing.company }}" data-listing-type="{{ listing.listing_type }}" data-category="{% if listing.category %}{{ listing.category }}{% endif %}" data-subcategory="{% if listing.subcategory %}{{ listing.subcategory }}{% endif %}">
-                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4 cursor-pointer" onclick="openListingDetailsModal('{{ listing.id }}')">
+                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4 cursor-pointer" onclick="openImageGallery('{{ listing.id }}')">
                     {% if listing.main_image %}
                         <img src="{{ listing.main_image.image.url }}" alt="{{ listing.title }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-200">
                     {% else %}
@@ -288,7 +288,7 @@
                                 <span class="font-semibold text-slate-700 hover:text-brand-leaf transition-colors duration-200">... See More</span>
                             </span>
                         {% else %}
-                            <p>{{ stripped_desc }}</p>
+                            <div class="description-preview">{{ listing.description|safe }}</div>
                         {% endif %}
                     {% endwith %}
                 </div>
@@ -331,7 +331,7 @@
                         <button onclick="openDeleteListingModal('{{ listing.id }}')" class="text-center rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5">Delete</button>
                     {% else %}
                         <button onclick="openListingDetailsModal('{{ listing.id }}')" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</button>
-                        <a href="#" class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
+                        <button onclick="openBookNowModal('{{ listing.id }}')" class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</button>
                     {% endif %}
                 </div>
             </article>
@@ -661,7 +661,14 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="edit_id_images" class="block text-slate-700 font-semibold mb-2">Add More Images</label>
+                            <label for="edit_id_images" class="block text-slate-700 font-semibold mb-2">Listing Images</label>
+
+                            <!-- All Images Display (Current + New) -->
+                            <div id="edit-all-images" class="mb-4">
+                                <!-- Current images will be populated by JavaScript -->
+                            </div>
+
+                            <!-- Upload Area -->
                             <div id="edit-upload-area" class="relative border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors cursor-pointer bg-slate-50 hover:bg-slate-100/50">
                                 <div class="flex flex-col items-center justify-center space-y-4">
                                     <div id="edit-upload-icon" class="w-12 h-12 text-slate-400">
@@ -683,14 +690,11 @@
                             <div class="mt-2 text-sm text-slate-500">
                                 <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
                             </div>
-
-                            <div id="edit-image-previews" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
-                            <div id="edit-reorder-instructions" class="mt-2 text-xs text-slate-500 text-center hidden">Drag thumbnails to reorder • First image becomes the main photo</div>
                         </div>
 
                         <div class="flex justify-end gap-3">
                             <button type="button" id="edit-cancel-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                            <button type="submit" id="edit-submit-btn" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update Listing</button>
+                            <button type="button" id="edit-submit-btn" onclick="submitEditListingForm()" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update Listing</button>
                         </div>
                     </form>
                 </div>
@@ -1018,6 +1022,187 @@
         // Edit listing modal variables
         let currentEditListingId = null;
 
+        // Edit category selector functionality
+        const editCategorySelector = {
+            trigger: document.getElementById('edit-category-selector-trigger'),
+            selector: document.getElementById('edit-category-selector'),
+            displayText: document.getElementById('edit-category-display-text'),
+            hiddenInput: document.getElementById('edit_id_category'),
+            mainCategories: document.getElementById('edit-main-categories'),
+            subcategories: document.getElementById('edit-subcategories'),
+            activeCategory: null,
+            selectedSubcategory: null,
+
+            subcategoriesData: {
+                'electronics': [
+                    {value: 'computers', label: 'Computers'},
+                    {value: 'phones', label: 'Phones'},
+                    {value: 'tablets', label: 'Tablets'},
+                    {value: 'audio_video', label: 'Audio/Video Equipment'},
+                    {value: 'cameras', label: 'Cameras'},
+                    {value: 'other_electronics', label: 'Other Electronics'},
+                ],
+                'furniture': [
+                    {value: 'office_chairs', label: 'Office Chairs'},
+                    {value: 'desks', label: 'Desks'},
+                    {value: 'cabinets', label: 'Cabinets'},
+                    {value: 'tables', label: 'Tables'},
+                    {value: 'seating', label: 'Seating'},
+                    {value: 'other_furniture', label: 'Other Furniture'},
+                ],
+                'tools_equipment': [
+                    {value: 'power_tools', label: 'Power Tools'},
+                    {value: 'hand_tools', label: 'Hand Tools'},
+                    {value: 'machinery', label: 'Machinery'},
+                    {value: 'safety_equipment', label: 'Safety Equipment'},
+                    {value: 'measuring_tools', label: 'Measuring Tools'},
+                    {value: 'other_tools', label: 'Other Tools & Equipment'},
+                ],
+                'raw_materials': [
+                    {value: 'metals', label: 'Metals'},
+                    {value: 'plastics', label: 'Plastics'},
+                    {value: 'woods', label: 'Woods'},
+                    {value: 'chemicals', label: 'Chemicals'},
+                    {value: 'fabrics', label: 'Fabrics'},
+                    {value: 'other_materials', label: 'Other Raw Materials'},
+                ],
+                'services': [
+                    {value: 'consulting', label: 'Consulting'},
+                    {value: 'maintenance', label: 'Maintenance'},
+                    {value: 'installation', label: 'Installation'},
+                    {value: 'training', label: 'Training'},
+                    {value: 'design', label: 'Design'},
+                    {value: 'other_services', label: 'Other Services'},
+                ],
+                'other': [
+                    {value: 'miscellaneous', label: 'Miscellaneous'},
+                ],
+            },
+
+            init() {
+                if (this.trigger && this.selector) {
+                    this.setupEventListeners();
+                }
+            },
+
+            setupEventListeners() {
+                this.trigger.addEventListener('click', () => {
+                    this.toggleSelector();
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!this.trigger.contains(e.target) && !this.selector.contains(e.target)) {
+                        this.closeSelector();
+                    }
+                });
+
+                this.mainCategories.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('category-btn')) {
+                        const category = e.target.dataset.category;
+                        this.selectCategory(category);
+                    }
+                });
+
+                this.subcategories.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('subcategory-btn')) {
+                        const value = e.target.dataset.value;
+                        const label = e.target.textContent;
+                        this.selectSubcategory(value, label);
+                    }
+                });
+            },
+
+            selectCategory(category) {
+                this.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('bg-brand-sky', 'text-white');
+                    btn.classList.add('hover:bg-brand-sky/10');
+                });
+
+                const activeBtn = this.mainCategories.querySelector(`[data-category="${category}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.add('bg-brand-sky', 'text-white');
+                    activeBtn.classList.remove('hover:bg-brand-sky/10');
+                }
+
+                this.activeCategory = category;
+                this.updateSubcategories(category);
+            },
+
+            updateSubcategories(category) {
+                this.subcategories.innerHTML = '';
+                const subs = this.subcategoriesData[category] || [];
+
+                subs.forEach(sub => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded subcategory-btn';
+                    btn.dataset.value = `${category}-${sub.value}`;
+                    btn.textContent = sub.label;
+                    this.subcategories.appendChild(btn);
+                });
+            },
+
+            selectSubcategory(value, label) {
+                this.subcategories.querySelectorAll('.subcategory-btn').forEach(btn => {
+                    btn.classList.remove('bg-brand-leaf', 'text-white');
+                    btn.classList.add('hover:bg-brand-sky/10');
+                });
+
+                const selectedBtn = this.subcategories.querySelector(`[data-value="${value}"]`);
+                if (selectedBtn) {
+                    selectedBtn.classList.add('bg-brand-leaf', 'text-white');
+                    selectedBtn.classList.remove('hover:bg-brand-sky/10');
+                }
+
+                this.displayText.textContent = label;
+                this.displayText.classList.remove('text-slate-500');
+                this.displayText.classList.add('text-slate-900');
+                this.hiddenInput.value = value;
+
+                this.selectedSubcategory = value.split('-')[1];
+                this.closeSelector();
+            },
+
+            toggleSelector() {
+                if (this.selector.classList.contains('hidden')) {
+                    this.openSelector();
+                } else {
+                    this.closeSelector();
+                }
+            },
+
+            openSelector() {
+                this.selector.classList.remove('hidden');
+                this.selector.classList.add('flex');
+                this.trigger.classList.add('ring-2', 'ring-brand-sky');
+            },
+
+            closeSelector() {
+                this.selector.classList.add('hidden');
+                this.selector.classList.remove('flex');
+                this.trigger.classList.remove('ring-2', 'ring-brand-sky');
+            },
+
+            setCategory(category, subcategory) {
+                this.activeCategory = category;
+                this.selectedSubcategory = subcategory;
+
+                // Update visual state
+                this.selectCategory(category);
+                if (subcategory) {
+                    const subcategoryValue = `${category}-${subcategory}`;
+                    const label = this.getSubcategoryLabel(subcategory);
+                    this.selectSubcategory(subcategoryValue, label);
+                }
+            },
+
+            getSubcategoryLabel(subcategory) {
+                const subs = this.subcategoriesData[this.activeCategory] || [];
+                const sub = subs.find(s => s.value === subcategory);
+                return sub ? sub.label : subcategory;
+            }
+        };
+
         // Delete modal event listeners
         document.getElementById('close-delete-modal').addEventListener('click', closeDeleteListingModal);
         document.getElementById('cancel-delete-btn').addEventListener('click', closeDeleteListingModal);
@@ -1338,8 +1523,8 @@
         categorySelector.init();
 
         // Image Gallery Modal functionality
-        let currentGalleryImages = [];
-        let currentImageIndex = 0;
+        var currentGalleryImages = [];
+        var currentImageIndex = 0;
 
         function openImageGallery(listingId) {
             // Get all images for this listing dynamically
@@ -1721,12 +1906,15 @@
             document.body.style.overflow = '';
         }
 
-        // Close modal event listeners
-        document.getElementById('close-details-modal').addEventListener('click', closeListingDetailsModal);
-        document.getElementById('listing-details-modal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('listing-details-modal')) {
-                closeListingDetailsModal();
-            }
+        // Ensure DOM is loaded before adding event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Close modal event listeners
+            document.getElementById('close-details-modal').addEventListener('click', closeListingDetailsModal);
+            document.getElementById('listing-details-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('listing-details-modal')) {
+                    closeListingDetailsModal();
+                }
+            });
         });
 
         // Keyboard navigation for details modal
@@ -1778,6 +1966,62 @@
             });
         }
 
+        function openBookNowModal(listingId) {
+            // For now, just show an alert. This would need to be implemented with a proper booking system
+            alert('Booking functionality would need to be implemented with a proper booking system.');
+        }
+
+        function submitEditListingForm() {
+            const form = document.getElementById('edit-listing-form');
+            const formData = new FormData(form);
+
+            // Add image order to form data
+            const imagesGrid = document.getElementById('edit-all-images-grid');
+            if (imagesGrid) {
+                const imageIds = Array.from(imagesGrid.children)
+                    .filter(child => child.dataset.imageType === 'existing')
+                    .map(child => child.dataset.imageId).join(',');
+                formData.append('image_order', imageIds);
+            }
+
+            // Remove commas from price and budget fields
+            const priceInput = document.getElementById('edit_id_price');
+            const budgetInput = document.getElementById('edit_id_budget');
+
+            if (priceInput && priceInput.value) {
+                formData.set('price', priceInput.value.replace(/,/g, ''));
+            }
+            if (budgetInput && budgetInput.value) {
+                formData.set('budget', budgetInput.value.replace(/,/g, ''));
+            }
+
+            // Submit the form
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeEditListingModal();
+                    // Reload the page to show updated listing
+                    window.location.reload();
+                } else {
+                    // Handle errors
+                    console.error('Form errors:', data.errors);
+                    alert('Error updating listing. Please check your inputs.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating listing.');
+            });
+        }
+
         function closeEditListingModal() {
             document.getElementById('edit-listing-modal').classList.add('hidden');
             document.getElementById('edit-listing-modal').classList.remove('flex');
@@ -1820,12 +2064,8 @@
             // Populate form fields
             document.querySelector(`input[name="listing_type"][value="${listing.listing_type}"]`).checked = true;
 
-            // Set category
-            const categoryValue = listing.subcategory ? `${listing.category}-${listing.subcategory}` : listing.category;
-            document.getElementById('edit_id_category').value = categoryValue;
-            document.getElementById('edit-category-display-text').textContent = getCategoryDisplayText(listing.category, listing.subcategory);
-            document.getElementById('edit-category-display-text').classList.remove('text-slate-400');
-            document.getElementById('edit-category-display-text').classList.add('text-slate-900');
+            // Set category using the edit category selector
+            editCategorySelector.setCategory(listing.category, listing.subcategory);
 
             document.getElementById('edit_id_title').value = listing.title;
             document.getElementById('edit_id_description').value = listing.description;
@@ -1847,13 +2087,192 @@
 
             // Trigger dynamic field update
             updateEditDynamicField(listing.listing_type);
+
+            // Initialize edit category selector
+            editCategorySelector.init();
+
+            // Populate current images
+            populateEditCurrentImages(listing.images || []);
         }
 
-        function getCategoryDisplayText(category, subcategory) {
-            // This would need to match the category display logic from the template
-            // For simplicity, return a basic version
-            return subcategory || category;
+        function populateEditCurrentImages(images) {
+            const allImagesContainer = document.getElementById('edit-all-images');
+            allImagesContainer.innerHTML = '';
+
+            if (images.length > 0) {
+                const imagesGrid = document.createElement('div');
+                imagesGrid.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4';
+                imagesGrid.id = 'edit-all-images-grid';
+
+                images.forEach((image, index) => {
+                    const imageDiv = document.createElement('div');
+                    imageDiv.className = 'relative group cursor-move';
+                    imageDiv.draggable = true;
+                    imageDiv.dataset.index = index;
+                    imageDiv.dataset.imageId = image.id;
+                    imageDiv.dataset.imageType = 'existing';
+
+                    const img = document.createElement('img');
+                    img.src = image.image;
+                    img.alt = 'Current listing image';
+                    img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
+
+                    // Add "MAIN" indicator for main image
+                    if (image.is_main) {
+                        const mainBadge = document.createElement('div');
+                        mainBadge.className = 'absolute top-1 left-1 bg-brand-leaf text-white text-xs font-bold px-1.5 py-0.5 rounded';
+                        mainBadge.textContent = 'MAIN';
+                        imageDiv.appendChild(mainBadge);
+                    }
+
+                    // Add remove button
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10';
+                    removeBtn.innerHTML = '×';
+                    removeBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        removeEditImage(image.id);
+                    };
+
+                    imageDiv.appendChild(img);
+                    imageDiv.appendChild(removeBtn);
+                    imagesGrid.appendChild(imageDiv);
+                });
+
+                allImagesContainer.appendChild(imagesGrid);
+
+                // Add reorder instructions
+                const reorderInstructions = document.createElement('div');
+                reorderInstructions.className = 'text-xs text-slate-500 text-center mb-4';
+                reorderInstructions.textContent = 'Drag to reorder • First image becomes the main photo';
+                allImagesContainer.appendChild(reorderInstructions);
+
+                // Initialize drag and drop for all images
+                initializeEditImageDragDrop();
+
+                // Update counter to reflect current images
+                const remainingSlots = 5 - images.length;
+                document.getElementById('edit-image-counter').textContent = `Photos: 0/${remainingSlots}`;
+            } else {
+                document.getElementById('edit-image-counter').textContent = 'Photos: 0/5';
+            }
         }
+
+        function initializeEditImageDragDrop() {
+            const imagesGrid = document.getElementById('edit-all-images-grid');
+            if (!imagesGrid) return;
+
+            let draggedElement = null;
+
+            imagesGrid.addEventListener('dragstart', function(e) {
+                if (e.target.closest('.cursor-move')) {
+                    draggedElement = e.target.closest('.cursor-move');
+                    draggedElement.classList.add('opacity-50');
+                    e.dataTransfer.effectAllowed = 'move';
+                }
+            });
+
+            imagesGrid.addEventListener('dragend', function(e) {
+                if (draggedElement) {
+                    draggedElement.classList.remove('opacity-50');
+                    draggedElement = null;
+
+                    // Clear all drag over styling
+                    imagesGrid.querySelectorAll('.cursor-move').forEach(div => {
+                        div.classList.remove('shadow-lg', 'shadow-brand-sky/50', 'bg-brand-sky/5', 'scale-90');
+                    });
+                }
+            });
+
+            imagesGrid.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+
+                const target = e.target.closest('.cursor-move');
+                if (target && target !== draggedElement) {
+                    // Clear feedback from all except the dragged element
+                    imagesGrid.querySelectorAll('.cursor-move:not(.opacity-50)').forEach(div => {
+                        div.classList.remove('shadow-lg', 'shadow-brand-sky/50', 'bg-brand-sky/5', 'scale-90');
+                    });
+
+                    // Add visual indicator to the element you are hovering over
+                    target.classList.add('shadow-lg', 'shadow-brand-sky/50', 'bg-brand-sky/5', 'scale-90');
+                }
+            });
+
+            imagesGrid.addEventListener('drop', function(e) {
+                e.preventDefault();
+
+                const dropTarget = e.target.closest('.cursor-move');
+                if (!dropTarget || dropTarget === draggedElement) return;
+
+                // Remove the dragged element from its current position
+                const draggedParent = draggedElement.parentNode;
+                if (draggedParent) {
+                    draggedParent.removeChild(draggedElement);
+                }
+
+                // Get all remaining elements to determine insertion point
+                const allElements = Array.from(imagesGrid.children);
+                const targetIndex = allElements.indexOf(dropTarget);
+
+                // Determine if we should insert before or after the target
+                const rect = dropTarget.getBoundingClientRect();
+                const dropX = e.clientX;
+
+                if (dropX < rect.left + rect.width / 2) {
+                    // Insert before target
+                    imagesGrid.insertBefore(draggedElement, dropTarget);
+                } else {
+                    // Insert after target
+                    imagesGrid.insertBefore(draggedElement, dropTarget.nextSibling);
+                }
+
+                // Update indices and main image indicators
+                updateEditImageOrder();
+
+                // Clear drag styling
+                imagesGrid.querySelectorAll('.cursor-move').forEach(div => {
+                    div.classList.remove('shadow-lg', 'shadow-brand-sky/50', 'bg-brand-sky/5', 'scale-90');
+                });
+            });
+        }
+
+        function updateEditImageOrder() {
+            const imagesGrid = document.getElementById('edit-all-images-grid');
+            if (!imagesGrid) return;
+
+            const imageElements = imagesGrid.querySelectorAll('.cursor-move');
+
+            imageElements.forEach((element, index) => {
+                element.dataset.index = index;
+
+                // Update main image indicator
+                const mainBadge = element.querySelector('.bg-brand-leaf');
+                if (index === 0) {
+                    if (!mainBadge) {
+                        const newMainBadge = document.createElement('div');
+                        newMainBadge.className = 'absolute top-1 left-1 bg-brand-leaf text-white text-xs font-bold px-1.5 py-0.5 rounded';
+                        newMainBadge.textContent = 'MAIN';
+                        element.insertBefore(newMainBadge, element.firstChild);
+                    }
+                } else {
+                    if (mainBadge) {
+                        mainBadge.remove();
+                    }
+                }
+            });
+        }
+
+        function removeEditImage(imageId) {
+            if (confirm('Are you sure you want to remove this image?')) {
+                // This would need a separate view/URL for removing images
+                // For now, just show an alert
+                alert('Image removal functionality would need to be implemented with a separate endpoint.');
+            }
+        }
+
 
         function updateEditDynamicField(selectedType) {
             const priceContainer = document.getElementById('edit-price-container');
@@ -1974,6 +2393,50 @@
             .suggestions-dropdown::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 0 0 8px 0; }
             .suggestions-dropdown::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
             .suggestions-dropdown::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+            /* List styling for description display */
+            #details-description ul, #details-description ol {
+                padding-left: 1.5rem;
+                margin: 0.5rem 0;
+            }
+            #details-description li {
+                margin: 0.25rem 0;
+                line-height: 1.4;
+            }
+            #details-description ul {
+                list-style-type: disc;
+            }
+            #details-description ol {
+                list-style-type: decimal;
+            }
+            #details-description strong, #details-description b {
+                font-weight: 700;
+            }
+            #details-description em, #details-description i {
+                font-style: italic;
+            }
+
+            /* List styling for card previews */
+            .description-preview ul, .description-preview ol {
+                padding-left: 1rem;
+                margin: 0.25rem 0;
+            }
+            .description-preview li {
+                margin: 0.125rem 0;
+                line-height: 1.3;
+            }
+            .description-preview ul {
+                list-style-type: disc;
+            }
+            .description-preview ol {
+                list-style-type: decimal;
+            }
+            .description-preview strong, .description-preview b {
+                font-weight: 600;
+            }
+            .description-preview em, .description-preview i {
+                font-style: italic;
+            }
 
             /* --- ENHANCED ANIMATION CONTAINERS --- */
 

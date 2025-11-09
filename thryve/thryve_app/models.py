@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.html import strip_tags
+import bleach
 
 def validate_listing_image_size(image):
     """Validate that uploaded image is under 5MB"""
@@ -89,8 +90,8 @@ class Listing(models.Model):
         if self.description:
             # Allow only safe tags and attributes
             allowed_tags = ['p', 'br', 'strong', 'em', 'b', 'i', 'ul', 'ol', 'li', 'a']
-            # For simplicity, just strip all HTML tags to prevent XSS
-            self.description = strip_tags(self.description)
+            # Use bleach to clean HTML
+            self.description = bleach.clean(self.description, tags=allowed_tags, strip=True)
         super().save(*args, **kwargs)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     swap_for = models.TextField(null=True, blank=True)
