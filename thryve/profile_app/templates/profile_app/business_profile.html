@@ -250,7 +250,6 @@
             <div>
               <label class="block text-sm font-bold mb-2">Website URL</label>
               <div class="flex items-center gap-2">
-                <span class="text-slate-500 select-none px-3 py-2 rounded-l-md border border-line bg-white">https://</span>
                 <div class="flex-1">{{ form.website_url }}</div>
               </div>
             </div>
@@ -261,10 +260,48 @@
             </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-bold mb-2">Contact Phone</label>
-            {{ form.contact_phone }}
-          </div>
+          <!-- Contact Phone (country code dropdown + local number) -->
+<div>
+  <label class="block text-sm font-bold mb-2">Contact Phone</label>
+
+  {# Keep the Django field as a hidden input so server sees the final combined phone value #}
+  {# If you prefer to render the bound field directly, ensure it has id="id_contact_phone" #}
+  <input type="hidden" id="id_contact_phone" name="contact_phone"
+         value="{{ form.contact_phone.value|default_if_none:'' }}" />
+
+  <div class="flex gap-3">
+    <!-- Country code select (scrollable) -->
+    <div class="relative">
+      <select id="phoneCodeSelect" class="h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm"
+              aria-label="Country code" disabled>
+        <!-- popular country codes; add more as needed -->
+        <option value="+1">+1 (United States)</option>
+        <option value="+63">+63 (Philippines)</option>
+        <option value="+44">+44 (United Kingdom)</option>
+        <option value="+61">+61 (Australia)</option>
+        <option value="+91">+91 (India)</option>
+        <option value="+81">+81 (Japan)</option>
+        <option value="+49">+49 (Germany)</option>
+        <option value="+82">+82 (South Korea)</option>
+        <option value="+7">+7 (Russia)</option>
+        <option value="+86">+86 (China)</option>
+        <!-- If you want a long list you'd normally generate it server-side -->
+      </select>
+      <!-- small down chevron for visual -->
+      
+    </div>
+
+    <!-- Local-number input (visible) -->
+    <input id="phoneLocalInput" type="text"
+           class="flex-1 h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm"
+           placeholder="e.g. 9123456789" disabled aria-label="Local phone number" />
+  </div>
+
+  {% if form.contact_phone.errors %}
+    <div class="text-rose-600 text-xs mt-1">{{ form.contact_phone.errors|join:", " }}</div>
+  {% endif %}
+</div>
+
 
           <!-- Actions: hidden until edit mode -->
           <div id="actionRow" class="flex justify-end gap-2 pt-2 hidden">
