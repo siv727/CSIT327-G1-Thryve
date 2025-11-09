@@ -12,10 +12,19 @@ from .models import UserProfile, BusinessProfile
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def business_profile_view(request):
     # ensure BusinessProfile exists for the logged-in user
-    profile, created = BusinessProfile.objects.get_or_create(user=request.user)
+    business_profile, created = BusinessProfile.objects.get_or_create(user=request.user)
 
     if request.method == "POST":
-        form = BusinessProfileForm(request.POST, instance=profile)
+        # include request.FILES so file fields are accepted
+        form = BusinessProfileForm(request.POST, request.FILES, instance=business_profile)
+
+        # ---- debug logging: remove or comment out after testing ----
+        print("---- business_profile_view POST ----")
+        print("contact_phone (POST):", request.POST.get("contact_phone"))
+        print("All POST keys:", list(request.POST.keys()))
+        print("Files keys:", list(request.FILES.keys()))
+        print("-----------------------------------")
+
         if form.is_valid():
             form.save()
             messages.success(request, "Business details updated.")
@@ -23,12 +32,15 @@ def business_profile_view(request):
         else:
             messages.error(request, "Please fix the errors below.")
     else:
-        form = BusinessProfileForm(instance=profile)
+        form = BusinessProfileForm(instance=business_profile)
 
+    # pass both names so templates using either will work
     return render(request, 'profile_app/business_profile.html', {
         'form': form,
-        'profile': profile,
+        'profile': business_profile,
+        'business_profile': business_profile,
     })
+
 
 @login_required(login_url='login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)

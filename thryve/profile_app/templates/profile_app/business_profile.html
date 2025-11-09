@@ -198,7 +198,7 @@
         </div>
 
         <!-- Form: view MUST pass `form` in context (BusinessProfileForm) -->
-        <form id="businessForm" method="post" class="space-y-4" novalidate>
+        <form id="businessForm" method="post" enctype="multipart/form-data" class="space-y-4" novalidate>
           {% csrf_token %}
           <!-- Grid: company / industry -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -314,78 +314,112 @@
     </main>
   </div>
 
-  <script>
-    (function () {
-      const form = document.getElementById('businessForm');
-      const editToggle = document.getElementById('editToggle');
-      const editLabel = document.getElementById('editLabel');
-      const editIcon = document.getElementById('editIcon');
-      const actionRow = document.getElementById('actionRow');
-      const cancelBtn = document.getElementById('cancelBtn');
+<script>
+(function () {
+  const form = document.getElementById('businessForm');
+  const editToggle = document.getElementById('editToggle');
+  const editLabel = document.getElementById('editLabel');
+  const editIcon = document.getElementById('editIcon');
+  const actionRow = document.getElementById('actionRow');
+  const cancelBtn = document.getElementById('cancelBtn');
 
-      if (!form || !editToggle) return;
+  // phone elements
+  const hiddenPhone = document.getElementById('id_contact_phone');
+  const phoneCodeSelect = document.getElementById('phoneCodeSelect');
+  const phoneLocalInput = document.getElementById('phoneLocalInput');
 
-      // Helper: set readonly/disabled on all inputs
-      function setReadonly(readonly) {
-        const controls = form.querySelectorAll('input, textarea, select, button[type="file"]');
-        controls.forEach(el => {
-          if (readonly) {
-            el.setAttribute('disabled', 'disabled');
-            el.classList.add('bg-[#f8fafc]');
-          } else {
-            el.removeAttribute('disabled');
-            el.classList.remove('bg-[#f8fafc]');
-          }
-        });
+  if (!form || !editToggle) return;
 
-        // keep the Edit button enabled
-        editToggle.removeAttribute('disabled');
-      }
+  // Helper: split full phone into code and local
+  function splitPhone(full) {
+    if (!full) return { code: '+1', local: '' };
+    const m = String(full).trim().match(/^(\+\d{1,3})\s*(.*)$/);
+    return m
+      ? { code: m[1], local: m[2].replace(/[()\s\-._]/g, '') }
+      : { code: '+1', local: full.replace(/[()\s\-._]/g, '') };
+  }
 
-      // initialize: start read-only
+  // ✅ Compose + code + space + local into hidden field
+  function composeHiddenPhone() {
+    const code = phoneCodeSelect?.value || '';
+    const local = phoneLocalInput?.value.trim() || '';
+    const normalizedLocal = local.startsWith('0') ? local.slice(1) : local;
+    hiddenPhone.value = local ? `${code} ${normalizedLocal}` : '';
+  }
+
+  // Populate visible inputs from hidden value on load
+  (function initPhoneUI() {
+    const parts = splitPhone(hiddenPhone.value || '');
+    if ([...phoneCodeSelect.options].some(o => o.value === parts.code))
+      phoneCodeSelect.value = parts.code;
+    phoneLocalInput.value = parts.local;
+  })();
+
+  // Readonly toggle
+  function setReadonly(readonly) {
+    form.querySelectorAll('input, textarea, select, button[type="file"]').forEach(el => {
+      if (el === hiddenPhone) return; // keep hidden input active
+      readonly ? el.setAttribute('disabled', 'disabled') : el.removeAttribute('disabled');
+    });
+    if (readonly) {
+      phoneCodeSelect.setAttribute('disabled', 'disabled');
+      phoneLocalInput.setAttribute('disabled', 'disabled');
+    } else {
+      phoneCodeSelect.removeAttribute('disabled');
+      phoneLocalInput.removeAttribute('disabled');
+    }
+    editToggle.removeAttribute('disabled');
+  }
+
+  // Start readonly
+  setReadonly(true);
+  let editing = false;
+
+  editToggle.addEventListener('click', function () {
+    editing = !editing;
+    if (editing) {
+      editLabel.textContent = 'Editing...';
+      editIcon.classList.add('text-sky-600');
+      setReadonly(false);
+      actionRow.classList.remove('hidden');
+      editToggle.setAttribute('aria-pressed', 'true');
+    } else {
+      // cancel edit
+      form.reset();
+      editLabel.textContent = 'Edit';
+      editIcon.classList.remove('text-sky-600');
       setReadonly(true);
+      actionRow.classList.add('hidden');
+      editToggle.setAttribute('aria-pressed', 'false');
+      initPhoneUI(); // restore phone
+    }
+  });
 
-      let editing = false;
+  cancelBtn?.addEventListener('click', function () {
+    form.reset();
+    editing = false;
+    editLabel.textContent = 'Edit';
+    editIcon.classList.remove('text-sky-600');
+    setReadonly(true);
+    actionRow.classList.add('hidden');
+    editToggle.setAttribute('aria-pressed', 'false');
+    initPhoneUI();
+  });
 
-      editToggle.addEventListener('click', function () {
-        editing = !editing;
-        if (editing) {
-          editLabel.textContent = 'Editing...';
-          editIcon.classList.add('text-sky-600');
-          setReadonly(false);
-          actionRow.classList.remove('hidden');
-          editToggle.setAttribute('aria-pressed', 'true');
-        } else {
-          // cancel edit mode (revert UI to original values)
-          editLabel.textContent = 'Edit';
-          editIcon.classList.remove('text-sky-600');
-          setReadonly(true);
-          actionRow.classList.add('hidden');
-          editToggle.setAttribute('aria-pressed', 'false');
-          form.reset(); // revert unsaved changes
-        }
-      });
+  // Ensure phone is combined before submit
+  form.addEventListener('submit', function () {
+    composeHiddenPhone();
+    // re-enable disabled inputs before submit
+    form.querySelectorAll('input, textarea, select').forEach(el => el.removeAttribute('disabled'));
+  });
 
-      // Cancel button: revert and exit edit mode
-      if (cancelBtn) {
-        cancelBtn.addEventListener('click', function () {
-          form.reset();
-          editing = false;
-          editLabel.textContent = 'Edit';
-          editIcon.classList.remove('text-sky-600');
-          setReadonly(true);
-          actionRow.classList.add('hidden');
-          editToggle.setAttribute('aria-pressed', 'false');
-        });
-      }
+  // Update hidden input live
+  phoneLocalInput?.addEventListener('input', composeHiddenPhone);
+  phoneCodeSelect?.addEventListener('change', composeHiddenPhone);
+})();
+</script>
 
-      // Keep submit behavior normal (POST will be handled by view)
-      // But ensure inputs are enabled when submitting:
-      form.addEventListener('submit', function () {
-        // remove disabled attributes before submission so POST includes values
-        form.querySelectorAll('input, textarea, select').forEach(el => el.removeAttribute('disabled'));
-      });
-    })();
-  </script>
+
+
 </body>
 </html>
