@@ -21,7 +21,7 @@ class BusinessProfileForm(forms.ModelForm):
             }),
             'industry': forms.TextInput(attrs={
                 'class': 'w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30',
-                'placeholder': 'Select industry'
+                'placeholder': 'Input industry'
             }),
             'description': forms.Textarea(attrs={
                 'class': 'w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none resize-y focus:ring-2 focus:ring-brand-500/30',
