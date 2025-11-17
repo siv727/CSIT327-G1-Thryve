@@ -69,24 +69,14 @@
                 <div>
                     <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
                     <div class="space-y-2">
+                        {% for lt in listing_types %}
                         <label class="flex items-center">
-                            <input type="radio" name="listing_type" value="sale"
-                                class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type=='sale'
+                            <input type="radio" name="listing_type" value="{{ lt.value }}"
+                                class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type==lt.value
                                 %}checked{% endif %} required>
-                            <span class="ml-2 text-slate-700">For Sale</span>
+                            <span class="ml-2 text-slate-700">{{ lt.label }}</span>
                         </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="listing_type" value="swap"
-                                class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type=='swap'
-                                %}checked{% endif %} required>
-                            <span class="ml-2 text-slate-700">For Swap</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="listing_type" value="buy"
-                                class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type=='buy'
-                                %}checked{% endif %} required>
-                            <span class="ml-2 text-slate-700">Looking to Buy</span>
-                        </label>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -109,24 +99,11 @@
                                     <div class="p-2">
                                         <div class="text-xs text-slate-500 font-medium mb-2 px-2">CATEGORIES</div>
                                         <div id="main-categories" class="space-y-1">
+                                            {% for key, data in categories.items %}
                                             <button type="button"
-                                                class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn {% if listing.category == 'electronics' %}bg-brand-sky text-white{% endif %}"
-                                                data-category="electronics">Electronics</button>
-                                            <button type="button"
-                                                class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn {% if listing.category == 'furniture' %}bg-brand-sky text-white{% endif %}"
-                                                data-category="furniture">Furniture</button>
-                                            <button type="button"
-                                                class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn {% if listing.category == 'tools_equipment' %}bg-brand-sky text-white{% endif %}"
-                                                data-category="tools_equipment">Tools & Equipment</button>
-                                            <button type="button"
-                                                class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn {% if listing.category == 'raw_materials' %}bg-brand-sky text-white{% endif %}"
-                                                data-category="raw_materials">Raw Materials</button>
-                                            <button type="button"
-                                                class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn {% if listing.category == 'services' %}bg-brand-sky text-white{% endif %}"
-                                                data-category="services">Services</button>
-                                            <button type="button"
-                                                class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn {% if listing.category == 'other' %}bg-brand-sky text-white{% endif %}"
-                                                data-category="other">Other</button>
+                                                class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn {% if listing.category == key %}bg-brand-sky text-white{% endif %}"
+                                                data-category="{{ key }}">{{ data.label }}</button>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
@@ -303,177 +280,141 @@
         selectedSubcategory: '{{ listing.subcategory }}',
 
         subcategoriesData: {
-            'electronics': [
-                { value: 'computers', label: 'Computers' },
-                { value: 'phones', label: 'Phones' },
-                { value: 'tablets', label: 'Tablets' },
-                { value: 'audio_video', label: 'Audio/Video Equipment' },
-                { value: 'cameras', label: 'Cameras' },
-                { value: 'other_electronics', label: 'Other Electronics' },
-            ],
-            'furniture': [
-                { value: 'office_chairs', label: 'Office Chairs' },
-                { value: 'desks', label: 'Desks' },
-                { value: 'cabinets', label: 'Cabinets' },
-                { value: 'tables', label: 'Tables' },
-                { value: 'seating', label: 'Seating' },
-                { value: 'other_furniture', label: 'Other Furniture' },
-            ],
-            'tools_equipment': [
-                { value: 'power_tools', label: 'Power Tools' },
-                { value: 'hand_tools', label: 'Hand Tools' },
-                { value: 'machinery', label: 'Machinery' },
-                { value: 'safety_equipment', label: 'Safety Equipment' },
-                { value: 'measuring_tools', label: 'Measuring Tools' },
-                { value: 'other_tools', label: 'Other Tools & Equipment' },
-            ],
-            'raw_materials': [
-                { value: 'metals', label: 'Metals' },
-                { value: 'plastics', label: 'Plastics' },
-                { value: 'woods', label: 'Woods' },
-                { value: 'chemicals', label: 'Chemicals' },
-                { value: 'fabrics', label: 'Fabrics' },
-                { value: 'other_materials', label: 'Other Raw Materials' },
-            ],
-            'services': [
-                { value: 'consulting', label: 'Consulting' },
-                { value: 'maintenance', label: 'Maintenance' },
-                { value: 'installation', label: 'Installation' },
-                { value: 'training', label: 'Training' },
-                { value: 'design', label: 'Design' },
-                { value: 'other_services', label: 'Other Services' },
-            ],
-            'other': [
-                { value: 'miscellaneous', label: 'Miscellaneous' },
-            ],
+            {% for key, data in categories.items %}
+    '{{ key }}': [
+        {% for sub in data.subcategories %}
+    { value: '{{ sub.value }}', label: '{{ sub.label }}' } {% if not forloop.last %}, {% endif %}
+    {% endfor %}
+            ]{% if not forloop.last %}, {% endif %}
+    {% endfor %}
         },
 
-        init() {
-            this.setupEventListeners();
-            this.setInitialState();
-        },
+    init() {
+        this.setupEventListeners();
+        this.setInitialState();
+    },
 
-        setupEventListeners() {
-            this.trigger.addEventListener('click', () => {
-                this.toggleSelector();
-            });
+    setupEventListeners() {
+        this.trigger.addEventListener('click', () => {
+            this.toggleSelector();
+        });
 
-            document.addEventListener('click', (e) => {
-                if (!this.trigger.contains(e.target) && !this.selector.contains(e.target)) {
-                    this.closeSelector();
-                }
-            });
-
-            this.mainCategories.addEventListener('click', (e) => {
-                if (e.target.classList.contains('category-btn')) {
-                    const category = e.target.dataset.category;
-                    this.selectCategory(category);
-                }
-            });
-
-            this.subcategories.addEventListener('click', (e) => {
-                if (e.target.classList.contains('subcategory-btn')) {
-                    const value = e.target.dataset.value;
-                    const label = e.target.textContent;
-                    this.selectSubcategory(value, label);
-                }
-            });
-        },
-
-        setInitialState() {
-            if (this.activeCategory) {
-                this.selectCategory(this.activeCategory);
-                if (this.selectedSubcategory) {
-                    const subcategoryValue = `${this.activeCategory}-${this.selectedSubcategory}`;
-                    this.hiddenInput.value = subcategoryValue;
-                    this.displayText.textContent = this.getSubcategoryLabel(this.selectedSubcategory);
-                }
-            }
-        },
-
-        getSubcategoryLabel(subcategory) {
-            const subs = this.subcategoriesData[this.activeCategory] || [];
-            const sub = subs.find(s => s.value === subcategory);
-            return sub ? sub.label : subcategory;
-        },
-
-        selectCategory(category) {
-            this.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('bg-brand-sky', 'text-white');
-                btn.classList.add('hover:bg-brand-sky/10');
-            });
-
-            const activeBtn = this.mainCategories.querySelector(`[data-category="${category}"]`);
-            if (activeBtn) {
-                activeBtn.classList.add('bg-brand-sky', 'text-white');
-                activeBtn.classList.remove('hover:bg-brand-sky/10');
-            }
-
-            this.activeCategory = category;
-            this.updateSubcategories(category);
-        },
-
-        updateSubcategories(category) {
-            this.subcategories.innerHTML = '';
-            const subs = this.subcategoriesData[category] || [];
-
-            subs.forEach(sub => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded subcategory-btn';
-                btn.dataset.value = `${category}-${sub.value}`;
-                btn.textContent = sub.label;
-
-                if (this.selectedSubcategory === sub.value && this.activeCategory === category) {
-                    btn.classList.add('bg-brand-leaf', 'text-white');
-                    btn.classList.remove('hover:bg-brand-sky/10');
-                }
-
-                this.subcategories.appendChild(btn);
-            });
-        },
-
-        selectSubcategory(value, label) {
-            this.subcategories.querySelectorAll('.subcategory-btn').forEach(btn => {
-                btn.classList.remove('bg-brand-leaf', 'text-white');
-                btn.classList.add('hover:bg-brand-sky/10');
-            });
-
-            const selectedBtn = this.subcategories.querySelector(`[data-value="${value}"]`);
-            if (selectedBtn) {
-                selectedBtn.classList.add('bg-brand-leaf', 'text-white');
-                selectedBtn.classList.remove('hover:bg-brand-sky/10');
-            }
-
-            this.displayText.textContent = label;
-            this.displayText.classList.remove('text-slate-500');
-            this.displayText.classList.add('text-slate-900');
-            this.hiddenInput.value = value;
-
-            this.selectedSubcategory = value.split('-')[1];
-
-            setTimeout(() => this.closeSelector(), 150);
-        },
-
-        toggleSelector() {
-            if (this.selector.classList.contains('hidden')) {
-                this.openSelector();
-            } else {
+        document.addEventListener('click', (e) => {
+            if (!this.trigger.contains(e.target) && !this.selector.contains(e.target)) {
                 this.closeSelector();
             }
-        },
+        });
 
-        openSelector() {
-            this.selector.classList.remove('hidden');
-            this.selector.classList.add('flex');
-            this.trigger.classList.add('ring-2', 'ring-brand-sky');
-        },
+        this.mainCategories.addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-btn')) {
+                const category = e.target.dataset.category;
+                this.selectCategory(category);
+            }
+        });
 
-        closeSelector() {
-            this.selector.classList.add('hidden');
-            this.selector.classList.remove('flex');
-            this.trigger.classList.remove('ring-2', 'ring-brand-sky');
+        this.subcategories.addEventListener('click', (e) => {
+            if (e.target.classList.contains('subcategory-btn')) {
+                const value = e.target.dataset.value;
+                const label = e.target.textContent;
+                this.selectSubcategory(value, label);
+            }
+        });
+    },
+
+    setInitialState() {
+        if (this.activeCategory) {
+            this.selectCategory(this.activeCategory);
+            if (this.selectedSubcategory) {
+                const subcategoryValue = `${this.activeCategory}-${this.selectedSubcategory}`;
+                this.hiddenInput.value = subcategoryValue;
+                this.displayText.textContent = this.getSubcategoryLabel(this.selectedSubcategory);
+            }
         }
+    },
+
+    getSubcategoryLabel(subcategory) {
+        const subs = this.subcategoriesData[this.activeCategory] || [];
+        const sub = subs.find(s => s.value === subcategory);
+        return sub ? sub.label : subcategory;
+    },
+
+    selectCategory(category) {
+        this.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
+            btn.classList.remove('bg-brand-sky', 'text-white');
+            btn.classList.add('hover:bg-brand-sky/10');
+        });
+
+        const activeBtn = this.mainCategories.querySelector(`[data-category="${category}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('bg-brand-sky', 'text-white');
+            activeBtn.classList.remove('hover:bg-brand-sky/10');
+        }
+
+        this.activeCategory = category;
+        this.updateSubcategories(category);
+    },
+
+    updateSubcategories(category) {
+        this.subcategories.innerHTML = '';
+        const subs = this.subcategoriesData[category] || [];
+
+        subs.forEach(sub => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded subcategory-btn';
+            btn.dataset.value = `${category}-${sub.value}`;
+            btn.textContent = sub.label;
+
+            if (this.selectedSubcategory === sub.value && this.activeCategory === category) {
+                btn.classList.add('bg-brand-leaf', 'text-white');
+                btn.classList.remove('hover:bg-brand-sky/10');
+            }
+
+            this.subcategories.appendChild(btn);
+        });
+    },
+
+    selectSubcategory(value, label) {
+        this.subcategories.querySelectorAll('.subcategory-btn').forEach(btn => {
+            btn.classList.remove('bg-brand-leaf', 'text-white');
+            btn.classList.add('hover:bg-brand-sky/10');
+        });
+
+        const selectedBtn = this.subcategories.querySelector(`[data-value="${value}"]`);
+        if (selectedBtn) {
+            selectedBtn.classList.add('bg-brand-leaf', 'text-white');
+            selectedBtn.classList.remove('hover:bg-brand-sky/10');
+        }
+
+        this.displayText.textContent = label;
+        this.displayText.classList.remove('text-slate-500');
+        this.displayText.classList.add('text-slate-900');
+        this.hiddenInput.value = value;
+
+        this.selectedSubcategory = value.split('-')[1];
+
+        setTimeout(() => this.closeSelector(), 150);
+    },
+
+    toggleSelector() {
+        if (this.selector.classList.contains('hidden')) {
+            this.openSelector();
+        } else {
+            this.closeSelector();
+        }
+    },
+
+    openSelector() {
+        this.selector.classList.remove('hidden');
+        this.selector.classList.add('flex');
+        this.trigger.classList.add('ring-2', 'ring-brand-sky');
+    },
+
+    closeSelector() {
+        this.selector.classList.add('hidden');
+        this.selector.classList.remove('flex');
+        this.trigger.classList.remove('ring-2', 'ring-brand-sky');
+    }
     };
 
     // Initialize category selector

@@ -336,12 +336,9 @@
                         <select
                             class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-brand-sky">
                             <option>All Categories</option>
-                            <option>Electronics</option>
-                            <option>Furniture</option>
-                            <option>Tools & Equipment</option>
-                            <option>Raw Materials</option>
-                            <option>Services</option>
-                            <option>Other</option>
+                            {% for key, data in categories.items %}
+                            <option value="{{ key }}">{{ data.label }}</option>
+                            {% endfor %}
                         </select>
                         <span
                             class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">▾</span>
@@ -375,7 +372,7 @@
                 data-price="{% if listing.listing_type == 'sale' and listing.price %}₱{{ listing.price }}{% endif %}"
                 data-swap-for="{% if listing.listing_type == 'swap' and listing.swap_for %}{{ listing.swap_for }}{% endif %}"
                 data-budget="{% if listing.listing_type == 'buy' and listing.budget %}₱{{ listing.budget }}{% endif %}"
-                data-location="{{ listing.location }}" data-created-at="{{ listing.created_at|date:'m/d/Y' }}"
+                data-location="{{ listing.location }}" data-date="{{ listing.date|date:'m/d/Y' }}"
                 data-your-name="{{ listing.your_name }}" data-company="{{ listing.company }}"
                 data-listing-type="{{ listing.listing_type }}"
                 data-category="{% if listing.category %}{{ listing.category }}{% endif %}"
@@ -491,8 +488,8 @@
                 <div class="title-scroll-container relative">
                     <div class="title-scroll-text whitespace-nowrap">
                         <h3 class="text-lg font-bold inline-block">{{ listing.title }}</h3>
-                        <span class="title-spacer text-lg font-bold inline-block" aria-hidden="true">{{ listing.title
-                            }}</span>
+                        <span class="title-spacer text-lg font-bold inline-block"
+                            aria-hidden="true">{{listing.title}}</span>
                     </div>
                 </div>
                 {% else %}
@@ -534,8 +531,8 @@
                     <div class="looking-scroll-container flex-1 min-w-0">
                         <div class="looking-scroll-text whitespace-nowrap">
                             <span class="text-brand-leaf inline-block">{{ listing.swap_for }}</span>
-                            <span class="looking-spacer text-brand-leaf inline-block" aria-hidden="true">{{
-                                listing.swap_for }}</span>
+                            <span class="looking-spacer text-brand-leaf inline-block"
+                                aria-hidden="true">{{listing.swap_for }}</span>
                         </div>
                     </div>
                     {% else %}
@@ -560,8 +557,8 @@
                         <div class="location-scroll-container">
                             <div class="location-scroll-text whitespace-nowrap">
                                 <span class="inline-block">{{ listing.location }}</span>
-                                <span class="location-spacer inline-block" aria-hidden="true">{{ listing.location
-                                    }}</span>
+                                <span class="location-spacer inline-block" aria-hidden="true">{{
+                                    listing.location}}</span>
                             </div>
                         </div>
                         {% else %}
@@ -573,12 +570,12 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"></path>
                         </svg>
-                        {{ listing.created_at|date:"m/d/Y" }}
+                        {{ listing.date|date:"m/d/Y" }}
                     </span>
                 </div>
                 <div class="mt-5 grid grid-cols-2 gap-3">
                     {% if is_my_listings %}
-                    <button onclick="openEditListingModal('{{ listing.id }}')"
+                    <button onclick="openEditModal{{ listing.id }}()"
                         class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">Edit
                         Details</button>
                     <button onclick="openDeleteListingModal('{{ listing.id }}')"
@@ -593,6 +590,243 @@
                     {% endif %}
                 </div>
             </article>
+
+            <!-- Individual Edit Modal for Listing {{ listing.id }} -->
+            {% if is_my_listings %}
+            <script>
+                function openEditModal{{ listing.id }}() {
+                    document.getElementById('editModal{{ listing.id }}').classList.remove('hidden');
+                    document.getElementById('editModal{{ listing.id }}').classList.add('flex');
+                }
+                function closeEditModal{{ listing.id }}() {
+                    document.getElementById('editModal{{ listing.id }}').classList.add('hidden');
+                    document.getElementById('editModal{{ listing.id }}').classList.remove('flex');
+                }
+                let editNewImagesData{{ listing.id }} = [];
+                
+                function handleImagePreview{{ listing.id }}(input) {
+                    const previewContainer = document.getElementById('imagePreview{{ listing.id }}');
+                    const photoCounter = document.getElementById('photoCounter{{ listing.id }}');
+                    const existingCount = {{ listing.images.count }};
+                    const fileInput = input;
+                    
+                    if (input.files && input.files.length > 0) {
+                        const currentNewCount = editNewImagesData{{ listing.id }}.length;
+                        const availableSlots = 5 - existingCount - currentNewCount;
+                        
+                        if (availableSlots <= 0) {
+                            alert('Maximum 5 images allowed. You have reached the limit.');
+                            fileInput.value = '';
+                            return;
+                        }
+                        
+                        const filesToAdd = Math.min(input.files.length, availableSlots);
+                        if (input.files.length > availableSlots) {
+                            alert(`You can only add ${availableSlots} more image(s). Only the first ${availableSlots} will be added.`);
+                        }
+                        
+                        // Add new files to our array
+                        for (let i = 0; i < filesToAdd; i++) {
+                            editNewImagesData{{ listing.id }}.push(input.files[i]);
+                            
+                            const reader = new FileReader();
+                            const fileIndex = currentNewCount + i;
+                            reader.onload = function(e) {
+                                const previewDiv = document.createElement('div');
+                                previewDiv.className = 'relative group new-image-preview';
+                                previewDiv.setAttribute('data-index', fileIndex);
+                                previewDiv.innerHTML = `
+                                    <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
+                                    <div class="absolute top-1 right-1 bg-brand-sky text-white text-xs px-1.5 py-0.5 rounded">New</div>
+                                    <button type="button" onclick="removeNewImage{{ listing.id }}(${fileIndex})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">×</button>
+                                `;
+                                previewContainer.appendChild(previewDiv);
+                            };
+                            reader.readAsDataURL(input.files[i]);
+                        }
+                        
+                        const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
+                        photoCounter.textContent = `Photos: ${totalCount}/5`;
+                        
+                        // Clear the file input so the same file can be selected again
+                        fileInput.value = '';
+                    }
+                }
+                
+                function removeNewImage{{ listing.id }}(index) {
+                    // Remove from array
+                    editNewImagesData{{ listing.id }}.splice(index, 1);
+                    
+                    // Update preview container
+                    const previewContainer = document.getElementById('imagePreview{{ listing.id }}');
+                    const allNewPreviews = previewContainer.querySelectorAll('.new-image-preview');
+                    allNewPreviews.forEach(preview => preview.remove());
+                    
+                    // Re-render remaining new images with updated indices
+                    editNewImagesData{{ listing.id }}.forEach((file, newIndex) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewDiv = document.createElement('div');
+                            previewDiv.className = 'relative group new-image-preview';
+                            previewDiv.setAttribute('data-index', newIndex);
+                            previewDiv.innerHTML = `
+                                <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
+                                <div class="absolute top-1 right-1 bg-brand-sky text-white text-xs px-1.5 py-0.5 rounded">New</div>
+                                <button type="button" onclick="removeNewImage{{ listing.id }}(${newIndex})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">×</button>
+                            `;
+                            previewContainer.appendChild(previewDiv);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    
+                    // Update counter
+                    const existingCount = {{ listing.images.count }};
+                    const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
+                    document.getElementById('photoCounter{{ listing.id }}').textContent = `Photos: ${totalCount}/5`;
+                }
+                
+                function submitEditForm{{ listing.id }}(form) {
+                    // Create a new DataTransfer object to hold our files
+                    const dataTransfer = new DataTransfer();
+                    
+                    // Add all new images to the file input
+                    editNewImagesData{{ listing.id }}.forEach(file => {
+                        dataTransfer.items.add(file);
+                    });
+                    
+                    // Update the file input with our collected files
+                    const fileInput = form.querySelector('input[type="file"]');
+                    fileInput.files = dataTransfer.files;
+                    
+                    return true; // Allow form submission
+                }
+            </script>
+            <div id="editModal{{ listing.id }}" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50" onclick="if(event.target === this) closeEditModal{{ listing.id }}()">
+                <div class="flex items-center justify-center min-h-screen p-4 w-full">
+                    <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-xl font-bold text-slate-900">Edit Listing</h2>
+                                <button onclick="closeEditModal{{ listing.id }}()" type="button" class="text-slate-400 hover:text-slate-600">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <form method="post" action="{% url 'thryve_app:edit_listing' listing.id %}" enctype="multipart/form-data" onsubmit="return submitEditForm{{ listing.id }}(this)">
+                                {% csrf_token %}
+                                
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center">
+                                            <input type="radio" name="listing_type" value="sale" class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'sale' %}checked{% endif %} required>
+                                            <span class="ml-2 text-slate-700">For Sale</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="radio" name="listing_type" value="swap" class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'swap' %}checked{% endif %} required>
+                                            <span class="ml-2 text-slate-700">For Swap</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="radio" name="listing_type" value="buy" class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'buy' %}checked{% endif %} required>
+                                            <span class="ml-2 text-slate-700">Looking to Buy</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Category *</label>
+                                    <input type="hidden" name="category" value="{% if listing.subcategory %}{{ listing.category }}-{{ listing.subcategory }}{% else %}{{ listing.category }}{% endif %}">
+                                    <div class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-slate-100 text-slate-700">
+                                        {{ listing.category_display }}{% if listing.subcategory_display %} - {{ listing.subcategory_display }}{% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Title *</label>
+                                    <input type="text" name="title" value="{{ listing.title }}" placeholder="Enter listing title" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Description *</label>
+                                    <textarea name="description" rows="4" placeholder="Describe your item or service" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400 resize-y" required>{{ listing.description }}</textarea>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">
+                                        {% if listing.listing_type == 'sale' %}Price *
+                                        {% elif listing.listing_type == 'swap' %}Looking to Swap For *
+                                        {% elif listing.listing_type == 'buy' %}Budget *
+                                        {% endif %}
+                                    </label>
+                                    {% if listing.listing_type == 'sale' %}
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
+                                        <input type="text" name="price" value="{{ listing.price }}" placeholder="0.00" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                                    </div>
+                                    {% elif listing.listing_type == 'swap' %}
+                                    <input type="text" name="swap_for" value="{{ listing.swap_for }}" placeholder="What are you looking to swap for?" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                                    {% elif listing.listing_type == 'buy' %}
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
+                                        <input type="text" name="budget" value="{{ listing.budget }}" placeholder="0.00" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Location *</label>
+                                    <input type="text" name="location" value="{{ listing.location }}" placeholder="City, State/Country" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Date *</label>
+                                    <input type="date" name="date" value="{{ listing.date|date:'Y-m-d' }}" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Listing Images</label>
+                                    
+                                    <!-- Image Preview Section -->
+                                    <div id="imagePreview{{ listing.id }}" class="flex flex-wrap gap-2 mb-3">
+                                        {% for image in listing.images.all %}
+                                        <div class="relative group">
+                                            <img src="{{ image.image.url }}" alt="Listing image" class="w-20 h-20 object-cover rounded-lg border-2 border-slate-300">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    <div class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors bg-slate-50 relative">
+                                        <div class="flex flex-col items-center justify-center space-y-4">
+                                            <div class="w-12 h-12 text-slate-400">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <p class="text-lg font-medium text-slate-700">Drag and drop your images here</p>
+                                                <p class="text-sm text-slate-500">or <span class="text-brand-sky font-medium">click to browse</span></p>
+                                            </div>
+                                            <p id="photoCounter{{ listing.id }}" class="text-sm font-medium text-slate-600">Photos: {{ listing.images.count }}/5</p>
+                                        </div>
+                                        <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer pointer-events-auto" onchange="handleImagePreview{{ listing.id }}(this)">
+                                    </div>
+                                    <div class="mt-2 text-sm text-slate-500">
+                                        <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end gap-3">
+                                    <button type="button" onclick="closeEditModal{{ listing.id }}()" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                                    <button type="submit" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update Listing</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             {% empty %}
             <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
                 <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
@@ -903,24 +1137,11 @@
                                                 <div class="text-xs text-slate-500 font-medium mb-2 px-2">CATEGORIES
                                                 </div>
                                                 <div id="edit-main-categories" class="space-y-1">
+                                                    {% for key, data in categories.items %}
                                                     <button type="button"
                                                         class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
-                                                        data-category="electronics">Electronics</button>
-                                                    <button type="button"
-                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
-                                                        data-category="furniture">Furniture</button>
-                                                    <button type="button"
-                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
-                                                        data-category="tools_equipment">Tools & Equipment</button>
-                                                    <button type="button"
-                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
-                                                        data-category="raw_materials">Raw Materials</button>
-                                                    <button type="button"
-                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
-                                                        data-category="services">Services</button>
-                                                    <button type="button"
-                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
-                                                        data-category="other">Other</button>
+                                                        data-category="{{ key }}">{{ data.label }}</button>
+                                                    {% endfor %}
                                                 </div>
                                             </div>
                                         </div>
@@ -983,6 +1204,12 @@
                                     class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
                                     placeholder="City, State/Country">
                             </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="edit_id_date" class="block text-slate-700 font-semibold mb-2">Date *</label>
+                            <input type="date" name="date" id="edit_id_date"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
                         </div>
 
                         <div class="mb-4">
@@ -1101,24 +1328,11 @@
                                                 <div class="text-xs text-slate-500 font-medium mb-2 px-2">CATEGORIES
                                                 </div>
                                                 <div id="main-categories" class="space-y-1">
+                                                    {% for key, data in categories.items %}
                                                     <button type="button"
-                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn active"
-                                                        data-category="electronics">Electronics</button>
-                                                    <button type="button"
-                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
-                                                        data-category="furniture">Furniture</button>
-                                                    <button type="button"
-                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
-                                                        data-category="tools_equipment">Tools & Equipment</button>
-                                                    <button type="button"
-                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
-                                                        data-category="raw_materials">Raw Materials</button>
-                                                    <button type="button"
-                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
-                                                        data-category="services">Services</button>
-                                                    <button type="button"
-                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
-                                                        data-category="other">Other</button>
+                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn{% if forloop.first %} active{% endif %}"
+                                                        data-category="{{ key }}">{{ data.label }}</button>
+                                                    {% endfor %}
                                                 </div>
                                             </div>
                                         </div>
@@ -1194,6 +1408,11 @@
                             <label for="id_images" class="block text-slate-700 font-semibold mb-2">Listing
                                 Images</label>
 
+                            <!-- Image Previews Container (New Images Only) -->
+                            <div id="create-image-previews" class="mb-3 flex flex-wrap gap-2">
+                                <!-- New image thumbnails will be rendered here -->
+                            </div>
+
                             <!-- Drag and Drop Upload Area -->
                             <div id="upload-area"
                                 class="relative border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors cursor-pointer bg-slate-50 hover:bg-slate-100/50">
@@ -1210,28 +1429,19 @@
                                         <p class="text-sm text-slate-500">or <span
                                                 class="text-brand-sky font-medium">click to browse</span></p>
                                     </div>
-                                    <div id="image-counter" class="text-sm font-medium text-slate-600">
+                                    <div id="create-image-counter" class="text-sm font-medium text-slate-600">
                                         Photos: 0/5
                                     </div>
                                 </div>
                                 <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp"
                                     id="id_images" multiple
-                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    onchange="handleCreateImagePreview(this)">
                             </div>
 
                             <!-- Upload Info -->
                             <div class="mt-2 text-sm text-slate-500">
                                 <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
-                            </div>
-
-                            <!-- Image Previews Container -->
-                            <div id="image-previews" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                <!-- Thumbnails will be added here dynamically -->
-                            </div>
-
-                            <!-- Drag and Drop Instructions -->
-                            <div id="reorder-instructions" class="mt-2 text-xs text-slate-500 text-center hidden">
-                                Drag thumbnails to reorder • First image becomes the main photo
                             </div>
                         </div>
 
@@ -1394,8 +1604,49 @@
         // Delete listing modal variables
         let currentDeleteListingId = null;
 
+        // Create listing image handling – simple, uses the real file input
+        function handleCreateImagePreview(input) {
+            const previewContainer = document.getElementById('create-image-previews');
+            const photoCounter = document.getElementById('create-image-counter');
+            if (!previewContainer || !photoCounter) return;
+
+            // No files selected – reset
+            if (!input.files || input.files.length === 0) {
+                previewContainer.innerHTML = '';
+                photoCounter.textContent = 'Photos: 0/5';
+                return;
+            }
+
+            // Enforce max 5
+            if (input.files.length > 5) {
+                alert('Maximum 5 images allowed. Only the first 5 will be used.');
+            }
+
+            const files = Array.from(input.files).slice(0, 5);
+
+            // Clear and render previews
+            previewContainer.innerHTML = '';
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'relative group';
+                    previewDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
+                    `;
+                    previewContainer.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Update counter based on actual selected files
+            photoCounter.textContent = `Photos: ${files.length}/5`;
+        }
+
         // Edit listing modal variables
         let currentEditListingId = null;
+        let editExistingImagesCount = 0;
+        let editNewImages = [];
 
         // Edit category selector functionality
         const editCategorySelector = {
@@ -1409,173 +1660,137 @@
             selectedSubcategory: null,
 
             subcategoriesData: {
-                'electronics': [
-                    { value: 'computers', label: 'Computers' },
-                    { value: 'phones', label: 'Phones' },
-                    { value: 'tablets', label: 'Tablets' },
-                    { value: 'audio_video', label: 'Audio/Video Equipment' },
-                    { value: 'cameras', label: 'Cameras' },
-                    { value: 'other_electronics', label: 'Other Electronics' },
-                ],
-                'furniture': [
-                    { value: 'office_chairs', label: 'Office Chairs' },
-                    { value: 'desks', label: 'Desks' },
-                    { value: 'cabinets', label: 'Cabinets' },
-                    { value: 'tables', label: 'Tables' },
-                    { value: 'seating', label: 'Seating' },
-                    { value: 'other_furniture', label: 'Other Furniture' },
-                ],
-                'tools_equipment': [
-                    { value: 'power_tools', label: 'Power Tools' },
-                    { value: 'hand_tools', label: 'Hand Tools' },
-                    { value: 'machinery', label: 'Machinery' },
-                    { value: 'safety_equipment', label: 'Safety Equipment' },
-                    { value: 'measuring_tools', label: 'Measuring Tools' },
-                    { value: 'other_tools', label: 'Other Tools & Equipment' },
-                ],
-                'raw_materials': [
-                    { value: 'metals', label: 'Metals' },
-                    { value: 'plastics', label: 'Plastics' },
-                    { value: 'woods', label: 'Woods' },
-                    { value: 'chemicals', label: 'Chemicals' },
-                    { value: 'fabrics', label: 'Fabrics' },
-                    { value: 'other_materials', label: 'Other Raw Materials' },
-                ],
-                'services': [
-                    { value: 'consulting', label: 'Consulting' },
-                    { value: 'maintenance', label: 'Maintenance' },
-                    { value: 'installation', label: 'Installation' },
-                    { value: 'training', label: 'Training' },
-                    { value: 'design', label: 'Design' },
-                    { value: 'other_services', label: 'Other Services' },
-                ],
-                'other': [
-                    { value: 'miscellaneous', label: 'Miscellaneous' },
-                ],
+                {% for key, data in categories.items %}
+        '{{ key }}': [
+            {% for sub in data.subcategories %}
+        { value: '{{ sub.value }}', label: '{{ sub.label }}' } {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+                ]{% if not forloop.last %}, {% endif %}
+        {% endfor %}
             },
 
-            init() {
-                if (this.trigger && this.selector) {
-                    this.setupEventListeners();
-                }
-            },
+        init() {
+            if (this.trigger && this.selector) {
+                this.setupEventListeners();
+            }
+        },
 
-            setupEventListeners() {
-                this.trigger.addEventListener('click', () => {
-                    this.toggleSelector();
-                });
+        setupEventListeners() {
+            this.trigger.addEventListener('click', () => {
+                this.toggleSelector();
+            });
 
-                document.addEventListener('click', (e) => {
-                    if (!this.trigger.contains(e.target) && !this.selector.contains(e.target)) {
-                        this.closeSelector();
-                    }
-                });
-
-                this.mainCategories.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('category-btn')) {
-                        const category = e.target.dataset.category;
-                        this.selectCategory(category);
-                    }
-                });
-
-                this.subcategories.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('subcategory-btn')) {
-                        const value = e.target.dataset.value;
-                        const label = e.target.textContent;
-                        this.selectSubcategory(value, label);
-                    }
-                });
-            },
-
-            selectCategory(category) {
-                this.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
-                    btn.classList.remove('bg-brand-sky', 'text-white');
-                    btn.classList.add('hover:bg-brand-sky/10');
-                });
-
-                const activeBtn = this.mainCategories.querySelector(`[data-category="${category}"]`);
-                if (activeBtn) {
-                    activeBtn.classList.add('bg-brand-sky', 'text-white');
-                    activeBtn.classList.remove('hover:bg-brand-sky/10');
-                }
-
-                this.activeCategory = category;
-                this.updateSubcategories(category);
-            },
-
-            updateSubcategories(category) {
-                this.subcategories.innerHTML = '';
-                const subs = this.subcategoriesData[category] || [];
-
-                subs.forEach(sub => {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded subcategory-btn';
-                    btn.dataset.value = `${category}-${sub.value}`;
-                    btn.textContent = sub.label;
-                    this.subcategories.appendChild(btn);
-                });
-            },
-
-            selectSubcategory(value, label) {
-                this.subcategories.querySelectorAll('.subcategory-btn').forEach(btn => {
-                    btn.classList.remove('bg-brand-leaf', 'text-white');
-                    btn.classList.add('hover:bg-brand-sky/10');
-                });
-
-                const selectedBtn = this.subcategories.querySelector(`[data-value="${value}"]`);
-                if (selectedBtn) {
-                    selectedBtn.classList.add('bg-brand-leaf', 'text-white');
-                    selectedBtn.classList.remove('hover:bg-brand-sky/10');
-                }
-
-                this.displayText.textContent = label;
-                this.displayText.classList.remove('text-slate-500');
-                this.displayText.classList.add('text-slate-900');
-                this.hiddenInput.value = value;
-
-                this.selectedSubcategory = value.split('-')[1];
-                this.closeSelector();
-            },
-
-            toggleSelector() {
-                if (this.selector.classList.contains('hidden')) {
-                    this.openSelector();
-                } else {
+            document.addEventListener('click', (e) => {
+                if (!this.trigger.contains(e.target) && !this.selector.contains(e.target)) {
                     this.closeSelector();
                 }
-            },
+            });
 
-            openSelector() {
-                this.selector.classList.remove('hidden');
-                this.selector.classList.add('flex');
-                this.trigger.classList.add('ring-2', 'ring-brand-sky');
-            },
-
-            closeSelector() {
-                this.selector.classList.add('hidden');
-                this.selector.classList.remove('flex');
-                this.trigger.classList.remove('ring-2', 'ring-brand-sky');
-            },
-
-            setCategory(category, subcategory) {
-                this.activeCategory = category;
-                this.selectedSubcategory = subcategory;
-
-                // Update visual state
-                this.selectCategory(category);
-                if (subcategory) {
-                    const subcategoryValue = `${category}-${subcategory}`;
-                    const label = this.getSubcategoryLabel(subcategory);
-                    this.selectSubcategory(subcategoryValue, label);
+            this.mainCategories.addEventListener('click', (e) => {
+                if (e.target.classList.contains('category-btn')) {
+                    const category = e.target.dataset.category;
+                    this.selectCategory(category);
                 }
-            },
+            });
 
-            getSubcategoryLabel(subcategory) {
-                const subs = this.subcategoriesData[this.activeCategory] || [];
-                const sub = subs.find(s => s.value === subcategory);
-                return sub ? sub.label : subcategory;
+            this.subcategories.addEventListener('click', (e) => {
+                if (e.target.classList.contains('subcategory-btn')) {
+                    const value = e.target.dataset.value;
+                    const label = e.target.textContent;
+                    this.selectSubcategory(value, label);
+                }
+            });
+        },
+
+        selectCategory(category) {
+            this.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-sky', 'text-white');
+                btn.classList.add('hover:bg-brand-sky/10');
+            });
+
+            const activeBtn = this.mainCategories.querySelector(`[data-category="${category}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-brand-sky', 'text-white');
+                activeBtn.classList.remove('hover:bg-brand-sky/10');
             }
+
+            this.activeCategory = category;
+            this.updateSubcategories(category);
+        },
+
+        updateSubcategories(category) {
+            this.subcategories.innerHTML = '';
+            const subs = this.subcategoriesData[category] || [];
+
+            subs.forEach(sub => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded subcategory-btn';
+                btn.dataset.value = `${category}-${sub.value}`;
+                btn.textContent = sub.label;
+                this.subcategories.appendChild(btn);
+            });
+        },
+
+        selectSubcategory(value, label) {
+            this.subcategories.querySelectorAll('.subcategory-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-leaf', 'text-white');
+                btn.classList.add('hover:bg-brand-sky/10');
+            });
+
+            const selectedBtn = this.subcategories.querySelector(`[data-value="${value}"]`);
+            if (selectedBtn) {
+                selectedBtn.classList.add('bg-brand-leaf', 'text-white');
+                selectedBtn.classList.remove('hover:bg-brand-sky/10');
+            }
+
+            this.displayText.textContent = label;
+            this.displayText.classList.remove('text-slate-500');
+            this.displayText.classList.add('text-slate-900');
+            this.hiddenInput.value = value;
+
+            this.selectedSubcategory = value.split('-')[1];
+            this.closeSelector();
+        },
+
+        toggleSelector() {
+            if (this.selector.classList.contains('hidden')) {
+                this.openSelector();
+            } else {
+                this.closeSelector();
+            }
+        },
+
+        openSelector() {
+            this.selector.classList.remove('hidden');
+            this.selector.classList.add('flex');
+            this.trigger.classList.add('ring-2', 'ring-brand-sky');
+        },
+
+        closeSelector() {
+            this.selector.classList.add('hidden');
+            this.selector.classList.remove('flex');
+            this.trigger.classList.remove('ring-2', 'ring-brand-sky');
+        },
+
+        setCategory(category, subcategory) {
+            this.activeCategory = category;
+            this.selectedSubcategory = subcategory;
+
+            // Update visual state
+            this.selectCategory(category);
+            if (subcategory) {
+                const subcategoryValue = `${category}-${subcategory}`;
+                const label = this.getSubcategoryLabel(subcategory);
+                this.selectSubcategory(subcategoryValue, label);
+            }
+        },
+
+        getSubcategoryLabel(subcategory) {
+            const subs = this.subcategoriesData[this.activeCategory] || [];
+            const sub = subs.find(s => s.value === subcategory);
+            return sub ? sub.label : subcategory;
+        }
         };
 
         // Delete modal event listeners
@@ -1628,6 +1843,61 @@
             });
         });
 
+        // Create listing multi-pick image handling
+        let createSelectedFiles = [];
+
+        function handleCreateImagePreview(input) {
+            const previewContainer = document.getElementById('create-image-previews');
+            const photoCounter = document.getElementById('create-image-counter');
+            if (!previewContainer || !photoCounter) return;
+
+            if (input.files && input.files.length > 0) {
+                const currentCount = createSelectedFiles.length;
+                const availableSlots = 5 - currentCount;
+
+                if (availableSlots <= 0) {
+                    alert('Maximum 5 images allowed. You have reached the limit.');
+                    input.value = '';
+                    return;
+                }
+
+                const filesToAdd = Array.from(input.files).slice(0, availableSlots);
+
+                filesToAdd.forEach(file => {
+                    createSelectedFiles.push(file);
+                });
+
+                // Re-render previews from accumulated files
+                previewContainer.innerHTML = '';
+                createSelectedFiles.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const previewDiv = document.createElement('div');
+                        previewDiv.className = 'relative group';
+                        previewDiv.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
+                        `;
+                        previewContainer.appendChild(previewDiv);
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                photoCounter.textContent = `Photos: ${createSelectedFiles.length}/5`;
+
+                // Clear the input so user can pick more
+                input.value = '';
+            }
+        }
+
+        function syncCreateFilesToInput() {
+            const fileInput = document.getElementById('id_images');
+            if (!fileInput) return;
+
+            const dataTransfer = new DataTransfer();
+            createSelectedFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+        }
+
         // Modal functionality
         const modal = document.getElementById('add-listing-modal');
         const addListingBtn = document.getElementById('add-listing-btn');
@@ -1661,6 +1931,11 @@
             if (e.target === modal) {
                 closeModal();
             }
+        });
+
+        // Before submit, make sure accumulated files are attached
+        form.addEventListener('submit', () => {
+            syncCreateFilesToInput();
         });
 
         // Dynamic form fields based on listing type
@@ -1718,180 +1993,144 @@
             selectedSubcategory: null,
 
             subcategoriesData: {
-                'electronics': [
-                    { value: 'computers', label: 'Computers' },
-                    { value: 'phones', label: 'Phones' },
-                    { value: 'tablets', label: 'Tablets' },
-                    { value: 'audio_video', label: 'Audio/Video Equipment' },
-                    { value: 'cameras', label: 'Cameras' },
-                    { value: 'other_electronics', label: 'Other Electronics' },
-                ],
-                'furniture': [
-                    { value: 'office_chairs', label: 'Office Chairs' },
-                    { value: 'desks', label: 'Desks' },
-                    { value: 'cabinets', label: 'Cabinets' },
-                    { value: 'tables', label: 'Tables' },
-                    { value: 'seating', label: 'Seating' },
-                    { value: 'other_furniture', label: 'Other Furniture' },
-                ],
-                'tools_equipment': [
-                    { value: 'power_tools', label: 'Power Tools' },
-                    { value: 'hand_tools', label: 'Hand Tools' },
-                    { value: 'machinery', label: 'Machinery' },
-                    { value: 'safety_equipment', label: 'Safety Equipment' },
-                    { value: 'measuring_tools', label: 'Measuring Tools' },
-                    { value: 'other_tools', label: 'Other Tools & Equipment' },
-                ],
-                'raw_materials': [
-                    { value: 'metals', label: 'Metals' },
-                    { value: 'plastics', label: 'Plastics' },
-                    { value: 'woods', label: 'Woods' },
-                    { value: 'chemicals', label: 'Chemicals' },
-                    { value: 'fabrics', label: 'Fabrics' },
-                    { value: 'other_materials', label: 'Other Raw Materials' },
-                ],
-                'services': [
-                    { value: 'consulting', label: 'Consulting' },
-                    { value: 'maintenance', label: 'Maintenance' },
-                    { value: 'installation', label: 'Installation' },
-                    { value: 'training', label: 'Training' },
-                    { value: 'design', label: 'Design' },
-                    { value: 'other_services', label: 'Other Services' },
-                ],
-                'other': [
-                    { value: 'miscellaneous', label: 'Miscellaneous' },
-                ],
+                {% for key, data in categories.items %}
+        '{{ key }}': [
+            {% for sub in data.subcategories %}
+        { value: '{{ sub.value }}', label: '{{ sub.label }}' } {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+                ]{% if not forloop.last %}, {% endif %}
+        {% endfor %}
             },
 
-            init() {
-                this.setupEventListeners();
-                this.setDefaultCategory();
-            },
+        init() {
+            this.setupEventListeners();
+            this.setDefaultCategory();
+        },
 
-            setupEventListeners() {
-                // Toggle selector visibility
-                this.trigger.addEventListener('click', () => {
-                    this.toggleSelector();
-                });
+        setupEventListeners() {
+            // Toggle selector visibility
+            this.trigger.addEventListener('click', () => {
+                this.toggleSelector();
+            });
 
-                // Close selector when clicking outside
-                document.addEventListener('click', (e) => {
-                    if (!this.trigger.contains(e.target) && !this.selector.contains(e.target)) {
-                        this.closeSelector();
-                    }
-                });
-
-                // Category button clicks
-                this.mainCategories.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('category-btn')) {
-                        const category = e.target.dataset.category;
-                        this.selectCategory(category);
-                    }
-                });
-
-                // Subcategory selection
-                this.subcategories.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('subcategory-btn')) {
-                        const value = e.target.dataset.value;
-                        const label = e.target.textContent;
-                        this.selectSubcategory(value, label);
-                    }
-                });
-
-                // Keyboard navigation
-                this.selector.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') {
-                        this.closeSelector();
-                    }
-                });
-            },
-
-            setDefaultCategory() {
-                // Default to first category (Electronics)
-                const firstCategory = this.mainCategories.querySelector('.category-btn');
-                if (firstCategory) {
-                    this.selectCategory(firstCategory.dataset.category);
-                }
-            },
-
-            selectCategory(category) {
-                // Update active category visual
-                this.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
-                    btn.classList.remove('bg-brand-sky', 'text-white');
-                    btn.classList.add('hover:bg-brand-sky/10');
-                });
-
-                const activeBtn = this.mainCategories.querySelector(`[data-category="${category}"]`);
-                if (activeBtn) {
-                    activeBtn.classList.add('bg-brand-sky', 'text-white');
-                    activeBtn.classList.remove('hover:bg-brand-sky/10');
-                }
-
-                this.activeCategory = category;
-                this.updateSubcategories(category);
-            },
-
-            updateSubcategories(category) {
-                this.subcategories.innerHTML = '';
-                const subs = this.subcategoriesData[category] || [];
-
-                subs.forEach(sub => {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded subcategory-btn';
-                    btn.dataset.value = `${category}-${sub.value}`;
-                    btn.textContent = sub.label;
-                    this.subcategories.appendChild(btn);
-                });
-            },
-
-            selectSubcategory(value, label) {
-                // Update selected subcategory visual
-                this.subcategories.querySelectorAll('.subcategory-btn').forEach(btn => {
-                    btn.classList.remove('bg-brand-leaf', 'text-white');
-                    btn.classList.add('hover:bg-brand-sky/10');
-                });
-
-                const selectedBtn = this.subcategories.querySelector(`[data-value="${value}"]`);
-                if (selectedBtn) {
-                    selectedBtn.classList.add('bg-brand-leaf', 'text-white');
-                    selectedBtn.classList.remove('hover:bg-brand-sky/10');
-                }
-
-                // Update display and hidden input
-                this.displayText.textContent = label;
-                this.displayText.classList.remove('text-slate-500');
-                this.displayText.classList.add('text-slate-900');
-                this.hiddenInput.value = value;
-
-                this.selectedSubcategory = value;
-
-                // Clear category error if exists
-                clearFieldError('category');
-
-                // Close selector after selection
-                setTimeout(() => this.closeSelector(), 150);
-            },
-
-            toggleSelector() {
-                if (this.selector.classList.contains('hidden')) {
-                    this.openSelector();
-                } else {
+            // Close selector when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!this.trigger.contains(e.target) && !this.selector.contains(e.target)) {
                     this.closeSelector();
                 }
-            },
+            });
 
-            openSelector() {
-                this.selector.classList.remove('hidden');
-                this.selector.classList.add('flex');
-                this.trigger.classList.add('ring-2', 'ring-brand-sky');
-            },
+            // Category button clicks
+            this.mainCategories.addEventListener('click', (e) => {
+                if (e.target.classList.contains('category-btn')) {
+                    const category = e.target.dataset.category;
+                    this.selectCategory(category);
+                }
+            });
 
-            closeSelector() {
-                this.selector.classList.add('hidden');
-                this.selector.classList.remove('flex');
-                this.trigger.classList.remove('ring-2', 'ring-brand-sky');
+            // Subcategory selection
+            this.subcategories.addEventListener('click', (e) => {
+                if (e.target.classList.contains('subcategory-btn')) {
+                    const value = e.target.dataset.value;
+                    const label = e.target.textContent;
+                    this.selectSubcategory(value, label);
+                }
+            });
+
+            // Keyboard navigation
+            this.selector.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    this.closeSelector();
+                }
+            });
+        },
+
+        setDefaultCategory() {
+            // Default to first category (Electronics)
+            const firstCategory = this.mainCategories.querySelector('.category-btn');
+            if (firstCategory) {
+                this.selectCategory(firstCategory.dataset.category);
             }
+        },
+
+        selectCategory(category) {
+            // Update active category visual
+            this.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-sky', 'text-white');
+                btn.classList.add('hover:bg-brand-sky/10');
+            });
+
+            const activeBtn = this.mainCategories.querySelector(`[data-category="${category}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-brand-sky', 'text-white');
+                activeBtn.classList.remove('hover:bg-brand-sky/10');
+            }
+
+            this.activeCategory = category;
+            this.updateSubcategories(category);
+        },
+
+        updateSubcategories(category) {
+            this.subcategories.innerHTML = '';
+            const subs = this.subcategoriesData[category] || [];
+
+            subs.forEach(sub => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded subcategory-btn';
+                btn.dataset.value = `${category}-${sub.value}`;
+                btn.textContent = sub.label;
+                this.subcategories.appendChild(btn);
+            });
+        },
+
+        selectSubcategory(value, label) {
+            // Update selected subcategory visual
+            this.subcategories.querySelectorAll('.subcategory-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-leaf', 'text-white');
+                btn.classList.add('hover:bg-brand-sky/10');
+            });
+
+            const selectedBtn = this.subcategories.querySelector(`[data-value="${value}"]`);
+            if (selectedBtn) {
+                selectedBtn.classList.add('bg-brand-leaf', 'text-white');
+                selectedBtn.classList.remove('hover:bg-brand-sky/10');
+            }
+
+            // Update display and hidden input
+            this.displayText.textContent = label;
+            this.displayText.classList.remove('text-slate-500');
+            this.displayText.classList.add('text-slate-900');
+            this.hiddenInput.value = value;
+
+            this.selectedSubcategory = value;
+
+            // Clear category error if exists
+            clearFieldError('category');
+
+            // Close selector after selection
+            setTimeout(() => this.closeSelector(), 150);
+        },
+
+        toggleSelector() {
+            if (this.selector.classList.contains('hidden')) {
+                this.openSelector();
+            } else {
+                this.closeSelector();
+            }
+        },
+
+        openSelector() {
+            this.selector.classList.remove('hidden');
+            this.selector.classList.add('flex');
+            this.trigger.classList.add('ring-2', 'ring-brand-sky');
+        },
+
+        closeSelector() {
+            this.selector.classList.add('hidden');
+            this.selector.classList.remove('flex');
+            this.trigger.classList.remove('ring-2', 'ring-brand-sky');
+        }
         };
 
         // Initialize category selector
@@ -2132,7 +2371,7 @@
             const swapFor = listingCard.dataset.swapFor;
             const budget = listingCard.dataset.budget;
             const location = listingCard.dataset.location;
-            const createdAt = listingCard.dataset.createdAt;
+            const date = listingCard.dataset.date;
             const yourName = listingCard.dataset.yourName;
             const company = listingCard.dataset.company;
             const listingType = listingCard.dataset.listingType;
@@ -2179,7 +2418,7 @@
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"></path>
                     </svg>
-                    ${createdAt}
+                    ${date}
                 </span>
             `;
 
@@ -2325,19 +2564,25 @@
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         populateEditModal(data.listing);
                         document.getElementById('edit-listing-modal').classList.remove('hidden');
                         document.getElementById('edit-listing-modal').classList.add('flex');
                     } else {
-                        alert('Error loading listing data');
+                        console.error('Server returned error:', data.error || 'Unknown error');
+                        alert(data.error || 'Error loading listing data');
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error loading listing data');
+                    console.error('Error loading listing:', error);
+                    alert('Error loading listing data. Please try again.');
                 });
         }
 
@@ -2403,75 +2648,145 @@
             currentEditListingId = null;
         }
 
-        function openEditListingModal(listingId) {
-            currentEditListingId = listingId;
-
-            // Fetch listing data and populate modal
-            fetch(`/listings/edit-listing/${listingId}/`, {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        populateEditModal(data.listing);
-                        document.getElementById('edit-listing-modal').classList.remove('hidden');
-                        document.getElementById('edit-listing-modal').classList.add('flex');
-                    } else {
-                        alert('Error loading listing data');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error loading listing data');
-                });
-        }
-
-        function closeEditListingModal() {
-            document.getElementById('edit-listing-modal').classList.add('hidden');
-            document.getElementById('edit-listing-modal').classList.remove('flex');
-            currentEditListingId = null;
-        }
-
         function populateEditModal(listing) {
-            // Populate form fields
-            document.querySelector(`input[name="listing_type"][value="${listing.listing_type}"]`).checked = true;
+            try {
+                // Populate form fields
+                const listingTypeRadio = document.querySelector(`input[name="listing_type"][value="${listing.listing_type}"]`);
+                if (listingTypeRadio) {
+                    listingTypeRadio.checked = true;
+                }
 
-            // Set category using the edit category selector
-            editCategorySelector.setCategory(listing.category, listing.subcategory);
+                // Set category using the edit category selector
+                if (editCategorySelector && typeof editCategorySelector.setCategory === 'function') {
+                    editCategorySelector.setCategory(listing.category, listing.subcategory);
+                }
 
-            document.getElementById('edit_id_title').value = listing.title;
-            document.getElementById('edit_id_description').value = listing.description;
+                const titleInput = document.getElementById('edit_id_title');
+                if (titleInput) titleInput.value = listing.title || '';
 
-            // Set dynamic field
-            if (listing.listing_type === 'sale' && listing.price) {
-                document.getElementById('edit_id_price').value = listing.price;
-            } else if (listing.listing_type === 'swap' && listing.swap_for) {
-                document.getElementById('edit_id_swap_for').value = listing.swap_for;
-            } else if (listing.listing_type === 'buy' && listing.budget) {
-                document.getElementById('edit_id_budget').value = listing.budget;
+                const descriptionInput = document.getElementById('edit_id_description');
+                if (descriptionInput) descriptionInput.value = listing.description || '';
+
+                // Set dynamic field
+                if (listing.listing_type === 'sale' && listing.price) {
+                    const priceInput = document.getElementById('edit_id_price');
+                    if (priceInput) priceInput.value = listing.price;
+                } else if (listing.listing_type === 'swap' && listing.swap_for) {
+                    const swapInput = document.getElementById('edit_id_swap_for');
+                    if (swapInput) swapInput.value = listing.swap_for;
+                } else if (listing.listing_type === 'buy' && listing.budget) {
+                    const budgetInput = document.getElementById('edit_id_budget');
+                    if (budgetInput) budgetInput.value = listing.budget;
+                }
+
+                const locationInput = document.getElementById('edit_id_location');
+                if (locationInput) locationInput.value = listing.location || '';
+
+                const dateInput = document.getElementById('edit_id_date');
+                if (dateInput) dateInput.value = listing.date || '';
+
+                // Update form action
+                const form = document.getElementById('edit-listing-form');
+                if (form) form.action = `/listings/edit-listing/${listing.id}/`;
+
+                // Trigger dynamic field update
+                if (typeof updateEditDynamicField === 'function') {
+                    updateEditDynamicField(listing.listing_type);
+                }
+
+                // Initialize edit category selector
+                if (editCategorySelector && typeof editCategorySelector.init === 'function') {
+                    editCategorySelector.init();
+                }
+
+                // Populate current images
+                if (typeof populateEditCurrentImages === 'function') {
+                    populateEditCurrentImages(listing.images || []);
+                }
+            } catch (error) {
+                console.error('Error populating edit modal:', error);
+                alert('Error loading some listing data. Please refresh and try again.');
+            }
+        }
+
+        // Add event listener for edit modal image input (with null check)
+        const editImageInput = document.getElementById('edit_id_images');
+        if (editImageInput) {
+            editImageInput.addEventListener('change', function (e) {
+                const files = Array.from(e.target.files);
+
+                // Add new images to the list
+                files.forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        editNewImages.push(file);
+                    }
+                });
+
+                // Update the display
+                updateEditImagePreviews();
+            });
+        }
+
+        function updateEditImagePreviews() {
+            const allImagesContainer = document.getElementById('edit-all-images');
+            const imagesGrid = document.getElementById('edit-all-images-grid');
+
+            if (!imagesGrid) {
+                // Create grid if it doesn't exist
+                const newGrid = document.createElement('div');
+                newGrid.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4';
+                newGrid.id = 'edit-all-images-grid';
+                allImagesContainer.appendChild(newGrid);
             }
 
-            document.getElementById('edit_id_location').value = listing.location;
+            const grid = document.getElementById('edit-all-images-grid');
 
-            // Update form action
-            document.getElementById('edit-listing-form').action = `/listings/edit-listing/${listing.id}/`;
+            // Remove only the new image previews (keep existing ones)
+            const newImageDivs = grid.querySelectorAll('[data-image-type="new"]');
+            newImageDivs.forEach(div => div.remove());
 
-            // Trigger dynamic field update
-            updateEditDynamicField(listing.listing_type);
+            // Add new image previews
+            editNewImages.forEach((file, index) => {
+                const imageDiv = document.createElement('div');
+                imageDiv.className = 'relative group cursor-move';
+                imageDiv.dataset.index = editExistingImagesCount + index;
+                imageDiv.dataset.imageType = 'new';
 
-            // Initialize edit category selector
-            editCategorySelector.init();
+                const img = document.createElement('img');
+                img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
+                const url = URL.createObjectURL(file);
+                img.src = url;
+                img.alt = 'New image';
 
-            // Populate current images
-            populateEditCurrentImages(listing.images || []);
+                // Add remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10';
+                removeBtn.innerHTML = '×';
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    editNewImages.splice(index, 1);
+                    updateEditImagePreviews();
+                };
+
+                imageDiv.appendChild(img);
+                imageDiv.appendChild(removeBtn);
+                grid.appendChild(imageDiv);
+            });
+
+            // Update counter
+            const totalImages = editExistingImagesCount + editNewImages.length;
+            const remainingSlots = 5 - editExistingImagesCount;
+            document.getElementById('edit-image-counter').textContent = `Photos: ${editNewImages.length}/${remainingSlots}`;
         }
 
         function populateEditCurrentImages(images) {
             const allImagesContainer = document.getElementById('edit-all-images');
             allImagesContainer.innerHTML = '';
+
+            // Reset the edit images state
+            editExistingImagesCount = images.length;
+            editNewImages = [];
 
             if (images.length > 0) {
                 const imagesGrid = document.createElement('div');

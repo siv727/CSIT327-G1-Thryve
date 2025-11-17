@@ -56,6 +56,7 @@ def landing(request):
 def home(request):
     from thryve_app.forms import ListingForm
     from thryve_app.models import Listing
+    from thryve_app.views import LISTING_TYPES
 
     form = ListingForm()
     # Get all listings to display on the page with prefetched images
@@ -63,7 +64,9 @@ def home(request):
 
     return render(request, 'landing/home.html', {
         'form': form,
-        'listings': listings
+        'listings': listings,
+        'categories': Listing.get_categories_dict(),
+        'listing_types': LISTING_TYPES,
     })
 
 # Use this view for the marketplace UI (your current home.html)
