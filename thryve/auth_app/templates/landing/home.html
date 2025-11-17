@@ -317,27 +317,34 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-slate-700 font-semibold mb-2">Search</label>
-                    <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <circle cx="11" cy="11" r="7" stroke-width="2" />
-                                <path stroke-width="2" d="M21 21l-4.3-4.3" />
-                            </svg>
-                        </span>
-                        <input
-                            class="w-full rounded-lg border border-slate-200 pl-10 pr-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
-                            placeholder="Search items, services, or locations…" />
-                    </div>
+                    <form id="filter-form" method="get" action="{% url 'home' %}">
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <circle cx="11" cy="11" r="7" stroke-width="2" />
+                                    <path stroke-width="2" d="M21 21l-4.3-4.3" />
+                                </svg>
+                            </span>
+                            <input
+                                class="w-full rounded-lg border border-slate-200 pl-10 pr-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                type="text" name="q" value="{{ search_query }}"
+                                placeholder="Search items, services, or locations…" />
+                        </div>
+                        <!-- Hidden inputs to preserve selected category and type -->
+                        <input type="hidden" name="category" id="filter-category-input" value="{{ category_filter }}">
+                        <input type="hidden" name="type" id="filter-type-input" value="{{ type_filter }}">
+                    </form>
                 </div>
 
                 <div>
                     <label class="block text-slate-700 font-semibold mb-2">Category</label>
                     <div class="relative">
                         <select
-                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-brand-sky">
-                            <option>All Categories</option>
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                            id="filter-category-select" onchange="document.getElementById('filter-category-input').value=this.value; document.getElementById('filter-form').submit();">
+                            <option value="">All Categories</option>
                             {% for key, data in categories.items %}
-                            <option value="{{ key }}">{{ data.label }}</option>
+                            <option value="{{ key }}" {% if category_filter == key %}selected{% endif %}>{{ data.label }}</option>
                             {% endfor %}
                         </select>
                         <span
@@ -349,20 +356,37 @@
             <div class="mt-5">
                 <div class="text-slate-700 font-semibold mb-3">Type</div>
                 <div class="flex flex-wrap items-center gap-2">
-                    <button
-                        class="px-4 py-2 rounded-full bg-brand-sky text-slate-900 font-semibold hover:brightness-105 transition">All</button>
-                    <button
-                        class="px-4 py-2 rounded-full border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10">For
-                        Sale</button>
-                    <button
-                        class="px-4 py-2 rounded-full border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10">Swap</button>
-                    <button
-                        class="px-4 py-2 rounded-full border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10">Wanted</button>
+                    <button type="button"
+                        class="px-4 py-2 rounded-full font-semibold transition {{ ''|yesno:'bg-brand-sky text-slate-900 hover:brightness-105,border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10' }}"
+                        onclick="document.getElementById('filter-type-input').value=''; document.getElementById('filter-form').submit();">
+                        All
+                    </button>
+                    <button type="button"
+                        class="px-4 py-2 rounded-full font-semibold transition {% if type_filter == 'sale' %}bg-brand-sky text-slate-900 hover:brightness-105{% else %}border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10{% endif %}"
+                        onclick="document.getElementById('filter-type-input').value='sale'; document.getElementById('filter-form').submit();">
+                        For Sale
+                    </button>
+                    <button type="button"
+                        class="px-4 py-2 rounded-full font-semibold transition {% if type_filter == 'swap' %}bg-brand-sky text-slate-900 hover:brightness-105{% else %}border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10{% endif %}"
+                        onclick="document.getElementById('filter-type-input').value='swap'; document.getElementById('filter-form').submit();">
+                        Swap
+                    </button>
+                    <button type="button"
+                        class="px-4 py-2 rounded-full font-semibold transition {% if type_filter == 'buy' %}bg-brand-sky text-slate-900 hover:brightness-105{% else %}border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10{% endif %}"
+                        onclick="document.getElementById('filter-type-input').value='buy'; document.getElementById('filter-form').submit();">
+                        Wanted
+                    </button>
                 </div>
             </div>
         </section>
 
         <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {% if not listings %}
+            <div class="col-span-full text-center py-16">
+                <p class="text-lg font-semibold text-slate-700 mb-2">No matching results</p>
+                <p class="text-sm text-slate-500">Try adjusting your search, category, or type filters.</p>
+            </div>
+            {% else %}
             {% for listing in listings %}
             <article
                 class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col hover:-translate-y-2 hover:shadow-lg transition-all duration-300"
@@ -917,9 +941,10 @@
                 <a href="#"
                     class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book
                     Now</a>
-            </div>
+                </div>
             </article>
             {% endfor %}
+            {% endif %}
         </section>
     </main>
 

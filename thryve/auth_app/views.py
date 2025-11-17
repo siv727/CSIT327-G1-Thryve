@@ -4,6 +4,7 @@ from django.views.decorators.cache import cache_control
 
 from .forms import RegistrationForm, LoginForm
 from django.contrib.auth import login, authenticate, logout
+from django.db.models import Q
 
 
 def register (request):
@@ -59,14 +60,31 @@ def home(request):
     from thryve_app.views import LISTING_TYPES
 
     form = ListingForm()
-    # Get all listings to display on the page with prefetched images
-    listings = Listing.objects.prefetch_related('images').all().order_by('-created_at')
+    search_query = request.GET.get('q', '').strip()
+    category_filter = request.GET.get('category', '').strip()
+    type_filter = request.GET.get('type', '').strip()  # '', 'sale', 'swap', 'buy'
+
+    listings_qs = Listing.objects.prefetch_related('images').all()
+
+    if search_query:
+        listings_qs = listings_qs.filter(Q(title__icontains=search_query))
+
+    if category_filter:
+        listings_qs = listings_qs.filter(category=category_filter)
+
+    if type_filter in ['sale', 'swap', 'buy']:
+        listings_qs = listings_qs.filter(listing_type=type_filter)
+
+    listings = listings_qs.order_by('-created_at')
 
     return render(request, 'landing/home.html', {
         'form': form,
         'listings': listings,
         'categories': Listing.get_categories_dict(),
         'listing_types': LISTING_TYPES,
+        'search_query': search_query,
+        'category_filter': category_filter,
+        'type_filter': type_filter,
     })
 
 # Use this view for the marketplace UI (your current home.html)
