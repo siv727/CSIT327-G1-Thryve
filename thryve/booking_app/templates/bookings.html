@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Thryve • Bookings</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              sky: '#83e6f5',
+              leaf: '#3ac363',
+              ink: '#0f172a'
+            }
+          },
+          boxShadow: {
+            soft: '0 10px 28px rgba(2, 8, 23, .06)'
+          },
+          fontFamily: {
+            inter: ['Inter', 'ui-sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+</head>
+
+<body class="font-inter bg-[#f7fbfd] text-brand-ink">
+
+  <!-- NAVBAR -->
+   <header class="bg-[#23d3ee] text-white shadow">
+    <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
+
+      <!-- Left: Logo -->
+      <a href="{% url 'home' %}" class="flex items-center gap-2">
+        <span
+          class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
+        <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
+      </a>
+
+      <!-- Center: Navigation Links -->
+      {% with active=request.resolver_match.url_name %}
+      <nav class="flex items-center gap-8 text-[15px] font-medium">
+        <!-- Marketplace -->
+        <a href="{% url 'home' %}"
+          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"></path>
+          </svg>
+          <span class="leading-none">Marketplace</span>
+          {% if active == 'home' %}
+          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+          {% endif %}
+        </a>
+         <a href="{% url 'thryve_app:my_listings' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <span class="leading-none">My Listings</span>
+                    {% if active == 'my_listings' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
+
+        <!-- Community -->
+        <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
+          </svg>
+          <span class="leading-none">Community</span>
+          {% if active == 'community' %}
+          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+          {% endif %}
+        </a>
+
+        <!-- Bookings -->
+        <a href="{% url 'bookings' %}" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
+          </svg>
+          <span class="leading-none">Bookings</span>
+          {% if active == 'bookings' %}
+          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+          {% endif %}
+        </a>
+
+        <!-- Profile -->
+        <a href="{% url 'business_profile' %}"
+          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z" />
+          </svg>
+          <span class="leading-none">Profile</span>
+          {% if active == 'business_profile' %}
+          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+          {% endif %}
+        </a>
+      </nav>
+      {% endwith %}
+
+      <!-- Right: Logout -->
+      <button onclick="openLogoutModal()" type="button"
+        class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
+        </svg>
+        <span class="leading-none">Logout</span>
+      </button>
+
+    </div>
+  </header>
+
+
+
+
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-[1100px] mx-auto px-5 py-10">
+
+    <!-- Page Header -->
+    <div class="mb-6">
+      <h1 class="text-[36px] font-extrabold leading-tight">Booking Requests</h1>
+      <p class="text-slate-600 mt-1">Manage your booking requests</p>
+    </div>
+
+<!-- Tabs -->
+<div class="flex items-center gap-3 mb-6">
+  <!-- Received Tab -->
+  <button id="tabReceived"
+    onclick="showReceived()"
+    class="px-4 py-2.5 rounded-lg font-semibold text-sm border transition
+    bg-[#e8fafe] text-brand-ink border-brand-sky">
+    Received (0)
+  </button>
+
+  <!-- Sent Tab -->
+  <button id="tabSent"
+    onclick="showSent()"
+    class="px-4 py-2.5 rounded-lg font-semibold text-sm text-slate-600 hover:bg-slate-100 transition">
+    Sent (0)
+  </button>
+</div>
+
+<!-- CONTENT AREA -->
+<div id="receivedSection" class="text-slate-500 text-[15px] font-medium">
+  No booking requests received
+</div>
+
+<div id="sentSection" class="text-slate-500 text-[15px] font-medium hidden">
+  No booking requests sent
+</div>
+
+  </main>
+<script>
+function showReceived() {
+  document.getElementById("receivedSection").classList.remove("hidden");
+  document.getElementById("sentSection").classList.add("hidden");
+
+  // Active tab styling
+  document.getElementById("tabReceived").className =
+    "px-4 py-2.5 rounded-lg font-semibold text-sm border transition bg-[#e8fafe] text-brand-ink border-brand-sky";
+
+  document.getElementById("tabSent").className =
+    "px-4 py-2.5 rounded-lg font-semibold text-sm text-slate-600 hover:bg-slate-100 transition";
+}
+
+function showSent() {
+  document.getElementById("receivedSection").classList.add("hidden");
+  document.getElementById("sentSection").classList.remove("hidden");
+
+  // Active tab styling
+  document.getElementById("tabSent").className =
+    "px-4 py-2.5 rounded-lg font-semibold text-sm border transition bg-[#e8fafe] text-brand-ink border-brand-sky";
+
+  document.getElementById("tabReceived").className =
+    "px-4 py-2.5 rounded-lg font-semibold text-sm text-slate-600 hover:bg-slate-100 transition";
+}
+</script>
+
+
+
+  <!-- Logout Modal -->
+  {% include 'accounts/logout_modal.html' %}
+
+</body>
+
+</html>

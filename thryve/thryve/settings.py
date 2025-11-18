@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'thryve_app',
     'auth_app',
-    'profile_app', 
+    'profile_app',
+    'booking_app',
 ]
 
 MIDDLEWARE = [
