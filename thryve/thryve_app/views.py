@@ -225,3 +225,82 @@ def connections(request):
     }
 
     return render(request, 'thryve_app/connections.html', context)
+
+@login_required(login_url='login')
+def browse_businesses(request):
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+
+    # Get search query
+    search_query = request.GET.get('q', '').strip()
+
+    # Get all users except current user
+    businesses = User.objects.exclude(id=request.user.id)
+
+    # Get connected users
+    connected_user_ids = set()
+    for conn in Connection.objects.filter(Q(user1=request.user) | Q(user2=request.user)):
+        if conn.user1 == request.user:
+            connected_user_ids.add(conn.user2.id)
+        else:
+            connected_user_ids.add(conn.user1.id)
+
+    # Get users with pending requests (sent or received)
+    pending_user_ids = set()
+    for req in ConnectionRequest.objects.filter(
+        (Q(sender=request.user) | Q(receiver=request.user)) & Q(status='pending')
+    ):
+        if req.sender == request.user:
+            pending_user_ids.add(req.receiver.id)
+        else:
+            pending_user_ids.add(req.sender.id)
+
+    # Exclude connected and pending users
+    exclude_ids = connected_user_ids.union(pending_user_ids)
+    businesses = businesses.exclude(id__in=exclude_ids)
+
+    # Apply search filter
+    if search_query:
+        businesses = businesses.filter(
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(company_name__icontains=search_query)
+        )
+
+    context = {
+        'businesses': businesses,
+        'search_query': search_query,
+    }
+
+    return render(request, 'thryve_app/browse_businesses.html', context)
+
+@login_required(login_url='login')
+def send_connection_request(request):
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        receiver_id = request.POST.get('receiver_id')
+        try:
+            receiver = User.objects.get(id=receiver_id)
+            # Check if request already exists
+            existing_request = ConnectionRequest.objects.filter(
+                sender=request.user,
+                receiver=receiver,
+                status='pending'
+            ).exists()
+            if existing_request:
+                return JsonResponse({'success': False, 'message': 'Connection request already sent.'})
+            # Check if already connected
+            existing_connection = Connection.objects.filter(
+                (Q(user1=request.user) & Q(user2=receiver)) |
+                (Q(user1=receiver) & Q(user2=request.user))
+            ).exists()
+            if existing_connection:
+                return JsonResponse({'success': False, 'message': 'Already connected.'})
+            # Create request
+            ConnectionRequest.objects.create(sender=request.user, receiver=receiver)
+            return JsonResponse({'success': True, 'message': 'Connection request sent!'})
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'User not found.'})
+    return JsonResponse({'success': False, 'message': 'Invalid request.'})
