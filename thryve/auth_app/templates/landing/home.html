@@ -116,34 +116,40 @@
             </nav>
             {% endwith %}
 
-            <button onclick="openLogoutModal()" type="button"
-                class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
-                </svg>
-                <span class="leading-none">Logout</span>
-            </button>
+      <!-- Right: Logout -->
+      <button onclick="openLogoutModal()" type="button"
+        class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
+        </svg>
+        <span class="leading-none">Logout</span>
+      </button>
 
-        </div>
-    </header>
+    </div>
+  </header>
 
 
-    <main class="max-w-[1200px] mx-auto px-5 py-8">
-        <div class="flex items-start justify-between gap-4 mb-6">
-            <div>
-                <h1 class="text-[38px] leading-[1.1] font-extrabold">{% if is_my_listings %}My Listings{% else %}Marketplace{% endif %}</h1>
-                <p class="text-slate-600 mt-1">{% if is_my_listings %}Manage your equipment and service listings.{% else %}Buy, sell, or swap equipment and services with confidence.{% endif %}</p>
-            </div>
-            {% if not is_my_listings %}
-            <button id="add-listing-btn"
-                class="inline-flex items-center gap-2 rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold px-4 py-2.5 shadow-soft transition">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" d="M12 5v14M5 12h14"/></svg>
-                Add Listing
-            </button>
-            {% endif %}
-        </div>
+
+
+
+  <!-- Main -->
+  <main class="max-w-[1200px] mx-auto px-5 py-8">
+    <!-- Page header -->
+    <div class="flex items-start justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-[38px] leading-[1.1] font-extrabold">Marketplace</h1>
+        <p class="text-slate-600 mt-1">Buy, sell, or swap equipment and services with confidence.</p>
+      </div>
+      <a href="#"
+        class="inline-flex items-center gap-2 rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold px-4 py-2.5 shadow-soft transition">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-width="2" d="M12 5v14M5 12h14" />
+        </svg>
+        Add Listing
+      </a>
+    </div>
 
         <section class="bg-white/90 backdrop-blur rounded-xl shadow-soft border border-slate-100 p-5 mb-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
