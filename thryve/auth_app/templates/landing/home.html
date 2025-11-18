@@ -1189,6 +1189,9 @@
                             <input type="text" name="title"
                                 class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
                                 placeholder="Enter listing title" id="edit_id_title">
+                            {% if form.title.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.title.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
@@ -1197,6 +1200,9 @@
                             <textarea name="description" id="edit_id_description"
                                 class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400 resize-y overflow-y-auto"
                                 rows="4" placeholder="Describe your item or service"></textarea>
+                            {% if form.description.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.description.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4" id="edit-dynamic-field-container">
@@ -1229,12 +1235,18 @@
                                     class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
                                     placeholder="City, State/Country">
                             </div>
+                            {% if form.location.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.location.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
                             <label for="edit_id_date" class="block text-slate-700 font-semibold mb-2">Date *</label>
                             <input type="date" name="date" id="edit_id_date"
                                 class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                            {% if form.date.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.date.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
@@ -1308,25 +1320,40 @@
                         enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
 
+                        <!-- Display non-field errors -->
+                        {% if form.non_field_errors %}
+                        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                            {% for error in form.non_field_errors %}
+                            <p class="text-sm">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
                         <div class="mb-4">
                             <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
                             <div class="space-y-2">
                                 <label class="flex items-center">
                                     <input type="radio" name="listing_type" value="sale"
-                                        class="text-brand-sky focus:ring-brand-sky" required>
+                                        class="text-brand-sky focus:ring-brand-sky" required
+                                        {% if form.listing_type.value == 'sale' %}checked{% endif %}>
                                     <span class="ml-2 text-slate-700">For Sale</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="radio" name="listing_type" value="swap"
-                                        class="text-brand-sky focus:ring-brand-sky" required>
+                                        class="text-brand-sky focus:ring-brand-sky" required
+                                        {% if form.listing_type.value == 'swap' %}checked{% endif %}>
                                     <span class="ml-2 text-slate-700">For Swap</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="radio" name="listing_type" value="buy"
-                                        class="text-brand-sky focus:ring-brand-sky" required>
+                                        class="text-brand-sky focus:ring-brand-sky" required
+                                        {% if form.listing_type.value == 'buy' %}checked{% endif %}>
                                     <span class="ml-2 text-slate-700">Looking to Buy</span>
                                 </label>
                             </div>
+                            {% if form.listing_type.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.listing_type.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
@@ -1334,7 +1361,7 @@
                                 class="block text-slate-700 font-semibold mb-2">Category *</label>
                             <div class="relative">
                                 <!-- Hidden input to store the selected value -->
-                                <input type="hidden" name="category" id="id_category" value="">
+                                <input type="hidden" name="category" id="id_category" value="{{ form.category.value|default:'' }}">
 
                                 <!-- Custom category selector trigger -->
                                 <div id="category-selector-trigger"
@@ -1375,12 +1402,18 @@
                                     </div>
                                 </div>
                             </div>
+                            {% if form.category.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.category.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
                             <label for="{{ form.title.id_for_label }}"
                                 class="block text-slate-700 font-semibold mb-2">Title *</label>
                             {{ form.title }}
+                            {% if form.title.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.title.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
@@ -1389,6 +1422,9 @@
                             <textarea name="description" id="id_description" rows="4"
                                 placeholder="Describe your item or service"
                                 class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400 whitespace-normal break-words resize-y"></textarea>
+                            {% if form.description.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.description.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4" id="dynamic-field-container">
@@ -1398,18 +1434,27 @@
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
                                 <input type="text" name="price"
                                     class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
-                                    placeholder="0.00" id="id_price">
+                                    placeholder="0.00" id="id_price" value="{{ form.price.value|default:'' }}">
+                                {% if form.price.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.price.errors.0 }}</p>
+                                {% endif %}
                             </div>
                             <div class="hidden" id="swap-container">
                                 <input type="text" name="swap_for"
                                     class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
-                                    placeholder="What are you looking to swap for?" id="id_swap_for">
+                                    placeholder="What are you looking to swap for?" id="id_swap_for" value="{{ form.swap_for.value|default:'' }}">
+                                {% if form.swap_for.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.swap_for.errors.0 }}</p>
+                                {% endif %}
                             </div>
                             <div class="relative hidden" id="budget-container">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
                                 <input type="text" name="budget"
                                     class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
-                                    placeholder="0.00" id="id_budget">
+                                    placeholder="0.00" id="id_budget" value="{{ form.budget.value|default:'' }}">
+                                {% if form.budget.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.budget.errors.0 }}</p>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -1421,12 +1466,18 @@
                                     class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
                                     placeholder="City, State/Country">
                             </div>
+                            {% if form.location.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.location.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
                             <label for="id_date" class="block text-slate-700 font-semibold mb-2">Date *</label>
                             <input type="date" name="date" id="id_date"
                                 class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                            {% if form.date.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.date.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
@@ -1942,10 +1993,45 @@
             }, 300);
         });
 
+        // Auto-open modal if there are form errors
+        {% if show_create_modal %}
+        document.addEventListener('DOMContentLoaded', () => {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                initLocationAutocomplete();
+            }, 300);
+        });
+        {% endif %}
+
         // Close modal functions
         const closeModal = () => {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
+            
+            // Reset the form completely
+            form.reset();
+            
+            // Clear all error messages
+            form.querySelectorAll('.text-red-500').forEach(error => error.remove());
+            form.querySelectorAll('.bg-red-100').forEach(error => error.remove());
+            
+            // Clear image previews and reset counter
+            createSelectedFiles = [];
+            document.getElementById('create-image-previews').innerHTML = '';
+            document.getElementById('create-image-counter').textContent = 'Photos: 0/5';
+            
+            // Reset category selector
+            document.getElementById('id_category').value = '';
+            document.getElementById('category-display-text').textContent = 'Choose Category';
+            document.getElementById('category-display-text').classList.add('text-slate-400');
+            
+            // Reset dynamic fields to default (For Sale / Price)
+            const saleRadio = form.querySelector('input[name="listing_type"][value="sale"]');
+            if (saleRadio) {
+                saleRadio.checked = true;
+                updateDynamicField('sale');
+            }
         };
 
         closeModalBtn.addEventListener('click', closeModal);

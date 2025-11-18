@@ -59,7 +59,13 @@ def my_listings(request):
 def create_listing(request):
     if request.method == 'POST':
         form = ListingForm(request.POST, request.FILES)
-        if form.is_valid():
+        
+        # Validate category field manually since it's not in the form
+        category_value = request.POST.get('category', '').strip()
+        if not category_value:
+            form.add_error(None, 'Category is required.')
+        
+        if form.is_valid() and category_value:
             listing = form.save(commit=False)
             listing.user = request.user
             try:
@@ -69,7 +75,6 @@ def create_listing(request):
             listing.company = request.user.company_name
 
             # Parse category and subcategory from the POST data
-            category_value = request.POST.get('category', '')
             if '-' in category_value:
                 main_category, subcategory = category_value.split('-', 1)
                 listing.category = main_category
@@ -107,10 +112,16 @@ def create_listing(request):
             messages.success(request, 'Your listing has been created successfully!')
             return redirect('home')
         else:
-            # Form is invalid - show errors
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
+            # Form is invalid - store errors in session and redirect
+            form_errors = form.errors.get_json_data()
+            
+            # Add category error if missing
+            if not category_value:
+                form_errors['category'] = [{'message': 'This field is required.', 'code': 'required'}]
+            
+            request.session['form_errors'] = form_errors
+            request.session['form_data'] = request.POST.dict()
+            request.session['show_create_modal'] = True
             return redirect('home')
     else:
         form = ListingForm()

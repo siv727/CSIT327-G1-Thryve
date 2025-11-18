@@ -65,6 +65,7 @@ class ListingForm(forms.ModelForm):
         self.fields['title'].required = True
         self.fields['description'].required = True
         self.fields['location'].required = True
+        self.fields['date'].required = True
         # Dynamic fields are handled in JavaScript validation
         self.fields['price'].required = False
         self.fields['swap_for'].required = False
