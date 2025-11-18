@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'thryve_app',
     'auth_app',
     'profile_app', 
-    'booking_app', 
 ]
 
 MIDDLEWARE = [
