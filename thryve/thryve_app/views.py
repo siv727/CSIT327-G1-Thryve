@@ -281,6 +281,7 @@ def send_connection_request(request):
 
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         receiver_id = request.POST.get('receiver_id')
+        message = request.POST.get('message', '').strip()
         try:
             receiver = User.objects.get(id=receiver_id)
             # Check if request already exists
@@ -298,9 +299,13 @@ def send_connection_request(request):
             ).exists()
             if existing_connection:
                 return JsonResponse({'success': False, 'message': 'Already connected.'})
-            # Create request
-            ConnectionRequest.objects.create(sender=request.user, receiver=receiver)
-            return JsonResponse({'success': True, 'message': 'Connection request sent!'})
+            # Create request with optional message
+            ConnectionRequest.objects.create(
+                sender=request.user,
+                receiver=receiver,
+                message=message if message else None
+            )
+            return JsonResponse({'success': True, 'message': f'Connection request sent successfully to {receiver.get_full_name()}.', 'receiver_name': receiver.get_full_name()})
         except User.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'User not found.'})
     return JsonResponse({'success': False, 'message': 'Invalid request.'})

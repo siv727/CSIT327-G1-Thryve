@@ -253,17 +253,24 @@
                     <!-- Display sent requests here -->
                     <div class="space-y-4">
                         {% for request in sent_requests %}
-                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-brand-sky rounded-full flex items-center justify-center">
-                                        <span class="text-white font-semibold">{{ request.receiver.first_name|first|upper }}</span>
+                            <div class="p-4 bg-slate-50 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-brand-sky rounded-full flex items-center justify-center">
+                                            <span class="text-white font-semibold">{{ request.receiver.first_name|first|upper }}</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-slate-900">{{ request.receiver.get_full_name }}</p>
+                                            <p class="text-sm text-slate-500">{{ request.receiver.company_name }}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="font-semibold text-slate-900">{{ request.receiver.get_full_name }}</p>
-                                        <p class="text-sm text-slate-500">{{ request.receiver.company_name }}</p>
-                                    </div>
+                                    <span class="text-sm text-slate-500 bg-slate-200 px-2 py-1 rounded">Pending</span>
                                 </div>
-                                <span class="text-sm text-slate-500 bg-slate-200 px-2 py-1 rounded">Pending</span>
+                                {% if request.message %}
+                                <div class="mt-3 pl-13">
+                                    <p class="text-sm text-slate-600 italic">Message: "{{ request.message }}"</p>
+                                </div>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>

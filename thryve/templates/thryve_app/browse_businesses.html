@@ -172,6 +172,44 @@
         </div>
     </main>
 
+    <!-- Connection Request Modal -->
+    <div id="connection-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-slate-900">Send Connection Request</h2>
+                    <button id="close-connection-modal" class="text-slate-400 hover:text-slate-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-slate-700" id="modal-subtitle">Send a connection request to [Business Name]</p>
+                </div>
+
+                <div class="mb-6">
+                    <label for="connection-message" class="block text-sm font-medium text-slate-700 mb-2">Message (Optional)</label>
+                    <textarea id="connection-message" rows="4" maxlength="500" placeholder="Introduce yourself or explain why you'd like to connect..." class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-sky focus:border-transparent resize-none"></textarea>
+                    <div class="flex justify-end mt-1">
+                        <span class="text-xs text-slate-500" id="char-counter">0/500 characters</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button id="cancel-connection-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                    <button id="send-connection-btn" class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition">Send Request</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-300 z-50">
+        <p id="toast-message" class="text-sm font-medium"></p>
+    </div>
+
     <!-- Logout Modal -->
     <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-auto">
@@ -240,45 +278,148 @@
             }, 300);
         });
 
-        // Connect button functionality
+        // Modal functionality
+        let currentButton = null;
+        let currentUserId = null;
+        let currentBusinessName = null;
+
+        // Show modal when connect button is clicked
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('connect-btn')) {
-                const button = e.target;
-                const userId = button.getAttribute('data-user-id');
+                currentButton = e.target;
+                currentUserId = currentButton.getAttribute('data-user-id');
+                currentBusinessName = currentButton.closest('.bg-white').querySelector('h3').textContent.trim();
 
-                // Disable button and show loading
-                button.disabled = true;
-                button.textContent = 'Sending...';
+                // Update modal subtitle
+                document.getElementById('modal-subtitle').textContent = `Send a connection request to ${currentBusinessName}`;
 
-                // Send AJAX request
-                fetch('{% url "thryve_app:send_connection_request" %}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || '',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: 'receiver_id=' + userId
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        button.textContent = 'Request Sent';
-                        button.classList.remove('bg-blue-500', 'hover:bg-blue-600');
-                        button.classList.add('bg-green-500', 'hover:bg-green-600');
-                    } else {
-                        button.textContent = 'Connect';
-                        button.disabled = false;
-                        alert(data.message || 'Failed to send connection request.');
-                    }
-                })
-                .catch(error => {
-                    button.textContent = 'Connect';
-                    button.disabled = false;
-                    alert('An error occurred. Please try again.');
-                });
+                // Reset message textarea
+                document.getElementById('connection-message').value = '';
+                document.getElementById('char-counter').textContent = '0/500 characters';
+
+                // Show modal
+                document.getElementById('connection-modal').classList.remove('hidden');
+                document.getElementById('connection-modal').classList.add('flex');
             }
         });
+
+        // Character counter for textarea
+        document.getElementById('connection-message').addEventListener('input', function() {
+            const count = this.value.length;
+            document.getElementById('char-counter').textContent = `${count}/500 characters`;
+        });
+
+        // Close modal functions
+        function closeConnectionModal() {
+            document.getElementById('connection-modal').classList.add('hidden');
+            document.getElementById('connection-modal').classList.remove('flex');
+            currentButton = null;
+            currentUserId = null;
+            currentBusinessName = null;
+        }
+
+        document.getElementById('close-connection-modal').addEventListener('click', closeConnectionModal);
+        document.getElementById('cancel-connection-btn').addEventListener('click', closeConnectionModal);
+
+        // Close modal when clicking outside
+        document.getElementById('connection-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('connection-modal')) {
+                closeConnectionModal();
+            }
+        });
+
+        // Send connection request
+        document.getElementById('send-connection-btn').addEventListener('click', function() {
+            if (!currentButton || !currentUserId) return;
+
+            const message = document.getElementById('connection-message').value.trim();
+
+            // Disable button and show loading
+            this.disabled = true;
+            this.textContent = 'Sending...';
+
+            // Get CSRF token
+            let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+            // If not found in DOM, try to get from cookie
+            if (!csrfToken) {
+                const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+                if (csrfCookie) {
+                    csrfToken = csrfCookie.split('=')[1];
+                }
+            }
+
+            // Send AJAX request
+            fetch('{% url "thryve_app:send_connection_request" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `receiver_id=${currentUserId}&message=${encodeURIComponent(message)}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Reset send button before closing modal
+                const sendBtn = document.getElementById('send-connection-btn');
+                if (sendBtn) {
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Send Request';
+                }
+
+                closeConnectionModal();
+                if (data.success) {
+                    // Update button state
+                    if (currentButton) {
+                        currentButton.textContent = 'Request Sent';
+                        currentButton.disabled = true;
+                        currentButton.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                        currentButton.classList.add('bg-green-500');
+                    }
+
+                    // Show toast notification
+                    showToast(data.message);
+                } else {
+                    alert(data.message || 'Failed to send connection request.');
+                }
+            })
+            .catch(error => {
+                console.error('Error sending connection request:', error);
+
+                // Reset send button before closing modal
+                const sendBtn = document.getElementById('send-connection-btn');
+                if (sendBtn) {
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Send Request';
+                }
+
+                closeConnectionModal();
+                alert('An error occurred. Please try again.');
+            });
+        });
+
+        // Toast notification function
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+
+            // Show toast
+            toast.classList.remove('translate-y-full', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-full', 'opacity-0');
+            }, 3000);
+        }
     </script>
 
 </body>
