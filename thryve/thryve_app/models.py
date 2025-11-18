@@ -85,6 +85,20 @@ class Listing(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
 
+    @classmethod
+    def get_categories_dict(cls):
+        """Returns structured categories data - single source of truth"""
+        return {
+            key: {
+                'label': label,
+                'subcategories': [
+                    {'value': sub[0], 'label': sub[1]}
+                    for sub in cls.SUBCATEGORY_CHOICES.get(key, [])
+                ]
+            }
+            for key, label in cls.CATEGORY_CHOICES
+        }
+
     def save(self, *args, **kwargs):
         # Sanitize HTML content to prevent XSS attacks
         if self.description:
@@ -99,6 +113,7 @@ class Listing(models.Model):
     your_name = models.CharField(max_length=100)
     company = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
+    date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     is_available = models.BooleanField(default=True)
 
@@ -106,6 +121,64 @@ class Listing(models.Model):
     def main_image(self):
         """Return the main image for this listing"""
         return self.images.filter(is_main=True).first()
+
+    @property
+    def category_display(self):
+        """Return the display label for the category"""
+        return dict(self.CATEGORY_CHOICES).get(self.category, 'Other')
+
+    @property
+    def subcategory_display(self):
+        """Return the display label for the subcategory"""
+        if not self.subcategory or not self.category:
+            return None
+        
+        subcategories = dict(self.SUBCATEGORY_CHOICES.get(self.category, []))
+        return subcategories.get(self.subcategory, self.subcategory)
+
+    @property
+    def formatted_price(self):
+        """Return formatted price with currency symbol"""
+        if self.price:
+            return f"₱{self.price:,.2f}"
+        return None
+
+    @property
+    def formatted_budget(self):
+        """Return formatted budget with currency symbol"""
+        if self.budget:
+            return f"₱{self.budget:,.2f}"
+        return None
+
+    @property
+    def formatted_date(self):
+        """Return formatted date as m/d/Y"""
+        if self.date:
+            return self.date.strftime('%m/%d/%Y')
+        return None
+
+    @property
+    def image_count(self):
+        """Return the number of images for this listing"""
+        return self.images.count()
+
+    @property
+    def can_add_images(self):
+        """Check if more images can be added (max 5)"""
+        return self.image_count < 5
+
+    @property
+    def remaining_image_slots(self):
+        """Return number of remaining image slots"""
+        return max(0, 5 - self.image_count)
+
+    def can_edit(self, user):
+        """Check if user can edit this listing"""
+        return self.user == user
+
+    def can_delete(self, user):
+        """Check if user can delete this listing"""
+        return self.user == user
 
     def __str__(self):
         return self.title
