@@ -40,47 +40,56 @@
 
 <body class="font-inter bg-[#f7fbfd] text-brand-ink">
 
-  <!-- Header — subtle blue→green like landing -->
-  <!-- Clean, professional navbar (no pill buttons) -->
-  <!-- Professional Navbar with Icons -->
-  <header class="bg-[#23d3ee] text-white shadow">
-    <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
+    <header class="bg-[#23d3ee] text-white shadow">
+        <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
 
-      <!-- Left: Logo -->
-      <a href="{% url 'home' %}" class="flex items-center gap-2">
-        <span
-          class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
-        <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
-      </a>
+            <a href="{% url 'home' %}" class="flex items-center gap-2">
+                <span
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
+                <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
+            </a>
 
-      <!-- Center: Navigation Links -->
-      {% with active=request.resolver_match.url_name %}
-      <nav class="flex items-center gap-8 text-[15px] font-medium">
-        <!-- Marketplace -->
-        <a href="{% url 'home' %}"
-          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"></path>
-          </svg>
-          <span class="leading-none">Marketplace</span>
-          {% if active == 'home' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-          {% endif %}
-        </a>
+            {% with active=request.resolver_match.url_name %}
+            <nav class="flex items-center gap-8 text-[15px] font-medium">
+                <a href="{% url 'home' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0">
+                        </path>
+                    </svg>
+                    <span class="leading-none">Marketplace</span>
+                    {% if active == 'home' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
 
-        <!-- Community -->
-        <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
-          </svg>
-          <span class="leading-none">Community</span>
-          {% if active == 'community' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-          {% endif %}
-        </a>
+                <a href="{% url 'thryve_app:my_listings' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    <span class="leading-none">My Listings</span>
+                    {% if active == 'my_listings' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
+
+                <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
+                    </svg>
+                    <span class="leading-none">Community</span>
+                    {% if active == 'community' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
 
         <!-- Bookings -->
         <a href="{% url 'bookings' %}" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
@@ -95,108 +104,10 @@
           {% endif %}
         </a>
 
-        <!-- Profile -->
-        <a href="{% url 'business_profile' %}"
-          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z" />
-          </svg>
-          <span class="leading-none">Profile</span>
-          {% if active == 'business_profile' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-          {% endif %}
-        </a>
-      </nav>
-      {% endwith %}
-
-      <!-- Right: Logout -->
-      <button onclick="openLogoutModal()" type="button"
-        class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
-        </svg>
-        <span class="leading-none">Logout</span>
-      </button>
-    <header class="bg-[#23d3ee] text-white shadow">
-        <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
-
-            <a href="{% url 'home' %}" class="flex items-center gap-2">
-                <span
-                    class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
-                <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
-            </a>
-
-            {% with active=request.resolver_match.url_name %}
-            <nav class="flex items-center gap-8 text-[15px] font-medium">
-                <a href="{% url 'home' %}"
-                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"></path>
-                    </svg>
-                    <span class="leading-none">Marketplace</span>
-                    {% if active == 'home' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
-
-                <a href="{% url 'thryve_app:my_listings' %}"
-                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    <span class="leading-none">My Listings</span>
-                    {% if active == 'my_listings' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
-
-                <a href="{% url 'thryve_app:connections' %}"
-                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                    <span class="leading-none">Connections</span>
-                    {% if active == 'connections' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
-
-                <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
-                    </svg>
-                    <span class="leading-none">Community</span>
-                    {% if active == 'community' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
-
-                <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
-                    </svg>
-                    <span class="leading-none">Bookings</span>
-                    {% if active == 'bookings' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
-
                 <a href="{% url 'business_profile' %}"
                     class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z" />
                     </svg>
@@ -208,30 +119,45 @@
             </nav>
             {% endwith %}
 
-            <button onclick="openLogoutModal()" type="button"
-                class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
-                </svg>
-                <span class="leading-none">Logout</span>
-            </button>
+      <!-- Right: Logout -->
+      <button onclick="openLogoutModal()" type="button"
+        class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
+        </svg>
+        <span class="leading-none">Logout</span>
+      </button>
 
-        </div>
-    </header>
+    </div>
+  </header>
 
 
     <main class="max-w-[1200px] mx-auto px-5 py-8">
         <div class="flex items-start justify-between gap-4 mb-6">
             <div>
-                <h1 class="text-[38px] leading-[1.1] font-extrabold">{% if is_my_listings %}My Listings{% else %}Marketplace{% endif %}</h1>
-                <p class="text-slate-600 mt-1">{% if is_my_listings %}Manage your equipment and service listings.{% else %}Buy, sell, or swap equipment and services with confidence.{% endif %}</p>
+                <h1 class="text-[38px] leading-[1.1] font-extrabold">
+                    {% if is_my_listings %}
+                    My Listings
+                    {% else %}
+                    Marketplace
+                    {% endif %}
+                </h1>
+                <p class="text-slate-600 mt-1">
+                    {% if is_my_listings %}
+                    Manage your equipment and service listings.
+                    {% else %}
+                    Buy, sell, or swap equipment and services with confidence.
+                    {% endif %}
+                </p>
             </div>
             {% if not is_my_listings %}
             <button id="add-listing-btn"
                 class="inline-flex items-center gap-2 rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold px-4 py-2.5 shadow-soft transition">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" d="M12 5v14M5 12h14"/></svg>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-width="2" d="M12 5v14M5 12h14" />
+                </svg>
                 Add Listing
             </button>
             {% endif %}
@@ -241,33 +167,38 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-slate-700 font-semibold mb-2">Search</label>
-                    <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <circle cx="11" cy="11" r="7" stroke-width="2" />
-                                <path stroke-width="2" d="M21 21l-4.3-4.3" />
-                            </svg>
-                        </span>
-                        <input
-                            class="w-full rounded-lg border border-slate-200 pl-10 pr-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
-                            placeholder="Search items, services, or locations…" />
-                    </div>
+                    <form id="filter-form" method="get" action="{% url 'home' %}">
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <circle cx="11" cy="11" r="7" stroke-width="2" />
+                                    <path stroke-width="2" d="M21 21l-4.3-4.3" />
+                                </svg>
+                            </span>
+                            <input
+                                class="w-full rounded-lg border border-slate-200 pl-10 pr-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                type="text" name="q" value="{{ search_query }}"
+                                placeholder="Search items, services, or locations…" />
+                        </div>
+                        <!-- Hidden inputs to preserve selected category and type -->
+                        <input type="hidden" name="category" id="filter-category-input" value="{{ category_filter }}">
+                        <input type="hidden" name="type" id="filter-type-input" value="{{ type_filter }}">
+                    </form>
                 </div>
 
                 <div>
                     <label class="block text-slate-700 font-semibold mb-2">Category</label>
                     <div class="relative">
                         <select
-                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-brand-sky">
-                            <option>All Categories</option>
-                            <option>Electronics</option>
-                            <option>Furniture</option>
-                            <option>Tools & Equipment</option>
-                            <option>Raw Materials</option>
-                            <option>Services</option>
-                            <option>Other</option>
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                            id="filter-category-select" onchange="document.getElementById('filter-category-input').value=this.value; document.getElementById('filter-form').submit();">
+                            <option value="">All Categories</option>
+                            {% for key, data in categories.items %}
+                            <option value="{{ key }}" {% if category_filter == key %}selected{% endif %}>{{ data.label }}</option>
+                            {% endfor %}
                         </select>
-                        <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">▾</span>
+                        <span
+                            class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">▾</span>
                     </div>
                 </div>
             </div>
@@ -275,80 +206,154 @@
             <div class="mt-5">
                 <div class="text-slate-700 font-semibold mb-3">Type</div>
                 <div class="flex flex-wrap items-center gap-2">
-                    <button
-                        class="px-4 py-2 rounded-full bg-brand-sky text-slate-900 font-semibold hover:brightness-105 transition">All</button>
-                    <button class="px-4 py-2 rounded-full border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10">For
-                        Sale</button>
-                    <button
-                        class="px-4 py-2 rounded-full border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10">Swap</button>
-                    <button
-                        class="px-4 py-2 rounded-full border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10">Wanted</button>
+                    <button type="button"
+                        class="px-4 py-2 rounded-full font-semibold transition {{ ''|yesno:'bg-brand-sky text-slate-900 hover:brightness-105,border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10' }}"
+                        onclick="document.getElementById('filter-type-input').value=''; document.getElementById('filter-form').submit();">
+                        All
+                    </button>
+                    <button type="button"
+                        class="px-4 py-2 rounded-full font-semibold transition {% if type_filter == 'sale' %}bg-brand-sky text-slate-900 hover:brightness-105{% else %}border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10{% endif %}"
+                        onclick="document.getElementById('filter-type-input').value='sale'; document.getElementById('filter-form').submit();">
+                        For Sale
+                    </button>
+                    <button type="button"
+                        class="px-4 py-2 rounded-full font-semibold transition {% if type_filter == 'swap' %}bg-brand-sky text-slate-900 hover:brightness-105{% else %}border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10{% endif %}"
+                        onclick="document.getElementById('filter-type-input').value='swap'; document.getElementById('filter-form').submit();">
+                        Swap
+                    </button>
+                    <button type="button"
+                        class="px-4 py-2 rounded-full font-semibold transition {% if type_filter == 'buy' %}bg-brand-sky text-slate-900 hover:brightness-105{% else %}border border-brand-sky/60 text-slate-700 hover:bg-brand-sky/10{% endif %}"
+                        onclick="document.getElementById('filter-type-input').value='buy'; document.getElementById('filter-form').submit();">
+                        Wanted
+                    </button>
                 </div>
             </div>
         </section>
 
         <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {% if not listings %}
+            <div class="col-span-full text-center py-16">
+                <p class="text-lg font-semibold text-slate-700 mb-2">No matching results</p>
+                <p class="text-sm text-slate-500">Try adjusting your search, category, or type filters.</p>
+            </div>
+            {% else %}
             {% for listing in listings %}
-            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col hover:-translate-y-2 hover:shadow-lg transition-all duration-300" data-listing-id="{{ listing.id }}" data-images="{% for image in listing.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}" data-title="{{ listing.title }}" data-description="{{ listing.description|safe }}" data-price="{% if listing.listing_type == 'sale' and listing.price %}₱{{ listing.price }}{% endif %}" data-swap-for="{% if listing.listing_type == 'swap' and listing.swap_for %}{{ listing.swap_for }}{% endif %}" data-budget="{% if listing.listing_type == 'buy' and listing.budget %}₱{{ listing.budget }}{% endif %}" data-location="{{ listing.location }}" data-created-at="{{ listing.created_at|date:'m/d/Y' }}" data-your-name="{{ listing.your_name }}" data-company="{{ listing.company }}" data-listing-type="{{ listing.listing_type }}" data-category="{% if listing.category %}{{ listing.category }}{% endif %}" data-subcategory="{% if listing.subcategory %}{{ listing.subcategory }}{% endif %}">
-                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4 cursor-pointer" onclick="openImageGallery('{{ listing.id }}')">
+            <article
+                class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col hover:-translate-y-2 hover:shadow-lg transition-all duration-300"
+                data-listing-id="{{ listing.id }}"
+                data-images="{% for image in listing.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                data-title="{{ listing.title }}" data-description="{{ listing.description|safe }}"
+                data-price="{% if listing.listing_type == 'sale' and listing.price %}₱{{ listing.price }}{% endif %}"
+                data-swap-for="{% if listing.listing_type == 'swap' and listing.swap_for %}{{ listing.swap_for }}{% endif %}"
+                data-budget="{% if listing.listing_type == 'buy' and listing.budget %}₱{{ listing.budget }}{% endif %}"
+                data-location="{{ listing.location }}" data-date="{{ listing.date|date:'m/d/Y' }}"
+                data-your-name="{{ listing.your_name }}" data-company="{{ listing.company }}"
+                data-listing-type="{{ listing.listing_type }}"
+                data-category="{% if listing.category %}{{ listing.category }}{% endif %}"
+                data-subcategory="{% if listing.subcategory %}{{ listing.subcategory }}{% endif %}">
+                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4 cursor-pointer"
+                    onclick="openImageGallery('{{ listing.id }}')">
                     {% if listing.main_image %}
-                        <img src="{{ listing.main_image.image.url }}" alt="{{ listing.title }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-200">
+                    <img src="{{ listing.main_image.image.url }}" alt="{{ listing.title }}"
+                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-200">
                     {% else %}
-                        <img src="{% static 'thryve_app/images/listing-placeholder.png' %}" alt="No image available" class="w-full h-full object-cover">
+                    <img src="{% static 'thryve_app/images/listing-placeholder.png' %}" alt="No image available"
+                        class="w-full h-full object-cover">
                     {% endif %}
                 </div>
 
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-2">
                         {% if listing.listing_type == 'sale' %}
-                            <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                                </svg>
-                                SALE
-                            </span>
+                        <span
+                            class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
+                                </path>
+                            </svg>
+                            SALE
+                        </span>
                         {% elif listing.listing_type == 'swap' %}
-                            <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-                                </svg>
-                                SWAP
-                            </span>
+                        <span
+                            class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                            </svg>
+                            SWAP
+                        </span>
                         {% elif listing.listing_type == 'buy' %}
-                            <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                                </svg>
-                                BUY
-                            </span>
+                        <span
+                            class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                            </svg>
+                            BUY
+                        </span>
                         {% endif %}
                         {% if listing.category %}
-                            {% if listing.subcategory %}
-                                <span class="inline-flex items-center text-[11px] font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
-                                    {% if listing.category == 'electronics' %}
-                                        {% if listing.subcategory == 'computers' %}Computers{% elif listing.subcategory == 'phones' %}Phones{% elif listing.subcategory == 'tablets' %}Tablets{% elif listing.subcategory == 'audio_video' %}Audio/Video Equipment{% elif listing.subcategory == 'cameras' %}Cameras{% else %}Other Electronics{% endif %}
-                                    {% elif listing.category == 'furniture' %}
-                                        {% if listing.subcategory == 'office_chairs' %}Office Chairs{% elif listing.subcategory == 'desks' %}Desks{% elif listing.subcategory == 'cabinets' %}Cabinets{% elif listing.subcategory == 'tables' %}Tables{% elif listing.subcategory == 'seating' %}Seating{% else %}Other Furniture{% endif %}
-                                    {% elif listing.category == 'tools_equipment' %}
-                                        {% if listing.subcategory == 'power_tools' %}Power Tools{% elif listing.subcategory == 'hand_tools' %}Hand Tools{% elif listing.subcategory == 'machinery' %}Machinery{% elif listing.subcategory == 'safety_equipment' %}Safety Equipment{% elif listing.subcategory == 'measuring_tools' %}Measuring Tools{% else %}Other Tools & Equipment{% endif %}
-                                    {% elif listing.category == 'raw_materials' %}
-                                        {% if listing.subcategory == 'metals' %}Metals{% elif listing.subcategory == 'plastics' %}Plastics{% elif listing.subcategory == 'woods' %}Woods{% elif listing.subcategory == 'chemicals' %}Chemicals{% elif listing.subcategory == 'fabrics' %}Fabrics{% else %}Other Raw Materials{% endif %}
-                                    {% elif listing.category == 'services' %}
-                                        {% if listing.subcategory == 'consulting' %}Consulting{% elif listing.subcategory == 'maintenance' %}Maintenance{% elif listing.subcategory == 'installation' %}Installation{% elif listing.subcategory == 'training' %}Training{% elif listing.subcategory == 'design' %}Design{% else %}Other Services{% endif %}
-                                    {% else %}
-                                        Miscellaneous
-                                    {% endif %}
-                                </span>
+                        {% if listing.subcategory %}
+                        <span
+                            class="inline-flex items-center text-[11px] font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
+                            {% if listing.category == 'electronics' %}
+                            {% if listing.subcategory == 'computers' %}Computers
+                            {% elif listing.subcategory == 'phones' %}Phones
+                            {% elif listing.subcategory == 'tablets' %}Tablets
+                            {% elif listing.subcategory == 'audio_video' %}Audio/Video Equipment
+                            {% elif listing.subcategory == 'cameras' %}Cameras
+                            {% else %}Other Electronics{% endif %}
+                            {% elif listing.category == 'furniture' %}
+                            {% if listing.subcategory == 'office_chairs' %}Office Chairs
+                            {% elif listing.subcategory == 'desks' %}Desks
+                            {% elif listing.subcategory == 'cabinets' %}Cabinets
+                            {% elif listing.subcategory == 'tables' %}Tables
+                            {% elif listing.subcategory == 'seating' %}Seating
+                            {% else %}Other Furniture{% endif %}
+                            {% elif listing.category == 'tools_equipment' %}
+                            {% if listing.subcategory == 'power_tools' %}Power Tools
+                            {% elif listing.subcategory == 'hand_tools' %}Hand Tools
+                            {% elif listing.subcategory == 'machinery' %}Machinery
+                            {% elif listing.subcategory == 'safety_equipment' %}Safety Equipment
+                            {% elif listing.subcategory == 'measuring_tools' %}Measuring Tools
+                            {% else %}Other Tools & Equipment{% endif %}
+                            {% elif listing.category == 'raw_materials' %}
+                            {% if listing.subcategory == 'metals' %}Metals
+                            {% elif listing.subcategory == 'plastics' %}Plastics
+                            {% elif listing.subcategory == 'woods' %}Woods
+                            {% elif listing.subcategory == 'chemicals' %}Chemicals
+                            {% elif listing.subcategory == 'fabrics' %}Fabrics
+                            {% else %}Other Raw Materials{% endif %}
+                            {% elif listing.category == 'services' %}
+                            {% if listing.subcategory == 'consulting' %}Consulting
+                            {% elif listing.subcategory == 'maintenance' %}Maintenance
+                            {% elif listing.subcategory == 'installation' %}Installation
+                            {% elif listing.subcategory == 'training' %}Training
+                            {% elif listing.subcategory == 'design' %}Design
+                            {% else %}Other Services{% endif %}
                             {% else %}
-                                <span class="inline-flex items-center text-[11px] font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
-                                    {% if listing.category == 'electronics' %}Electronics{% elif listing.category == 'furniture' %}Furniture{% elif listing.category == 'tools_equipment' %}Tools & Equipment{% elif listing.category == 'raw_materials' %}Raw Materials{% elif listing.category == 'services' %}Services{% else %}Other{% endif %}
-                                </span>
+                            Miscellaneous
                             {% endif %}
+                        </span>
+                        {% else %}
+                        <span
+                            class="inline-flex items-center text-[11px] font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
+                            {% if listing.category == 'electronics' %}Electronics
+                            {% elif listing.category == 'furniture' %}Furniture
+                            {% elif listing.category == 'tools_equipment' %}Tools & Equipment
+                            {% elif listing.category == 'raw_materials' %}Raw Materials
+                            {% elif listing.category == 'services' %}Services
+                            {% else %}Other{% endif %}
+                        </span>
+                        {% endif %}
                         {% endif %}
                     </div>
-                    <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">
+                    <span
+                        class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">
                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7">
+                            </path>
                         </svg>
                         Available
                     </span>
@@ -357,7 +362,8 @@
                 <div class="title-scroll-container relative">
                     <div class="title-scroll-text whitespace-nowrap">
                         <h3 class="text-lg font-bold inline-block">{{ listing.title }}</h3>
-                        <span class="title-spacer text-lg font-bold inline-block" aria-hidden="true">{{ listing.title }}</span>
+                        <span class="title-spacer text-lg font-bold inline-block"
+                            aria-hidden="true">{{listing.title}}</span>
                     </div>
                 </div>
                 {% else %}
@@ -365,46 +371,67 @@
                 {% endif %}
                 <div class="mt-0.5 text-slate-500 font-medium flex items-center gap-1">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
                     <strong>{{ listing.your_name }}</strong> | {{ listing.company }}
                 </div>
-                <div class="relative mt-3 text-slate-700 h-[1.5rem] overflow-hidden">
+                <div class="relative mt-3 text-slate-700 card-description">
                     {% with stripped_desc=listing.description|striptags %}
-                        {% if stripped_desc|length > 120 %}
-
-                            <p class="whitespace-nowrap inline-block pr-16">
-                                 {{ stripped_desc|slice:":95" }}
-                            </p>
-
-                            <span class="absolute right-0 bottom-0 bg-white pl-2 z-10 cursor-pointer" onclick="openListingDetailsModal('{{ listing.id }}')">
-                                <span class="font-semibold text-slate-700 hover:text-brand-leaf transition-colors duration-200">... See More</span>
-                            </span>
-                        {% else %}
-                            <div class="description-preview">{{ listing.description|safe }}</div>
-                        {% endif %}
+                    {% if stripped_desc|length > 120 %}
+                    <p class="pr-16 break-words whitespace-normal line-clamp-2">
+                        {{ stripped_desc|slice:":200" }}
+                    </p>
+                    <span class="absolute right-0 bottom-0 bg-white pl-2 z-10 cursor-pointer"
+                        onclick="openListingDetailsModal('{{ listing.id }}')">
+                        <span
+                            class="font-semibold text-slate-700 hover:text-brand-leaf transition-colors duration-200">...
+                            See More</span>
+                    </span>
+                    {% else %}
+                    <div class="description-preview break-words whitespace-normal line-clamp-2">
+                        {{ listing.description|safe }}
+                    </div>
+                    {% endif %}
                     {% endwith %}
                 </div>
 
                 {% if listing.listing_type == 'sale' and listing.price %}
-                    <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">₱{{ listing.price }}</div>
+                <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">₱{{ listing.price }}</div>
                 {% elif listing.listing_type == 'swap' and listing.swap_for %}
-                    <div class="mt-4 text-[22px] font-extrabold"><span class="text-slate-700">Looking for:</span> <span class="text-brand-leaf">{{ listing.swap_for }}</span></div>
+                <div class="mt-4 text-[22px] font-extrabold flex items-baseline gap-2">
+                    <span class="text-slate-700 shrink-0">Looking for:</span>
+                    {% if listing.swap_for|length > 15 %}
+                    <div class="looking-scroll-container flex-1 min-w-0">
+                        <div class="looking-scroll-text whitespace-nowrap">
+                            <span class="text-brand-leaf inline-block">{{ listing.swap_for }}</span>
+                            <span class="looking-spacer text-brand-leaf inline-block"
+                                aria-hidden="true">{{listing.swap_for }}</span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <span class="text-brand-leaf truncate flex-1 min-w-0">{{ listing.swap_for }}</span>
+                    {% endif %}
+                </div>
                 {% elif listing.listing_type == 'buy' and listing.budget %}
-                    <div class="mt-4 text-[22px] font-extrabold"><span class="text-slate-700">Budget:</span> <span class="text-brand-leaf">₱{{ listing.budget }}</span></div>
+                <div class="mt-4 text-[22px] font-extrabold"><span class="text-slate-700">Budget:</span> <span
+                        class="text-brand-leaf">₱{{ listing.budget }}</span></div>
                 {% endif %}
 
                 <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
                     <span class="flex items-center gap-1 max-w-[60%]">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
                         {% if listing.location|length > 20 %}
                         <div class="location-scroll-container">
                             <div class="location-scroll-text whitespace-nowrap">
                                 <span class="inline-block">{{ listing.location }}</span>
-                                <span class="location-spacer inline-block" aria-hidden="true">{{ listing.location }}</span>
+                                <span class="location-spacer inline-block" aria-hidden="true">{{listing.location}}</span>
                             </div>
                         </div>
                         {% else %}
@@ -413,38 +440,374 @@
                     </span>
                     <span class="flex items-center gap-1">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"></path>
                         </svg>
-                        {{ listing.created_at|date:"m/d/Y" }}
+                        {{ listing.date|date:"m/d/Y" }}
                     </span>
                 </div>
                 <div class="mt-5 grid grid-cols-2 gap-3">
                     {% if is_my_listings %}
-                        <button onclick="openEditListingModal('{{ listing.id }}')" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">Edit Details</button>
-                        <button onclick="openDeleteListingModal('{{ listing.id }}')" class="text-center rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5">Delete</button>
+                    <button onclick="openEditModal{{ listing.id }}()"
+                        class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">Edit
+                        Details</button>
+                    <button onclick="openDeleteListingModal('{{ listing.id }}')"
+                        class="text-center rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5">Delete</button>
                     {% else %}
-                        <button onclick="openListingDetailsModal('{{ listing.id }}')" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</button>
-                        <button onclick="openBookNowModal('{{ listing.id }}')" class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</button>
+                    <button onclick="openListingDetailsModal('{{ listing.id }}')"
+                        class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View
+                        Details</button>
+                    <button onclick="openBookNowModal('{{ listing.id }}')"
+                        class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book
+                        Now</button>
                     {% endif %}
                 </div>
             </article>
-            {% empty %}
-            <div class="col-span-full text-center py-12">
-                <p class="text-slate-500 text-lg">No listings created</p>
+
+            <!-- Individual Edit Modal for Listing {{ listing.id }} -->
+            {% if is_my_listings %}
+            <script>
+                function openEditModal{{ listing.id }}() {
+                    document.getElementById('editModal{{ listing.id }}').classList.remove('hidden');
+                    document.getElementById('editModal{{ listing.id }}').classList.add('flex');
+                }
+                function closeEditModal{{ listing.id }}() {
+                    document.getElementById('editModal{{ listing.id }}').classList.add('hidden');
+                    document.getElementById('editModal{{ listing.id }}').classList.remove('flex');
+                }
+                let editNewImagesData{{ listing.id }} = [];
+
+                function handleImagePreview{{ listing.id }}(input) {
+                    const previewContainer = document.getElementById('imagePreview{{ listing.id }}');
+                    const photoCounter = document.getElementById('photoCounter{{ listing.id }}');
+                    const existingCount = {{ listing.images.count }};
+                    const fileInput = input;
+
+                    if (input.files && input.files.length > 0) {
+                        const currentNewCount = editNewImagesData{{ listing.id }}.length;
+                        const availableSlots = 5 - existingCount - currentNewCount;
+
+                        if (availableSlots <= 0) {
+                            alert('Maximum 5 images allowed. You have reached the limit.');
+                            fileInput.value = '';
+                            return;
+                        }
+
+                        const filesToAdd = Math.min(input.files.length, availableSlots);
+                        if (input.files.length > availableSlots) {
+                            alert(`You can only add ${availableSlots} more image(s). Only the first ${availableSlots} will be added.`);
+                        }
+
+                        // Add new files to our array
+                        for (let i = 0; i < filesToAdd; i++) {
+                            editNewImagesData{{ listing.id }}.push(input.files[i]);
+
+                            const reader = new FileReader();
+                            const fileIndex = currentNewCount + i;
+                            reader.onload = function(e) {
+                                const previewDiv = document.createElement('div');
+                                previewDiv.className = 'relative group new-image-preview';
+                                previewDiv.setAttribute('data-index', fileIndex);
+                                previewDiv.innerHTML = `
+                                    <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
+                                    <div class="absolute top-1 right-1 bg-brand-sky text-white text-xs px-1.5 py-0.5 rounded">New</div>
+                                    <button type="button" onclick="removeNewImage{{ listing.id }}(${fileIndex})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">×</button>
+                                `;
+                                previewContainer.appendChild(previewDiv);
+                            };
+                            reader.readAsDataURL(input.files[i]);
+                        }
+
+                        const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
+                        photoCounter.textContent = `Photos: ${totalCount}/5`;
+
+                        // Clear the file input so the same file can be selected again
+                        fileInput.value = '';
+                    }
+                }
+
+                function removeNewImage{{ listing.id }}(index) {
+                    // Remove from array
+                    editNewImagesData{{ listing.id }}.splice(index, 1);
+
+                    // Update preview container
+                    const previewContainer = document.getElementById('imagePreview{{ listing.id }}');
+                    const allNewPreviews = previewContainer.querySelectorAll('.new-image-preview');
+                    allNewPreviews.forEach(preview => preview.remove());
+
+                    // Re-render remaining new images with updated indices
+                    editNewImagesData{{ listing.id }}.forEach((file, newIndex) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewDiv = document.createElement('div');
+                            previewDiv.className = 'relative group new-image-preview';
+                            previewDiv.setAttribute('data-index', newIndex);
+                            previewDiv.innerHTML = `
+                                <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
+                                <div class="absolute top-1 right-1 bg-brand-sky text-white text-xs px-1.5 py-0.5 rounded">New</div>
+                                <button type="button" onclick="removeNewImage{{ listing.id }}(${newIndex})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">×</button>
+                            `;
+                            previewContainer.appendChild(previewDiv);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+
+                    // Update counter
+                    const existingCount = {{ listing.images.count }};
+                    const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
+                    document.getElementById('photoCounter{{ listing.id }}').textContent = `Photos: ${totalCount}/5`;
+                }
+
+                function submitEditForm{{ listing.id }}(form) {
+                    // Create a new DataTransfer object to hold our files
+                    const dataTransfer = new DataTransfer();
+
+                    // Add all new images to the file input
+                    editNewImagesData{{ listing.id }}.forEach(file => {
+                        dataTransfer.items.add(file);
+                    });
+
+                    // Update the file input with our collected files
+                    const fileInput = form.querySelector('input[type="file"]');
+                    fileInput.files = dataTransfer.files;
+
+                    return true; // Allow form submission
+                }
+            </script>
+            <div id="editModal{{ listing.id }}" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50" onclick="if(event.target === this) closeEditModal{{ listing.id }}()">
+                <div class="flex items-center justify-center min-h-screen p-4 w-full">
+                    <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-xl font-bold text-slate-900">Edit Listing</h2>
+                                <button onclick="closeEditModal{{ listing.id }}()" type="button" class="text-slate-400 hover:text-slate-600">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <form method="post" action="{% url 'thryve_app:edit_listing' listing.id %}" enctype="multipart/form-data" onsubmit="return submitEditForm{{ listing.id }}(this)">
+                                {% csrf_token %}
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center">
+                                            <input type="radio" name="listing_type" value="sale" class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'sale' %}checked{% endif %} required>
+                                            <span class="ml-2 text-slate-700">For Sale</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="radio" name="listing_type" value="swap" class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'swap' %}checked{% endif %} required>
+                                            <span class="ml-2 text-slate-700">For Swap</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="radio" name="listing_type" value="buy" class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'buy' %}checked{% endif %} required>
+                                            <span class="ml-2 text-slate-700">Looking to Buy</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Category *</label>
+                                    <input type="hidden" name="category" value="{% if listing.subcategory %}{{ listing.category }}-{{ listing.subcategory }}{% else %}{{ listing.category }}{% endif %}">
+                                    <div class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-slate-100 text-slate-700">
+                                        {{ listing.category_display }}{% if listing.subcategory_display %} - {{ listing.subcategory_display }}{% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Title *</label>
+                                    <input type="text" name="title" value="{{ listing.title }}" placeholder="Enter listing title" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Description *</label>
+                                    <textarea name="description" rows="4" placeholder="Describe your item or service" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400 resize-y" required>{{ listing.description }}</textarea>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">
+                                        {% if listing.listing_type == 'sale' %}Price *
+                                        {% elif listing.listing_type == 'swap' %}Looking to Swap For *
+                                        {% elif listing.listing_type == 'buy' %}Budget *
+                                        {% endif %}
+                                    </label>
+                                    {% if listing.listing_type == 'sale' %}
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
+                                        <input type="text" name="price" value="{{ listing.price }}" placeholder="0.00" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                                    </div>
+                                    {% elif listing.listing_type == 'swap' %}
+                                    <input type="text" name="swap_for" value="{{ listing.swap_for }}" placeholder="What are you looking to swap for?" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                                    {% elif listing.listing_type == 'buy' %}
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
+                                        <input type="text" name="budget" value="{{ listing.budget }}" placeholder="0.00" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Location *</label>
+                                    <input type="text" name="location" value="{{ listing.location }}" placeholder="City, State/Country" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Date *</label>
+                                    <input type="date" name="date" value="{{ listing.date|date:'Y-m-d' }}" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-slate-700 font-semibold mb-2">Listing Images</label>
+
+                                    <!-- Image Preview Section -->
+                                    <div id="imagePreview{{ listing.id }}" class="flex flex-wrap gap-2 mb-3">
+                                        {% for image in listing.images.all %}
+                                        <div class="relative group">
+                                            <img src="{{ image.image.url }}" alt="Listing image" class="w-20 h-20 object-cover rounded-lg border-2 border-slate-300">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors bg-slate-50 relative">
+                                        <div class="flex flex-col items-center justify-center space-y-4">
+                                            <div class="w-12 h-12 text-slate-400">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <p class="text-lg font-medium text-slate-700">Drag and drop your images here</p>
+                                                <p class="text-sm text-slate-500">or <span class="text-brand-sky font-medium">click to browse</span></p>
+                                            </div>
+                                            <p id="photoCounter{{ listing.id }}" class="text-sm font-medium text-slate-600">Photos: {{ listing.images.count }}/5</p>
+                                        </div>
+                                        <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer pointer-events-auto" onchange="handleImagePreview{{ listing.id }}(this)">
+                                    </div>
+                                    <div class="mt-2 text-sm text-slate-500">
+                                        <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end gap-3">
+                                    <button type="button" onclick="closeEditModal{{ listing.id }}()" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                                    <button type="submit" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update Listing</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
+            {% endif %}
+
+            {% empty %}
+            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
+                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
+                    <img src="{% static 'thryve_app/images/listing-placeholder.jpg' %}" alt="No image available"
+                        class="w-full h-full object-cover">
+                </div>
+
+                <div class="flex items-center justify-between mb-3">
+                    <span
+                        class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">SALE</span>
+                    <span
+                        class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
+                </div>
+                <h3 class="text-lg font-bold">Industrial 3D Printer</h3>
+                <div class="mt-0.5 text-slate-500 font-medium">TechFab Solutions</div>
+                <p class="mt-3 text-slate-700">High-precision industrial 3D printer, barely used. Ideal for prototyping
+                    and
+                    small-scale production.</p>
+                <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">₱8,500</div>
+                <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
+                    <span>📍 New York, NY</span>
+                    <span>📅 1/15/2024</span>
+                </div>
+                <div class="mt-5 grid grid-cols-2 gap-3">
+                    <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View
+                        Details</a>
+                    <a href="#"
+                        class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book
+                        Now</a>
+                </div>
+            </article>
+
+            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
+                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
+                    <img src="{% static 'thryve_app/images/listing-placeholder.jpg' %}" alt="No image available"
+                        class="w-full h-full object-cover">
+                </div>
+
+                <div class="flex items-center justify-between mb-3">
+                    <span
+                        class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">SWAP</span>
+                    <span
+                        class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
+                </div>
+                <h3 class="text-lg font-bold">Office Furniture Set</h3>
+                <div class="mt-0.5 text-slate-500 font-medium">Creative Spaces Inc</div>
+                <p class="mt-3 text-slate-700">Complete set including 10 desks, chairs, and storage units. Modern
+                    design,
+                    excellent condition.</p>
+                <p class="mt-2 text-slate-700">Looking for: <span class="font-semibold">IT equipment or professional
+                        services</span></p>
+                <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
+                    <span>📍 Los Angeles, CA</span>
+                    <span>📅 1/14/2024</span>
+                </div>
+                <div class="mt-5 grid grid-cols-2 gap-3">
+                    <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View
+                        Details</a>
+                    <a href="#"
+                        class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book
+                        Now</a>
+                </div>
+            </article>
+            <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
+                <img src="{% static 'thryve_app/images/listing-placeholder.png' %}" alt="No image available"
+                    class="w-full h-full object-cover">
+            </div>
+
+            <div class="flex items-center justify-between mb-3">
+                <span
+                    class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">BUY</span>
+                <span
+                    class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
+            </div>
+            <h3 class="text-lg font-bold">Looking for CNC Machine</h3>
+            <div class="mt-0.5 text-slate-500 font-medium">MetalWorks Ltd</div>
+            <p class="mt-3 text-slate-700">We need a CNC machine for metal fabrication. Budget up to ₱15,000 for the
+                right
+                fit.</p>
+            <div class="mt-2 text-slate-700">Budget: <span class="font-semibold">₱15,000</span></div>
+            <div class="mt-2 flex items-center justify-between text-sm text-slate-500">
+                <span>📍 Chicago, IL</span>
+                <span>📅 1/13/2024</span>
+            </div>
+            <div class="mt-5 grid grid-cols-2 gap-3">
+                <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View
+                    Details</a>
+                <a href="#"
+                    class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book
+                    Now</a>
+                </div>
+            </article>
             {% endfor %}
+            {% endif %}
         </section>
     </main>
 
     <!-- Listing Details Modal -->
-    <div id="listing-details-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div id="listing-details-modal"
+        class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-bold text-slate-900" id="details-modal-title">Listing Details</h2>
                     <button id="close-details-modal" class="text-slate-400 hover:text-slate-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
@@ -459,8 +822,9 @@
                     <!-- Badges will be populated by JavaScript -->
                 </div>
 
-                <!-- Title -->
-                <h3 class="text-2xl font-bold text-slate-900 mb-2" id="details-title"></h3>
+                <!-- Title (wrapped, no overflow) -->
+                <h3 class="text-2xl font-bold text-slate-900 mb-2 break-words whitespace-normal" id="details-title">
+                </h3>
 
                 <!-- Seller Info -->
                 <div class="flex items-center gap-2 text-slate-600 font-medium mb-4" id="details-seller">
@@ -472,8 +836,9 @@
                     <!-- Description will be populated by JavaScript -->
                 </div>
 
-                <!-- Price/Swap/Budget -->
-                <div class="text-3xl font-extrabold text-brand-leaf mb-6" id="details-price">
+                <!-- Price/Swap/Budget (wrapped, with non-overflowing swap text) -->
+                <div class="text-3xl font-extrabold text-brand-leaf mb-6 break-words whitespace-normal"
+                    id="details-price">
                     <!-- Price info will be populated by JavaScript -->
                 </div>
 
@@ -484,80 +849,105 @@
 
                 <!-- Action Buttons -->
                 <div class="flex gap-3">
-                    <button class="flex-1 text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-3">Book Now</button>
-                    <button id="view-gallery-btn" class="flex-1 text-center rounded-lg border border-brand-sky text-brand-sky font-semibold py-3 hover:bg-brand-sky/10">View Gallery</button>
+                    <button
+                        class="flex-1 text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-3">Book
+                        Now</button>
+                    <button id="view-gallery-btn"
+                        class="flex-1 text-center rounded-lg border border-brand-sky text-brand-sky font-semibold py-3 hover:bg-brand-sky/10">View
+                        Gallery</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Image Gallery Modal -->
-    <div id="image-gallery-modal" class="fixed inset-0 bg-black bg-opacity-90 hidden z-50 flex items-center justify-center">
+    <div id="image-gallery-modal"
+        class="fixed inset-0 bg-black bg-opacity-90 hidden z-50 flex items-center justify-center">
         <div class="relative w-full max-w-4xl mx-4 flex flex-col items-center">
             <!-- Close button -->
-            <button id="close-gallery" class="absolute -top-12 right-0 text-white hover:text-slate-300 text-2xl font-bold z-10">
+            <button id="close-gallery"
+                class="absolute -top-12 right-0 text-white hover:text-slate-300 text-2xl font-bold z-10">
                 ✕
             </button>
 
             <!-- Main image container -->
-            <div class="relative w-full h-[70vh] flex items-center justify-center bg-transparent rounded-lg overflow-hidden">
-                <img id="gallery-main-image" src="" alt="" class="max-w-full max-h-full object-contain rounded-lg transition-transform duration-300 ease-out cursor-grab" style="transform: scale(1) translate(0, 0); transform-origin: center center;" onwheel="handleWheelZoom(event)">
+            <div
+                class="relative w-full h-[70vh] flex items-center justify-center bg-transparent rounded-lg overflow-hidden">
+                <img id="gallery-main-image" src="" alt=""
+                    class="max-w-full max-h-full object-contain rounded-lg transition-transform duration-300 ease-out cursor-grab"
+                    style="transform: scale(1) translate(0, 0); transform-origin: center center;"
+                    onwheel="handleWheelZoom(event)">
 
                 <!-- Navigation arrows -->
-                <button id="prev-image" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl transition-all z-10">
+                <button id="prev-image"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl transition-all z-10">
                     ‹
                 </button>
-                <button id="next-image" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl transition-all z-10">
+                <button id="next-image"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl transition-all z-10">
                     ›
                 </button>
 
                 <!-- Zoom controls -->
                 <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                    <button id="zoom-out" class="bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg transition-all" title="Zoom Out">
+                    <button id="zoom-out"
+                        class="bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg transition-all"
+                        title="Zoom Out">
                         −
                     </button>
-                    <button id="zoom-reset" class="bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-10 h-10 flex items-center justify-center text-sm transition-all" title="Reset Zoom">
+                    <button id="zoom-reset"
+                        class="bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-10 h-10 flex items-center justify-center text-sm transition-all"
+                        title="Reset Zoom">
                         1:1
                     </button>
-                    <button id="zoom-in" class="bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg transition-all" title="Zoom In">
+                    <button id="zoom-in"
+                        class="bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg transition-all"
+                        title="Zoom In">
                         +
                     </button>
                 </div>
             </div>
 
-                <!-- Image counter -->
-                <div class="text-center mt-4">
-                    <span id="image-counter" class="text-white text-sm bg-black bg-opacity-50 px-3 py-1 rounded-full"></span>
-                </div>
+            <!-- Image counter -->
+            <div class="text-center mt-4">
+                <span id="image-counter"
+                    class="text-white text-sm bg-black bg-opacity-50 px-3 py-1 rounded-full"></span>
+            </div>
 
-                <!-- Thumbnail strip -->
-                <div id="thumbnail-strip" class="flex justify-center gap-2 mt-4 max-w-full overflow-x-auto">
-                    <!-- Thumbnails will be populated by JavaScript -->
-                </div>
+            <!-- Thumbnail strip -->
+            <div id="thumbnail-strip" class="flex justify-center gap-2 mt-4 max-w-full overflow-x-auto">
+                <!-- Thumbnails will be populated by JavaScript -->
             </div>
         </div>
     </div>
+    </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="delete-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div id="delete-listing-modal"
+        class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-auto">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-slate-900">Delete Listing</h2>
                     <button id="close-delete-modal" class="text-slate-400 hover:text-slate-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
 
                 <div class="mb-6">
-                    <p class="text-slate-700">Are you sure you want to delete this listing? This action cannot be undone.</p>
+                    <p class="text-slate-700">Are you sure you want to delete this listing? This action cannot be
+                        undone.</p>
                 </div>
 
                 <div class="flex justify-end gap-3">
-                    <button id="cancel-delete-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                    <button id="confirm-delete-btn" class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">Delete Listing</button>
+                    <button id="cancel-delete-btn"
+                        class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                    <button id="confirm-delete-btn"
+                        class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">Delete
+                        Listing</button>
                 </div>
             </div>
         </div>
@@ -572,7 +962,8 @@
                         <h2 class="text-xl font-bold text-slate-900">Edit Listing</h2>
                         <button id="close-edit-modal" class="text-slate-400 hover:text-slate-600">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                         </button>
                     </div>
@@ -584,48 +975,55 @@
                             <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
                             <div class="space-y-2">
                                 <label class="flex items-center">
-                                    <input type="radio" name="listing_type" value="sale" class="text-brand-sky focus:ring-brand-sky" required>
+                                    <input type="radio" name="listing_type" value="sale"
+                                        class="text-brand-sky focus:ring-brand-sky" required>
                                     <span class="ml-2 text-slate-700">For Sale</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" name="listing_type" value="swap" class="text-brand-sky focus:ring-brand-sky" required>
+                                    <input type="radio" name="listing_type" value="swap"
+                                        class="text-brand-sky focus:ring-brand-sky" required>
                                     <span class="ml-2 text-slate-700">For Swap</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" name="listing_type" value="buy" class="text-brand-sky focus:ring-brand-sky" required>
+                                    <input type="radio" name="listing_type" value="buy"
+                                        class="text-brand-sky focus:ring-brand-sky" required>
                                     <span class="ml-2 text-slate-700">Looking to Buy</span>
                                 </label>
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="edit_id_category" class="block text-slate-700 font-semibold mb-2">Category *</label>
+                            <label for="edit_id_category" class="block text-slate-700 font-semibold mb-2">Category
+                                *</label>
                             <div class="relative">
                                 <input type="hidden" name="category" id="edit_id_category" value="">
-                                <div id="edit-category-selector-trigger" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-sky flex items-center justify-between">
+                                <div id="edit-category-selector-trigger"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-sky flex items-center justify-between">
                                     <span id="edit-category-display-text" class="text-slate-400">Choose Category</span>
                                     <span class="text-slate-400">▾</span>
                                 </div>
 
-                                <div id="edit-category-selector" class="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg z-10 hidden">
+                                <div id="edit-category-selector"
+                                    class="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg z-10 hidden">
                                     <div class="flex">
                                         <div class="w-1/2 border-r border-slate-200 max-h-64 overflow-y-auto">
                                             <div class="p-2">
-                                                <div class="text-xs text-slate-500 font-medium mb-2 px-2">CATEGORIES</div>
+                                                <div class="text-xs text-slate-500 font-medium mb-2 px-2">CATEGORIES
+                                                </div>
                                                 <div id="edit-main-categories" class="space-y-1">
-                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="electronics">Electronics</button>
-                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="furniture">Furniture</button>
-                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="tools_equipment">Tools & Equipment</button>
-                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="raw_materials">Raw Materials</button>
-                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="services">Services</button>
-                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="other">Other</button>
+                                                    {% for key, data in categories.items %}
+                                                    <button type="button"
+                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
+                                                        data-category="{{ key }}">{{ data.label }}</button>
+                                                    {% endfor %}
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="w-1/2 max-h-64 overflow-y-auto">
                                             <div class="p-2">
-                                                <div class="text-xs text-slate-500 font-medium mb-2 px-2">SUBCATEGORIES</div>
+                                                <div class="text-xs text-slate-500 font-medium mb-2 px-2">SUBCATEGORIES
+                                                </div>
                                                 <div id="edit-subcategories" class="space-y-1">
                                                 </div>
                                             </div>
@@ -637,48 +1035,72 @@
 
                         <div class="mb-4">
                             <label for="edit_id_title" class="block text-slate-700 font-semibold mb-2">Title *</label>
-                            <input type="text" name="title" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" placeholder="Enter listing title" id="edit_id_title">
+                            <input type="text" name="title"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                placeholder="Enter listing title" id="edit_id_title">
+                            {% if form.title.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.title.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
-                            <label for="edit_id_description" class="block text-slate-700 font-semibold mb-2">Description *</label>
-                            <div id="edit-description-editor" class="rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-brand-sky">
-                                <div id="edit-description-toolbar" class="bg-gray-50 border-b border-slate-200 p-1 rounded-t-lg">
-                                    <button type="button" class="ql-bold text-slate-700 hover:text-slate-900 px-2 py-1 rounded" title="Bold"></button>
-                                    <button type="button" class="ql-italic text-slate-700 hover:text-slate-900 px-2 py-1 rounded" title="Italicize"></button>
-                                    <button type="button" class="ql-list text-slate-700 hover:text-slate-900 px-2 py-1 rounded" value="bullet" title="Bullet List"></button>
-                                    <button type="button" class="ql-list text-slate-700 hover:text-slate-900 px-2 py-1 rounded" value="ordered" title="Numbered List"></button>
-                                    <button type="button" class="ql-link text-slate-700 hover:text-slate-900 px-2 py-1 rounded" title="Link"></button>
-                                </div>
-                                <div id="edit-description-editor-content" class="min-h-[120px] p-3 font-medium text-slate-900" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;"></div>
-                            </div>
-                            <input type="hidden" name="description" id="edit_id_description">
+                            <label for="edit_id_description" class="block text-slate-700 font-semibold mb-2">Description
+                                *</label>
+                            <textarea name="description" id="edit_id_description"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400 resize-y overflow-y-auto"
+                                rows="4" placeholder="Describe your item or service"></textarea>
+                            {% if form.description.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.description.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4" id="edit-dynamic-field-container">
-                            <label id="edit-dynamic-field-label" for="edit_id_price" class="block text-slate-700 font-semibold mb-2">Price *</label>
+                            <label id="edit-dynamic-field-label" for="edit_id_price"
+                                class="block text-slate-700 font-semibold mb-2">Price *</label>
                             <div class="relative" id="edit-price-container">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                <input type="text" name="price" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" placeholder="0.00" id="edit_id_price">
+                                <input type="text" name="price"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                    placeholder="0.00" id="edit_id_price">
                             </div>
                             <div class="hidden" id="edit-swap-container">
-                                <input type="text" name="swap_for" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="What are you looking to swap for?" id="edit_id_swap_for">
+                                <input type="text" name="swap_for"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                                    placeholder="What are you looking to swap for?" id="edit_id_swap_for">
                             </div>
                             <div class="relative hidden" id="edit-budget-container">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                <input type="text" name="budget" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" id="edit_id_budget">
+                                <input type="text" name="budget"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                                    placeholder="0.00" id="edit_id_budget">
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="edit_id_location" class="block text-slate-700 font-semibold mb-2">Location *</label>
+                            <label for="edit_id_location" class="block text-slate-700 font-semibold mb-2">Location
+                                *</label>
                             <div class="relative">
-                                <input type="text" name="location" id="edit_id_location" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" placeholder="City, State/Country">
+                                <input type="text" name="location" id="edit_id_location"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                    placeholder="City, State/Country">
                             </div>
+                            {% if form.location.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.location.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
-                            <label for="edit_id_images" class="block text-slate-700 font-semibold mb-2">Listing Images</label>
+                            <label for="edit_id_date" class="block text-slate-700 font-semibold mb-2">Date *</label>
+                            <input type="date" name="date" id="edit_id_date"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                            {% if form.date.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.date.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="edit_id_images" class="block text-slate-700 font-semibold mb-2">Listing
+                                Images</label>
 
                             <!-- All Images Display (Current + New) -->
                             <div id="edit-all-images" class="mb-4">
@@ -686,22 +1108,28 @@
                             </div>
 
                             <!-- Upload Area -->
-                            <div id="edit-upload-area" class="relative border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors cursor-pointer bg-slate-50 hover:bg-slate-100/50">
+                            <div id="edit-upload-area"
+                                class="relative border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors cursor-pointer bg-slate-50 hover:bg-slate-100/50">
                                 <div class="flex flex-col items-center justify-center space-y-4">
                                     <div id="edit-upload-icon" class="w-12 h-12 text-slate-400">
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                            </path>
                                         </svg>
                                     </div>
                                     <div id="edit-upload-text">
                                         <p class="text-lg font-medium text-slate-700">Drag and drop your images here</p>
-                                        <p class="text-sm text-slate-500">or <span class="text-brand-sky font-medium">click to browse</span></p>
+                                        <p class="text-sm text-slate-500">or <span
+                                                class="text-brand-sky font-medium">click to browse</span></p>
                                     </div>
                                     <div id="edit-image-counter" class="text-sm font-medium text-slate-600">
                                         Photos: 0/5
                                     </div>
                                 </div>
-                                <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp" id="edit_id_images" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp"
+                                    id="edit_id_images" multiple
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                             </div>
 
                             <div class="mt-2 text-sm text-slate-500">
@@ -710,8 +1138,11 @@
                         </div>
 
                         <div class="flex justify-end gap-3">
-                            <button type="button" id="edit-cancel-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                            <button type="button" id="edit-submit-btn" onclick="submitEditListingForm()" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update Listing</button>
+                            <button type="button" id="edit-cancel-btn"
+                                class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                            <button type="button" id="edit-submit-btn" onclick="submitEditListingForm()"
+                                class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update
+                                Listing</button>
                         </div>
                     </form>
                 </div>
@@ -719,7 +1150,8 @@
         </div>
     </div>
 
-    <div id="add-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 {% if show_modal %}flex{% else %}hidden{% endif %} z-50">
+    <div id="add-listing-modal"
+        class="fixed inset-0 bg-black bg-opacity-50 {% if show_modal %}flex{% else %}hidden{% endif %} z-50">
         <div class="flex items-center justify-center min-h-screen p-4 w-full">
             <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
                 <div class="p-6">
@@ -727,58 +1159,81 @@
                         <h2 class="text-xl font-bold text-slate-900">Create New Listing</h2>
                         <button id="close-modal" class="text-slate-400 hover:text-slate-600">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                         </button>
                     </div>
 
-                    <form id="listing-form" method="post" action="{% url 'thryve_app:create_listing' %}" enctype="multipart/form-data" novalidate>
+                    <form id="listing-form" method="post" action="{% url 'thryve_app:create_listing' %}"
+                        enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
+
+                        <!-- Display non-field errors -->
+                        {% if form.non_field_errors %}
+                        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                            {% for error in form.non_field_errors %}
+                            <p class="text-sm">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
 
                         <div class="mb-4">
                             <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
                             <div class="space-y-2">
                                 <label class="flex items-center">
-                                    <input type="radio" name="listing_type" value="sale" class="text-brand-sky focus:ring-brand-sky" required>
+                                    <input type="radio" name="listing_type" value="sale"
+                                        class="text-brand-sky focus:ring-brand-sky" required
+                                        {% if form.listing_type.value == 'sale' %}checked{% endif %}>
                                     <span class="ml-2 text-slate-700">For Sale</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" name="listing_type" value="swap" class="text-brand-sky focus:ring-brand-sky" required>
+                                    <input type="radio" name="listing_type" value="swap"
+                                        class="text-brand-sky focus:ring-brand-sky" required
+                                        {% if form.listing_type.value == 'swap' %}checked{% endif %}>
                                     <span class="ml-2 text-slate-700">For Swap</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" name="listing_type" value="buy" class="text-brand-sky focus:ring-brand-sky" required>
+                                    <input type="radio" name="listing_type" value="buy"
+                                        class="text-brand-sky focus:ring-brand-sky" required
+                                        {% if form.listing_type.value == 'buy' %}checked{% endif %}>
                                     <span class="ml-2 text-slate-700">Looking to Buy</span>
                                 </label>
                             </div>
+                            {% if form.listing_type.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.listing_type.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
-                            <label for="{{ form.category.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Category *</label>
+                            <label for="{{ form.category.id_for_label }}"
+                                class="block text-slate-700 font-semibold mb-2">Category *</label>
                             <div class="relative">
                                 <!-- Hidden input to store the selected value -->
-                                <input type="hidden" name="category" id="id_category" value="">
+                                <input type="hidden" name="category" id="id_category" value="{{ form.category.value|default:'' }}">
 
                                 <!-- Custom category selector trigger -->
-                                <div id="category-selector-trigger" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-sky flex items-center justify-between">
+                                <div id="category-selector-trigger"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-sky flex items-center justify-between">
                                     <span id="category-display-text" class="text-slate-400">Choose Category</span>
                                     <span class="text-slate-400">▾</span>
                                 </div>
 
                                 <!-- Two-column category selector -->
-                                <div id="category-selector" class="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg z-10 hidden">
+                                <div id="category-selector"
+                                    class="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg z-10 hidden">
                                     <div class="flex">
                                         <!-- Left Column: Main Categories -->
                                         <div class="w-1/2 border-r border-slate-200 max-h-64 overflow-y-auto">
                                             <div class="p-2">
-                                                <div class="text-xs text-slate-500 font-medium mb-2 px-2">CATEGORIES</div>
+                                                <div class="text-xs text-slate-500 font-medium mb-2 px-2">CATEGORIES
+                                                </div>
                                                 <div id="main-categories" class="space-y-1">
-                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn active" data-category="electronics">Electronics</button>
-                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="furniture">Furniture</button>
-                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="tools_equipment">Tools & Equipment</button>
-                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="raw_materials">Raw Materials</button>
-                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="services">Services</button>
-                                                    <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn" data-category="other">Other</button>
+                                                    {% for key, data in categories.items %}
+                                                    <button type="button"
+                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn{% if forloop.first %} active{% endif %}"
+                                                        data-category="{{ key }}">{{ data.label }}</button>
+                                                    {% endfor %}
                                                 </div>
                                             </div>
                                         </div>
@@ -786,7 +1241,8 @@
                                         <!-- Right Column: Subcategories -->
                                         <div class="w-1/2 max-h-64 overflow-y-auto">
                                             <div class="p-2">
-                                                <div class="text-xs text-slate-500 font-medium mb-2 px-2">SUBCATEGORIES</div>
+                                                <div class="text-xs text-slate-500 font-medium mb-2 px-2">SUBCATEGORIES
+                                                </div>
                                                 <div id="subcategories" class="space-y-1">
                                                     <!-- Subcategories will be populated by JavaScript -->
                                                 </div>
@@ -795,40 +1251,59 @@
                                     </div>
                                 </div>
                             </div>
+                            {% if form.category.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.category.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
-                            <label for="{{ form.title.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Title *</label>
+                            <label for="{{ form.title.id_for_label }}"
+                                class="block text-slate-700 font-semibold mb-2">Title *</label>
                             {{ form.title }}
+                            {% if form.title.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.title.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
-                            <label for="{{ form.description.id_for_label }}" class="block text-slate-700 font-semibold mb-2">Description *</label>
-                            <div id="description-editor" class="rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-brand-sky">
-                                <div id="description-toolbar" class="bg-gray-50 border-b border-slate-200 p-1 rounded-t-lg">
-                                    <button type="button" class="ql-bold text-slate-700 hover:text-slate-900 px-2 py-1 rounded" title="Bold"></button>
-                                    <button type="button" class="ql-italic text-slate-700 hover:text-slate-900 px-2 py-1 rounded" title="Italicize"></button>
-                                    <button type="button" class="ql-list text-slate-700 hover:text-slate-900 px-2 py-1 rounded" value="bullet" title="Bullet List"></button>
-                                    <button type="button" class="ql-list text-slate-700 hover:text-slate-900 px-2 py-1 rounded" value="ordered" title="Numbered List"></button>
-                                    <button type="button" class="ql-link text-slate-700 hover:text-slate-900 px-2 py-1 rounded" title="Link"></button>
-                                </div>
-                                <div id="description-editor-content" class="min-h-[120px] p-3 font-medium text-slate-900" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;"></div>
-                            </div>
-                            <input type="hidden" name="description" id="id_description">
+                            <label for="id_description" class="block text-slate-700 font-semibold mb-2">Description
+                                *</label>
+                            <textarea name="description" id="id_description" rows="4"
+                                placeholder="Describe your item or service"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400 whitespace-normal break-words resize-y"></textarea>
+                            {% if form.description.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.description.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4" id="dynamic-field-container">
-                            <label id="dynamic-field-label" for="id_price" class="block text-slate-700 font-semibold mb-2">Price *</label>
+                            <label id="dynamic-field-label" for="id_price"
+                                class="block text-slate-700 font-semibold mb-2">Price *</label>
                             <div class="relative" id="price-container">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                <input type="text" name="price" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" placeholder="0.00" id="id_price">
+                                <input type="text" name="price"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                    placeholder="0.00" id="id_price" value="{{ form.price.value|default:'' }}">
+                                {% if form.price.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.price.errors.0 }}</p>
+                                {% endif %}
                             </div>
                             <div class="hidden" id="swap-container">
-                                <input type="text" name="swap_for" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="What are you looking to swap for?" id="id_swap_for">
+                                <input type="text" name="swap_for"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                                    placeholder="What are you looking to swap for?" id="id_swap_for" value="{{ form.swap_for.value|default:'' }}">
+                                {% if form.swap_for.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.swap_for.errors.0 }}</p>
+                                {% endif %}
                             </div>
                             <div class="relative hidden" id="budget-container">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                <input type="text" name="budget" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" placeholder="0.00" id="id_budget">
+                                <input type="text" name="budget"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                                    placeholder="0.00" id="id_budget" value="{{ form.budget.value|default:'' }}">
+                                {% if form.budget.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.budget.errors.0 }}</p>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -837,59 +1312,77 @@
                             <label for="id_location" class="block text-slate-700 font-semibold mb-2">Location *</label>
                             <div class="relative">
                                 <input type="text" name="location" id="id_location"
-                                       class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
-                                       placeholder="City, State/Country">
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                    placeholder="City, State/Country">
                             </div>
+                            {% if form.location.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.location.errors.0 }}</p>
+                            {% endif %}
                         </div>
 
                         <div class="mb-4">
-                            <label for="id_images" class="block text-slate-700 font-semibold mb-2">Listing Images</label>
+                            <label for="id_date" class="block text-slate-700 font-semibold mb-2">Date *</label>
+                            <input type="date" name="date" id="id_date"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                            {% if form.date.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.date.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_images" class="block text-slate-700 font-semibold mb-2">Listing
+                                Images</label>
+
+                            <!-- Image Previews Container (New Images Only) -->
+                            <div id="create-image-previews" class="mb-3 flex flex-wrap gap-2">
+                                <!-- New image thumbnails will be rendered here -->
+                            </div>
 
                             <!-- Drag and Drop Upload Area -->
-                            <div id="upload-area" class="relative border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors cursor-pointer bg-slate-50 hover:bg-slate-100/50">
+                            <div id="upload-area"
+                                class="relative border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors cursor-pointer bg-slate-50 hover:bg-slate-100/50">
                                 <div class="flex flex-col items-center justify-center space-y-4">
                                     <div id="upload-icon" class="w-12 h-12 text-slate-400">
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                            </path>
                                         </svg>
                                     </div>
                                     <div id="upload-text">
                                         <p class="text-lg font-medium text-slate-700">Drag and drop your images here</p>
-                                        <p class="text-sm text-slate-500">or <span class="text-brand-sky font-medium">click to browse</span></p>
+                                        <p class="text-sm text-slate-500">or <span
+                                                class="text-brand-sky font-medium">click to browse</span></p>
                                     </div>
-                                    <div id="image-counter" class="text-sm font-medium text-slate-600">
+                                    <div id="create-image-counter" class="text-sm font-medium text-slate-600">
                                         Photos: 0/5
                                     </div>
                                 </div>
-                                <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp" id="id_images" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp"
+                                    id="id_images" multiple
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    onchange="handleCreateImagePreview(this)">
                             </div>
 
                             <!-- Upload Info -->
                             <div class="mt-2 text-sm text-slate-500">
                                 <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
                             </div>
-
-                            <!-- Image Previews Container -->
-                            <div id="image-previews" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                <!-- Thumbnails will be added here dynamically -->
-                            </div>
-
-                            <!-- Drag and Drop Instructions -->
-                            <div id="reorder-instructions" class="mt-2 text-xs text-slate-500 text-center hidden">
-                                Drag thumbnails to reorder • First image becomes the main photo
-                            </div>
                         </div>
 
                         <div class="flex justify-end gap-3">
-                            <button type="button" id="cancel-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                            <button type="submit" id="submit-btn" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Create Listing</button>
+                            <button type="button" id="cancel-btn"
+                                class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                            <button type="submit" id="submit-btn"
+                                class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Create
+                                Listing</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script>
         // Nominatim Geocoder Implementation - OPTIMIZED
         function initLocationAutocomplete() {
@@ -930,7 +1423,7 @@
             let currentDropdown = null;
             let lastQuery = '';
 
-            locationInput.addEventListener('input', function() {
+            locationInput.addEventListener('input', function () {
                 clearTimeout(geocodeTimeout);
                 const query = this.value.trim();
 
@@ -949,7 +1442,7 @@
             });
 
             // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 if (!locationInput.parentNode.contains(e.target)) {
                     removeDropdown();
                 }
@@ -1036,8 +1529,49 @@
         // Delete listing modal variables
         let currentDeleteListingId = null;
 
+        // Create listing image handling – simple, uses the real file input
+        function handleCreateImagePreview(input) {
+            const previewContainer = document.getElementById('create-image-previews');
+            const photoCounter = document.getElementById('create-image-counter');
+            if (!previewContainer || !photoCounter) return;
+
+            // No files selected – reset
+            if (!input.files || input.files.length === 0) {
+                previewContainer.innerHTML = '';
+                photoCounter.textContent = 'Photos: 0/5';
+                return;
+            }
+
+            // Enforce max 5
+            if (input.files.length > 5) {
+                alert('Maximum 5 images allowed. Only the first 5 will be used.');
+            }
+
+            const files = Array.from(input.files).slice(0, 5);
+
+            // Clear and render previews
+            previewContainer.innerHTML = '';
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'relative group';
+                    previewDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
+                    `;
+                    previewContainer.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Update counter based on actual selected files
+            photoCounter.textContent = `Photos: ${files.length}/5`;
+        }
+
         // Edit listing modal variables
         let currentEditListingId = null;
+        let editExistingImagesCount = 0;
+        let editNewImages = [];
 
         // Edit category selector functionality
         const editCategorySelector = {
@@ -1051,179 +1585,143 @@
             selectedSubcategory: null,
 
             subcategoriesData: {
-                'electronics': [
-                    {value: 'computers', label: 'Computers'},
-                    {value: 'phones', label: 'Phones'},
-                    {value: 'tablets', label: 'Tablets'},
-                    {value: 'audio_video', label: 'Audio/Video Equipment'},
-                    {value: 'cameras', label: 'Cameras'},
-                    {value: 'other_electronics', label: 'Other Electronics'},
-                ],
-                'furniture': [
-                    {value: 'office_chairs', label: 'Office Chairs'},
-                    {value: 'desks', label: 'Desks'},
-                    {value: 'cabinets', label: 'Cabinets'},
-                    {value: 'tables', label: 'Tables'},
-                    {value: 'seating', label: 'Seating'},
-                    {value: 'other_furniture', label: 'Other Furniture'},
-                ],
-                'tools_equipment': [
-                    {value: 'power_tools', label: 'Power Tools'},
-                    {value: 'hand_tools', label: 'Hand Tools'},
-                    {value: 'machinery', label: 'Machinery'},
-                    {value: 'safety_equipment', label: 'Safety Equipment'},
-                    {value: 'measuring_tools', label: 'Measuring Tools'},
-                    {value: 'other_tools', label: 'Other Tools & Equipment'},
-                ],
-                'raw_materials': [
-                    {value: 'metals', label: 'Metals'},
-                    {value: 'plastics', label: 'Plastics'},
-                    {value: 'woods', label: 'Woods'},
-                    {value: 'chemicals', label: 'Chemicals'},
-                    {value: 'fabrics', label: 'Fabrics'},
-                    {value: 'other_materials', label: 'Other Raw Materials'},
-                ],
-                'services': [
-                    {value: 'consulting', label: 'Consulting'},
-                    {value: 'maintenance', label: 'Maintenance'},
-                    {value: 'installation', label: 'Installation'},
-                    {value: 'training', label: 'Training'},
-                    {value: 'design', label: 'Design'},
-                    {value: 'other_services', label: 'Other Services'},
-                ],
-                'other': [
-                    {value: 'miscellaneous', label: 'Miscellaneous'},
-                ],
+                {% for key, data in categories.items %}
+        '{{ key }}': [
+            {% for sub in data.subcategories %}
+        { value: '{{ sub.value }}', label: '{{ sub.label }}' } {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+                ]{% if not forloop.last %}, {% endif %}
+        {% endfor %}
             },
 
-            init() {
-                if (this.trigger && this.selector) {
-                    this.setupEventListeners();
-                }
-            },
+        init() {
+            if (this.trigger && this.selector) {
+                this.setupEventListeners();
+            }
+        },
 
-            setupEventListeners() {
-                this.trigger.addEventListener('click', () => {
-                    this.toggleSelector();
-                });
+        setupEventListeners() {
+            this.trigger.addEventListener('click', () => {
+                this.toggleSelector();
+            });
 
-                document.addEventListener('click', (e) => {
-                    if (!this.trigger.contains(e.target) && !this.selector.contains(e.target)) {
-                        this.closeSelector();
-                    }
-                });
-
-                this.mainCategories.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('category-btn')) {
-                        const category = e.target.dataset.category;
-                        this.selectCategory(category);
-                    }
-                });
-
-                this.subcategories.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('subcategory-btn')) {
-                        const value = e.target.dataset.value;
-                        const label = e.target.textContent;
-                        this.selectSubcategory(value, label);
-                    }
-                });
-            },
-
-            selectCategory(category) {
-                this.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
-                    btn.classList.remove('bg-brand-sky', 'text-white');
-                    btn.classList.add('hover:bg-brand-sky/10');
-                });
-
-                const activeBtn = this.mainCategories.querySelector(`[data-category="${category}"]`);
-                if (activeBtn) {
-                    activeBtn.classList.add('bg-brand-sky', 'text-white');
-                    activeBtn.classList.remove('hover:bg-brand-sky/10');
-                }
-
-                this.activeCategory = category;
-                this.updateSubcategories(category);
-            },
-
-            updateSubcategories(category) {
-                this.subcategories.innerHTML = '';
-                const subs = this.subcategoriesData[category] || [];
-
-                subs.forEach(sub => {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded subcategory-btn';
-                    btn.dataset.value = `${category}-${sub.value}`;
-                    btn.textContent = sub.label;
-                    this.subcategories.appendChild(btn);
-                });
-            },
-
-            selectSubcategory(value, label) {
-                this.subcategories.querySelectorAll('.subcategory-btn').forEach(btn => {
-                    btn.classList.remove('bg-brand-leaf', 'text-white');
-                    btn.classList.add('hover:bg-brand-sky/10');
-                });
-
-                const selectedBtn = this.subcategories.querySelector(`[data-value="${value}"]`);
-                if (selectedBtn) {
-                    selectedBtn.classList.add('bg-brand-leaf', 'text-white');
-                    selectedBtn.classList.remove('hover:bg-brand-sky/10');
-                }
-
-                this.displayText.textContent = label;
-                this.displayText.classList.remove('text-slate-500');
-                this.displayText.classList.add('text-slate-900');
-                this.hiddenInput.value = value;
-
-                this.selectedSubcategory = value.split('-')[1];
-                this.closeSelector();
-            },
-
-            toggleSelector() {
-                if (this.selector.classList.contains('hidden')) {
-                    this.openSelector();
-                } else {
+            document.addEventListener('click', (e) => {
+                if (!this.trigger.contains(e.target) && !this.selector.contains(e.target)) {
                     this.closeSelector();
                 }
-            },
+            });
 
-            openSelector() {
-                this.selector.classList.remove('hidden');
-                this.selector.classList.add('flex');
-                this.trigger.classList.add('ring-2', 'ring-brand-sky');
-            },
-
-            closeSelector() {
-                this.selector.classList.add('hidden');
-                this.selector.classList.remove('flex');
-                this.trigger.classList.remove('ring-2', 'ring-brand-sky');
-            },
-
-            setCategory(category, subcategory) {
-                this.activeCategory = category;
-                this.selectedSubcategory = subcategory;
-
-                // Update visual state
-                this.selectCategory(category);
-                if (subcategory) {
-                    const subcategoryValue = `${category}-${subcategory}`;
-                    const label = this.getSubcategoryLabel(subcategory);
-                    this.selectSubcategory(subcategoryValue, label);
+            this.mainCategories.addEventListener('click', (e) => {
+                if (e.target.classList.contains('category-btn')) {
+                    const category = e.target.dataset.category;
+                    this.selectCategory(category);
                 }
-            },
+            });
 
-            getSubcategoryLabel(subcategory) {
-                const subs = this.subcategoriesData[this.activeCategory] || [];
-                const sub = subs.find(s => s.value === subcategory);
-                return sub ? sub.label : subcategory;
+            this.subcategories.addEventListener('click', (e) => {
+                if (e.target.classList.contains('subcategory-btn')) {
+                    const value = e.target.dataset.value;
+                    const label = e.target.textContent;
+                    this.selectSubcategory(value, label);
+                }
+            });
+        },
+
+        selectCategory(category) {
+            this.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-sky', 'text-white');
+                btn.classList.add('hover:bg-brand-sky/10');
+            });
+
+            const activeBtn = this.mainCategories.querySelector(`[data-category="${category}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-brand-sky', 'text-white');
+                activeBtn.classList.remove('hover:bg-brand-sky/10');
             }
+
+            this.activeCategory = category;
+            this.updateSubcategories(category);
+        },
+
+        updateSubcategories(category) {
+            this.subcategories.innerHTML = '';
+            const subs = this.subcategoriesData[category] || [];
+
+            subs.forEach(sub => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded subcategory-btn';
+                btn.dataset.value = `${category}-${sub.value}`;
+                btn.textContent = sub.label;
+                this.subcategories.appendChild(btn);
+            });
+        },
+
+        selectSubcategory(value, label) {
+            this.subcategories.querySelectorAll('.subcategory-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-leaf', 'text-white');
+                btn.classList.add('hover:bg-brand-sky/10');
+            });
+
+            const selectedBtn = this.subcategories.querySelector(`[data-value="${value}"]`);
+            if (selectedBtn) {
+                selectedBtn.classList.add('bg-brand-leaf', 'text-white');
+                selectedBtn.classList.remove('hover:bg-brand-sky/10');
+            }
+
+            this.displayText.textContent = label;
+            this.displayText.classList.remove('text-slate-500');
+            this.displayText.classList.add('text-slate-900');
+            this.hiddenInput.value = value;
+
+            this.selectedSubcategory = value.split('-')[1];
+            this.closeSelector();
+        },
+
+        toggleSelector() {
+            if (this.selector.classList.contains('hidden')) {
+                this.openSelector();
+            } else {
+                this.closeSelector();
+            }
+        },
+
+        openSelector() {
+            this.selector.classList.remove('hidden');
+            this.selector.classList.add('flex');
+            this.trigger.classList.add('ring-2', 'ring-brand-sky');
+        },
+
+        closeSelector() {
+            this.selector.classList.add('hidden');
+            this.selector.classList.remove('flex');
+            this.trigger.classList.remove('ring-2', 'ring-brand-sky');
+        },
+
+        setCategory(category, subcategory) {
+            this.activeCategory = category;
+            this.selectedSubcategory = subcategory;
+
+            // Update visual state
+            this.selectCategory(category);
+            if (subcategory) {
+                const subcategoryValue = `${category}-${subcategory}`;
+                const label = this.getSubcategoryLabel(subcategory);
+                this.selectSubcategory(subcategoryValue, label);
+            }
+        },
+
+        getSubcategoryLabel(subcategory) {
+            const subs = this.subcategoriesData[this.activeCategory] || [];
+            const sub = subs.find(s => s.value === subcategory);
+            return sub ? sub.label : subcategory;
+        }
         };
 
         // Delete modal event listeners
         document.getElementById('close-delete-modal').addEventListener('click', closeDeleteListingModal);
         document.getElementById('cancel-delete-btn').addEventListener('click', closeDeleteListingModal);
-        document.getElementById('confirm-delete-btn').addEventListener('click', function() {
+        document.getElementById('confirm-delete-btn').addEventListener('click', function () {
             if (currentDeleteListingId) {
                 // Create a form to submit DELETE request
                 const form = document.createElement('form');
@@ -1270,6 +1768,61 @@
             });
         });
 
+        // Create listing multi-pick image handling
+        let createSelectedFiles = [];
+
+        function handleCreateImagePreview(input) {
+            const previewContainer = document.getElementById('create-image-previews');
+            const photoCounter = document.getElementById('create-image-counter');
+            if (!previewContainer || !photoCounter) return;
+
+            if (input.files && input.files.length > 0) {
+                const currentCount = createSelectedFiles.length;
+                const availableSlots = 5 - currentCount;
+
+                if (availableSlots <= 0) {
+                    alert('Maximum 5 images allowed. You have reached the limit.');
+                    input.value = '';
+                    return;
+                }
+
+                const filesToAdd = Array.from(input.files).slice(0, availableSlots);
+
+                filesToAdd.forEach(file => {
+                    createSelectedFiles.push(file);
+                });
+
+                // Re-render previews from accumulated files
+                previewContainer.innerHTML = '';
+                createSelectedFiles.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const previewDiv = document.createElement('div');
+                        previewDiv.className = 'relative group';
+                        previewDiv.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
+                        `;
+                        previewContainer.appendChild(previewDiv);
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                photoCounter.textContent = `Photos: ${createSelectedFiles.length}/5`;
+
+                // Clear the input so user can pick more
+                input.value = '';
+            }
+        }
+
+        function syncCreateFilesToInput() {
+            const fileInput = document.getElementById('id_images');
+            if (!fileInput) return;
+
+            const dataTransfer = new DataTransfer();
+            createSelectedFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+        }
+
         // Modal functionality
         const modal = document.getElementById('add-listing-modal');
         const addListingBtn = document.getElementById('add-listing-btn');
@@ -1289,10 +1842,45 @@
             }, 300);
         });
 
+        // Auto-open modal if there are form errors
+        {% if show_create_modal %}
+        document.addEventListener('DOMContentLoaded', () => {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                initLocationAutocomplete();
+            }, 300);
+        });
+        {% endif %}
+
         // Close modal functions
         const closeModal = () => {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
+
+            // Reset the form completely
+            form.reset();
+
+            // Clear all error messages
+            form.querySelectorAll('.text-red-500').forEach(error => error.remove());
+            form.querySelectorAll('.bg-red-100').forEach(error => error.remove());
+
+            // Clear image previews and reset counter
+            createSelectedFiles = [];
+            document.getElementById('create-image-previews').innerHTML = '';
+            document.getElementById('create-image-counter').textContent = 'Photos: 0/5';
+
+            // Reset category selector
+            document.getElementById('id_category').value = '';
+            document.getElementById('category-display-text').textContent = 'Choose Category';
+            document.getElementById('category-display-text').classList.add('text-slate-400');
+
+            // Reset dynamic fields to default (For Sale / Price)
+            const saleRadio = form.querySelector('input[name="listing_type"][value="sale"]');
+            if (saleRadio) {
+                saleRadio.checked = true;
+                updateDynamicField('sale');
+            }
         };
 
         closeModalBtn.addEventListener('click', closeModal);
@@ -1303,6 +1891,11 @@
             if (e.target === modal) {
                 closeModal();
             }
+        });
+
+        // Before submit, make sure accumulated files are attached
+        form.addEventListener('submit', () => {
+            syncCreateFilesToInput();
         });
 
         // Dynamic form fields based on listing type
@@ -1360,180 +1953,144 @@
             selectedSubcategory: null,
 
             subcategoriesData: {
-                'electronics': [
-                    {value: 'computers', label: 'Computers'},
-                    {value: 'phones', label: 'Phones'},
-                    {value: 'tablets', label: 'Tablets'},
-                    {value: 'audio_video', label: 'Audio/Video Equipment'},
-                    {value: 'cameras', label: 'Cameras'},
-                    {value: 'other_electronics', label: 'Other Electronics'},
-                ],
-                'furniture': [
-                    {value: 'office_chairs', label: 'Office Chairs'},
-                    {value: 'desks', label: 'Desks'},
-                    {value: 'cabinets', label: 'Cabinets'},
-                    {value: 'tables', label: 'Tables'},
-                    {value: 'seating', label: 'Seating'},
-                    {value: 'other_furniture', label: 'Other Furniture'},
-                ],
-                'tools_equipment': [
-                    {value: 'power_tools', label: 'Power Tools'},
-                    {value: 'hand_tools', label: 'Hand Tools'},
-                    {value: 'machinery', label: 'Machinery'},
-                    {value: 'safety_equipment', label: 'Safety Equipment'},
-                    {value: 'measuring_tools', label: 'Measuring Tools'},
-                    {value: 'other_tools', label: 'Other Tools & Equipment'},
-                ],
-                'raw_materials': [
-                    {value: 'metals', label: 'Metals'},
-                    {value: 'plastics', label: 'Plastics'},
-                    {value: 'woods', label: 'Woods'},
-                    {value: 'chemicals', label: 'Chemicals'},
-                    {value: 'fabrics', label: 'Fabrics'},
-                    {value: 'other_materials', label: 'Other Raw Materials'},
-                ],
-                'services': [
-                    {value: 'consulting', label: 'Consulting'},
-                    {value: 'maintenance', label: 'Maintenance'},
-                    {value: 'installation', label: 'Installation'},
-                    {value: 'training', label: 'Training'},
-                    {value: 'design', label: 'Design'},
-                    {value: 'other_services', label: 'Other Services'},
-                ],
-                'other': [
-                    {value: 'miscellaneous', label: 'Miscellaneous'},
-                ],
+                {% for key, data in categories.items %}
+        '{{ key }}': [
+            {% for sub in data.subcategories %}
+        { value: '{{ sub.value }}', label: '{{ sub.label }}' } {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+                ]{% if not forloop.last %}, {% endif %}
+        {% endfor %}
             },
 
-            init() {
-                this.setupEventListeners();
-                this.setDefaultCategory();
-            },
+        init() {
+            this.setupEventListeners();
+            this.setDefaultCategory();
+        },
 
-            setupEventListeners() {
-                // Toggle selector visibility
-                this.trigger.addEventListener('click', () => {
-                    this.toggleSelector();
-                });
+        setupEventListeners() {
+            // Toggle selector visibility
+            this.trigger.addEventListener('click', () => {
+                this.toggleSelector();
+            });
 
-                // Close selector when clicking outside
-                document.addEventListener('click', (e) => {
-                    if (!this.trigger.contains(e.target) && !this.selector.contains(e.target)) {
-                        this.closeSelector();
-                    }
-                });
-
-                // Category button clicks
-                this.mainCategories.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('category-btn')) {
-                        const category = e.target.dataset.category;
-                        this.selectCategory(category);
-                    }
-                });
-
-                // Subcategory selection
-                this.subcategories.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('subcategory-btn')) {
-                        const value = e.target.dataset.value;
-                        const label = e.target.textContent;
-                        this.selectSubcategory(value, label);
-                    }
-                });
-
-                // Keyboard navigation
-                this.selector.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') {
-                        this.closeSelector();
-                    }
-                });
-            },
-
-            setDefaultCategory() {
-                // Default to first category (Electronics)
-                const firstCategory = this.mainCategories.querySelector('.category-btn');
-                if (firstCategory) {
-                    this.selectCategory(firstCategory.dataset.category);
-                }
-            },
-
-            selectCategory(category) {
-                // Update active category visual
-                this.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
-                    btn.classList.remove('bg-brand-sky', 'text-white');
-                    btn.classList.add('hover:bg-brand-sky/10');
-                });
-
-                const activeBtn = this.mainCategories.querySelector(`[data-category="${category}"]`);
-                if (activeBtn) {
-                    activeBtn.classList.add('bg-brand-sky', 'text-white');
-                    activeBtn.classList.remove('hover:bg-brand-sky/10');
-                }
-
-                this.activeCategory = category;
-                this.updateSubcategories(category);
-            },
-
-            updateSubcategories(category) {
-                this.subcategories.innerHTML = '';
-                const subs = this.subcategoriesData[category] || [];
-
-                subs.forEach(sub => {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded subcategory-btn';
-                    btn.dataset.value = `${category}-${sub.value}`;
-                    btn.textContent = sub.label;
-                    this.subcategories.appendChild(btn);
-                });
-            },
-
-            selectSubcategory(value, label) {
-                // Update selected subcategory visual
-                this.subcategories.querySelectorAll('.subcategory-btn').forEach(btn => {
-                    btn.classList.remove('bg-brand-leaf', 'text-white');
-                    btn.classList.add('hover:bg-brand-sky/10');
-                });
-
-                const selectedBtn = this.subcategories.querySelector(`[data-value="${value}"]`);
-                if (selectedBtn) {
-                    selectedBtn.classList.add('bg-brand-leaf', 'text-white');
-                    selectedBtn.classList.remove('hover:bg-brand-sky/10');
-                }
-
-                // Update display and hidden input
-                this.displayText.textContent = label;
-                this.displayText.classList.remove('text-slate-500');
-                this.displayText.classList.add('text-slate-900');
-                this.hiddenInput.value = value;
-
-                this.selectedSubcategory = value;
-
-                // Clear category error if exists
-                clearFieldError('category');
-
-                // Close selector after selection
-                setTimeout(() => this.closeSelector(), 150);
-            },
-
-            toggleSelector() {
-                if (this.selector.classList.contains('hidden')) {
-                    this.openSelector();
-                } else {
+            // Close selector when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!this.trigger.contains(e.target) && !this.selector.contains(e.target)) {
                     this.closeSelector();
                 }
-            },
+            });
 
-            openSelector() {
-                this.selector.classList.remove('hidden');
-                this.selector.classList.add('flex');
-                this.trigger.classList.add('ring-2', 'ring-brand-sky');
-            },
+            // Category button clicks
+            this.mainCategories.addEventListener('click', (e) => {
+                if (e.target.classList.contains('category-btn')) {
+                    const category = e.target.dataset.category;
+                    this.selectCategory(category);
+                }
+            });
 
-            closeSelector() {
-                this.selector.classList.add('hidden');
-                this.selector.classList.remove('flex');
-                this.trigger.classList.remove('ring-2', 'ring-brand-sky');
+            // Subcategory selection
+            this.subcategories.addEventListener('click', (e) => {
+                if (e.target.classList.contains('subcategory-btn')) {
+                    const value = e.target.dataset.value;
+                    const label = e.target.textContent;
+                    this.selectSubcategory(value, label);
+                }
+            });
+
+            // Keyboard navigation
+            this.selector.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    this.closeSelector();
+                }
+            });
+        },
+
+        setDefaultCategory() {
+            // Default to first category (Electronics)
+            const firstCategory = this.mainCategories.querySelector('.category-btn');
+            if (firstCategory) {
+                this.selectCategory(firstCategory.dataset.category);
             }
+        },
+
+        selectCategory(category) {
+            // Update active category visual
+            this.mainCategories.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-sky', 'text-white');
+                btn.classList.add('hover:bg-brand-sky/10');
+            });
+
+            const activeBtn = this.mainCategories.querySelector(`[data-category="${category}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-brand-sky', 'text-white');
+                activeBtn.classList.remove('hover:bg-brand-sky/10');
+            }
+
+            this.activeCategory = category;
+            this.updateSubcategories(category);
+        },
+
+        updateSubcategories(category) {
+            this.subcategories.innerHTML = '';
+            const subs = this.subcategoriesData[category] || [];
+
+            subs.forEach(sub => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded subcategory-btn';
+                btn.dataset.value = `${category}-${sub.value}`;
+                btn.textContent = sub.label;
+                this.subcategories.appendChild(btn);
+            });
+        },
+
+        selectSubcategory(value, label) {
+            // Update selected subcategory visual
+            this.subcategories.querySelectorAll('.subcategory-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-leaf', 'text-white');
+                btn.classList.add('hover:bg-brand-sky/10');
+            });
+
+            const selectedBtn = this.subcategories.querySelector(`[data-value="${value}"]`);
+            if (selectedBtn) {
+                selectedBtn.classList.add('bg-brand-leaf', 'text-white');
+                selectedBtn.classList.remove('hover:bg-brand-sky/10');
+            }
+
+            // Update display and hidden input
+            this.displayText.textContent = label;
+            this.displayText.classList.remove('text-slate-500');
+            this.displayText.classList.add('text-slate-900');
+            this.hiddenInput.value = value;
+
+            this.selectedSubcategory = value;
+
+            // Clear category error if exists
+            clearFieldError('category');
+
+            // Close selector after selection
+            setTimeout(() => this.closeSelector(), 150);
+        },
+
+        toggleSelector() {
+            if (this.selector.classList.contains('hidden')) {
+                this.openSelector();
+            } else {
+                this.closeSelector();
+            }
+        },
+
+        openSelector() {
+            this.selector.classList.remove('hidden');
+            this.selector.classList.add('flex');
+            this.trigger.classList.add('ring-2', 'ring-brand-sky');
+        },
+
+        closeSelector() {
+            this.selector.classList.add('hidden');
+            this.selector.classList.remove('flex');
+            this.trigger.classList.remove('ring-2', 'ring-brand-sky');
+        }
         };
 
         // Initialize category selector
@@ -1774,7 +2331,7 @@
             const swapFor = listingCard.dataset.swapFor;
             const budget = listingCard.dataset.budget;
             const location = listingCard.dataset.location;
-            const createdAt = listingCard.dataset.createdAt;
+            const date = listingCard.dataset.date;
             const yourName = listingCard.dataset.yourName;
             const company = listingCard.dataset.company;
             const listingType = listingCard.dataset.listingType;
@@ -1800,9 +2357,9 @@
             if (listingType === 'sale' && price) {
                 priceElement.textContent = price;
             } else if (listingType === 'swap' && swapFor) {
-                priceElement.innerHTML = `<span class="text-slate-700">Looking for:</span> <span class="text-brand-leaf">${swapFor}</span>`;
+                priceElement.innerHTML = `<span class="text-slate-700 text-lg md:text-xl font-semibold">Looking for:</span> <span class="text-brand-leaf text-lg md:text-xl font-semibold">${swapFor}</span>`;
             } else if (listingType === 'buy' && budget) {
-                priceElement.innerHTML = `<span class="text-slate-700">Budget:</span> <span class="text-brand-leaf">${budget}</span>`;
+                priceElement.innerHTML = `<span class="text-slate-700 text-lg md:text-xl font-semibold">Budget:</span> <span class="text-brand-leaf text-lg md:text-xl font-semibold">${budget}</span>`;
             } else {
                 priceElement.textContent = '';
             }
@@ -1821,7 +2378,7 @@
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"></path>
                     </svg>
-                    ${createdAt}
+                    ${date}
                 </span>
             `;
 
@@ -1924,7 +2481,7 @@
         }
 
         // Ensure DOM is loaded before adding event listeners
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Close modal event listeners
             document.getElementById('close-details-modal').addEventListener('click', closeListingDetailsModal);
             document.getElementById('listing-details-modal').addEventListener('click', (e) => {
@@ -1967,20 +2524,26 @@
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    populateEditModal(data.listing);
-                    document.getElementById('edit-listing-modal').classList.remove('hidden');
-                    document.getElementById('edit-listing-modal').classList.add('flex');
-                } else {
-                    alert('Error loading listing data');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error loading listing data');
-            });
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        populateEditModal(data.listing);
+                        document.getElementById('edit-listing-modal').classList.remove('hidden');
+                        document.getElementById('edit-listing-modal').classList.add('flex');
+                    } else {
+                        console.error('Server returned error:', data.error || 'Unknown error');
+                        alert(data.error || 'Error loading listing data');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading listing:', error);
+                    alert('Error loading listing data. Please try again.');
+                });
         }
 
         function openBookNowModal(listingId) {
@@ -2021,54 +2584,22 @@
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    closeEditListingModal();
-                    // Reload the page to show updated listing
-                    window.location.reload();
-                } else {
-                    // Handle errors
-                    console.error('Form errors:', data.errors);
-                    alert('Error updating listing. Please check your inputs.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error updating listing.');
-            });
-        }
-
-        function closeEditListingModal() {
-            document.getElementById('edit-listing-modal').classList.add('hidden');
-            document.getElementById('edit-listing-modal').classList.remove('flex');
-            currentEditListingId = null;
-        }
-
-        function openEditListingModal(listingId) {
-            currentEditListingId = listingId;
-
-            // Fetch listing data and populate modal
-            fetch(`/listings/edit-listing/${listingId}/`, {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    populateEditModal(data.listing);
-                    document.getElementById('edit-listing-modal').classList.remove('hidden');
-                    document.getElementById('edit-listing-modal').classList.add('flex');
-                } else {
-                    alert('Error loading listing data');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error loading listing data');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        closeEditListingModal();
+                        // Reload the page to show updated listing
+                        window.location.reload();
+                    } else {
+                        // Handle errors
+                        console.error('Form errors:', data.errors);
+                        alert('Error updating listing. Please check your inputs.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error updating listing.');
+                });
         }
 
         function closeEditListingModal() {
@@ -2078,38 +2609,135 @@
         }
 
         function populateEditModal(listing) {
-            // Populate form fields
-            document.querySelector(`input[name="listing_type"][value="${listing.listing_type}"]`).checked = true;
+            try {
+                // Populate form fields
+                const listingTypeRadio = document.querySelector(`input[name="listing_type"][value="${listing.listing_type}"]`);
+                if (listingTypeRadio) {
+                    listingTypeRadio.checked = true;
+                }
 
-            // Set category using the edit category selector
-            editCategorySelector.setCategory(listing.category, listing.subcategory);
+                // Set category using the edit category selector
+                if (editCategorySelector && typeof editCategorySelector.setCategory === 'function') {
+                    editCategorySelector.setCategory(listing.category, listing.subcategory);
+                }
 
-            document.getElementById('edit_id_title').value = listing.title;
-            document.getElementById('edit_id_description').value = listing.description;
-            document.getElementById('edit-description-editor-content').innerHTML = listing.description;
+                const titleInput = document.getElementById('edit_id_title');
+                if (titleInput) titleInput.value = listing.title || '';
 
-            // Set dynamic field
-            if (listing.listing_type === 'sale' && listing.price) {
-                document.getElementById('edit_id_price').value = listing.price;
-            } else if (listing.listing_type === 'swap' && listing.swap_for) {
-                document.getElementById('edit_id_swap_for').value = listing.swap_for;
-            } else if (listing.listing_type === 'buy' && listing.budget) {
-                document.getElementById('edit_id_budget').value = listing.budget;
+                const descriptionInput = document.getElementById('edit_id_description');
+                if (descriptionInput) descriptionInput.value = listing.description || '';
+
+                // Set dynamic field
+                if (listing.listing_type === 'sale' && listing.price) {
+                    const priceInput = document.getElementById('edit_id_price');
+                    if (priceInput) priceInput.value = listing.price;
+                } else if (listing.listing_type === 'swap' && listing.swap_for) {
+                    const swapInput = document.getElementById('edit_id_swap_for');
+                    if (swapInput) swapInput.value = listing.swap_for;
+                } else if (listing.listing_type === 'buy' && listing.budget) {
+                    const budgetInput = document.getElementById('edit_id_budget');
+                    if (budgetInput) budgetInput.value = listing.budget;
+                }
+
+                const locationInput = document.getElementById('edit_id_location');
+                if (locationInput) locationInput.value = listing.location || '';
+
+                const dateInput = document.getElementById('edit_id_date');
+                if (dateInput) dateInput.value = listing.date || '';
+
+                // Update form action
+                const form = document.getElementById('edit-listing-form');
+                if (form) form.action = `/listings/edit-listing/${listing.id}/`;
+
+                // Trigger dynamic field update
+                if (typeof updateEditDynamicField === 'function') {
+                    updateEditDynamicField(listing.listing_type);
+                }
+
+                // Initialize edit category selector
+                if (editCategorySelector && typeof editCategorySelector.init === 'function') {
+                    editCategorySelector.init();
+                }
+
+                // Populate current images
+                if (typeof populateEditCurrentImages === 'function') {
+                    populateEditCurrentImages(listing.images || []);
+                }
+            } catch (error) {
+                console.error('Error populating edit modal:', error);
+                alert('Error loading some listing data. Please refresh and try again.');
+            }
+        }
+
+        // Add event listener for edit modal image input (with null check)
+        const editImageInput = document.getElementById('edit_id_images');
+        if (editImageInput) {
+            editImageInput.addEventListener('change', function (e) {
+                const files = Array.from(e.target.files);
+
+                // Add new images to the list
+                files.forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        editNewImages.push(file);
+                    }
+                });
+
+                // Update the display
+                updateEditImagePreviews();
+            });
+        }
+
+        function updateEditImagePreviews() {
+            const allImagesContainer = document.getElementById('edit-all-images');
+            const imagesGrid = document.getElementById('edit-all-images-grid');
+
+            if (!imagesGrid) {
+                // Create grid if it doesn't exist
+                const newGrid = document.createElement('div');
+                newGrid.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4';
+                newGrid.id = 'edit-all-images-grid';
+                allImagesContainer.appendChild(newGrid);
             }
 
-            document.getElementById('edit_id_location').value = listing.location;
+            const grid = document.getElementById('edit-all-images-grid');
 
-            // Update form action
-            document.getElementById('edit-listing-form').action = `/listings/edit-listing/${listing.id}/`;
+            // Remove only the new image previews (keep existing ones)
+            const newImageDivs = grid.querySelectorAll('[data-image-type="new"]');
+            newImageDivs.forEach(div => div.remove());
 
-            // Trigger dynamic field update
-            updateEditDynamicField(listing.listing_type);
+            // Add new image previews
+            editNewImages.forEach((file, index) => {
+                const imageDiv = document.createElement('div');
+                imageDiv.className = 'relative group cursor-move';
+                imageDiv.dataset.index = editExistingImagesCount + index;
+                imageDiv.dataset.imageType = 'new';
 
-            // Initialize edit category selector
-            editCategorySelector.init();
+                const img = document.createElement('img');
+                img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
+                const url = URL.createObjectURL(file);
+                img.src = url;
+                img.alt = 'New image';
 
-            // Populate current images
-            populateEditCurrentImages(listing.images || []);
+                // Add remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10';
+                removeBtn.innerHTML = '×';
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    editNewImages.splice(index, 1);
+                    updateEditImagePreviews();
+                };
+
+                imageDiv.appendChild(img);
+                imageDiv.appendChild(removeBtn);
+                grid.appendChild(imageDiv);
+            });
+
+            // Update counter
+            const totalImages = editExistingImagesCount + editNewImages.length;
+            const remainingSlots = 5 - editExistingImagesCount;
+            document.getElementById('edit-image-counter').textContent = `Photos: ${editNewImages.length}/${remainingSlots}`;
         }
 
         function populateEditCurrentImages(images) {
@@ -2182,7 +2810,7 @@
 
             let draggedElement = null;
 
-            imagesGrid.addEventListener('dragstart', function(e) {
+            imagesGrid.addEventListener('dragstart', function (e) {
                 if (e.target.closest('.cursor-move')) {
                     draggedElement = e.target.closest('.cursor-move');
                     draggedElement.classList.add('opacity-50');
@@ -2190,7 +2818,7 @@
                 }
             });
 
-            imagesGrid.addEventListener('dragend', function(e) {
+            imagesGrid.addEventListener('dragend', function (e) {
                 if (draggedElement) {
                     draggedElement.classList.remove('opacity-50');
                     draggedElement = null;
@@ -2202,7 +2830,7 @@
                 }
             });
 
-            imagesGrid.addEventListener('dragover', function(e) {
+            imagesGrid.addEventListener('dragover', function (e) {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = 'move';
 
@@ -2218,7 +2846,7 @@
                 }
             });
 
-            imagesGrid.addEventListener('drop', function(e) {
+            imagesGrid.addEventListener('drop', function (e) {
                 e.preventDefault();
 
                 const dropTarget = e.target.closest('.cursor-move');
@@ -2313,29 +2941,27 @@
             }
         }
 
-        // Initialize Quill Rich Text Editor with snow theme
-        const quill = new Quill('#description-editor-content', {
-            theme: 'snow',
-            placeholder: 'Describe your item or service',
-            modules: {
-                toolbar: '#description-toolbar'
-            }
-        });
+        // Initialize Quill Rich Text Editor (Add Listing) only if present
+        const addEditorEl = document.querySelector('#description-editor-content');
+        let quill;
+        if (addEditorEl) {
+            quill = new Quill('#description-editor-content', {
+                theme: 'snow',
+                placeholder: 'Describe your item or service',
+                modules: {
+                    toolbar: '#description-toolbar'
+                }
+            });
 
-        // Initialize Quill for edit modal
-        const editQuill = new Quill('#edit-description-editor-content', {
-            theme: 'snow',
-            placeholder: 'Describe your item or service',
-            modules: {
-                toolbar: '#edit-description-toolbar'
-            }
-        });
+            // Sync Quill content to hidden input
+            quill.on('text-change', function () {
+                const html = quill.root.innerHTML;
+                const hidden = document.getElementById('id_description');
+                if (hidden) hidden.value = html;
+            });
+        }
 
-        // Sync edit Quill content to hidden input
-        editQuill.on('text-change', function() {
-            const html = editQuill.root.innerHTML;
-            document.getElementById('edit_id_description').value = html;
-        });
+        // Edit modal description now uses a simple textarea (no Quill needed)
 
         // Function to format number with commas
         function formatNumberWithCommas(value) {
@@ -2381,7 +3007,7 @@
         }
 
         // Sync Quill content to hidden input
-        quill.on('text-change', function() {
+        quill.on('text-change', function () {
             const html = quill.root.innerHTML;
             document.getElementById('id_description').value = html;
             clearFieldError('description');
@@ -2534,6 +3160,8 @@
                 0% { -webkit-transform: translateX(0); }
                 100% { -webkit-transform: translateX(calc(-50% - 1rem)); }
             }
+
+            /* Looking-for scrolling animation (handled in base <style> with JS-controlled duration) */
 
             /* CRITICAL FIX: Force containers to not expand beyond parent */
             article .title-scroll-container,
@@ -2739,27 +3367,27 @@
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Success: close modal and redirect to home page immediately
-                    closeModal();
-                    // Use replace to avoid adding to browser history
-                    window.location.replace('/home/');
-                } else {
-                    // Error: show form errors
-                    showFormErrors(data.errors);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showError('general', 'An error occurred. Please try again.');
-            })
-            .finally(() => {
-                // Reset button state
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Create Listing';
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Success: close modal and redirect to home page immediately
+                        closeModal();
+                        // Use replace to avoid adding to browser history
+                        window.location.replace('/home/');
+                    } else {
+                        // Error: show form errors
+                        showFormErrors(data.errors);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('general', 'An error occurred. Please try again.');
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Create Listing';
+                });
         }
 
         // Function to refresh listings section (no longer needed)
@@ -2801,7 +3429,7 @@
         // Add this new event listener
         // This prevents the browser from loading the dropped file directly in the window,
         // which is what causes the screen to go blank/images to vanish.
-        document.addEventListener('drop', function(e) {
+        document.addEventListener('drop', function (e) {
             e.preventDefault();
         }, false);
 
@@ -2840,7 +3468,7 @@
         }
 
         // File input change
-        imageInput.addEventListener('change', function(e) {
+        imageInput.addEventListener('change', function (e) {
             handleFiles(e.target.files);
         });
 
@@ -2848,7 +3476,7 @@
             // Convert FileList to Array and filter for images
             const imageFiles = Array.from(files).filter(file => {
                 return file.type.startsWith('image/') &&
-                       ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type);
+                    ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type);
             });
 
             // Add new files to selectedFiles, avoiding duplicates
@@ -3014,7 +3642,7 @@
                 if (offset_y < 0) {
                     // The drop is above the center of this element (valid place to insert before)
                     if (offset_y > closest.offset_y) {
-                         return { offset_y: offset_y, element: child };
+                        return { offset_y: offset_y, element: child };
                     }
                 } else if (offset_y >= 0 && clientX < center_x) {
                     // Drop is on the same row, to the left of the center, or past the last element on the row
@@ -3156,6 +3784,8 @@
                 setTimeout(() => field.classList.remove('border-red-500'), 3000);
             }
         }
+        // No JS needed for marquees now; title, location, and looking-for
+        // all scroll purely via CSS when rendered with their marquee markup.
     </script>
 
     {% include 'accounts/logout_modal.html' %}
