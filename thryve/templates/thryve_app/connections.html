@@ -227,8 +227,8 @@
                                     </div>
                                 </div>
                                 <div class="flex gap-2">
-                                    <button class="px-3 py-1 bg-brand-leaf hover:bg-green-600 text-white text-sm font-medium rounded">Accept</button>
-                                    <button class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded">Decline</button>
+                                    <button class="accept-btn px-3 py-1 bg-brand-leaf hover:bg-green-600 text-white text-sm font-medium rounded" data-request-id="{{ request.id }}">Accept</button>
+                                    <button class="decline-btn px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded" data-request-id="{{ request.id }}">Decline</button>
                                 </div>
                             </div>
                         {% endfor %}
@@ -282,6 +282,11 @@
             </div>
         </div>
     </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-300 z-50">
+        <p id="toast-message" class="text-sm font-medium"></p>
+    </div>
 
     <!-- Logout Modal -->
     <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
@@ -364,6 +369,99 @@
                 document.getElementById('logout-modal').classList.remove('flex');
             }
         });
+
+        // Accept/Decline connection request functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('accept-btn') || e.target.classList.contains('decline-btn')) {
+                const button = e.target;
+                const requestId = button.getAttribute('data-request-id');
+                const action = button.classList.contains('accept-btn') ? 'accept' : 'decline';
+                const requestCard = button.closest('.bg-slate-50');
+
+                // Disable buttons
+                const buttons = requestCard.querySelectorAll('.accept-btn, .decline-btn');
+                buttons.forEach(btn => btn.disabled = true);
+
+                // Get CSRF token
+                let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+                // If not found in DOM, try to get from cookie
+                if (!csrfToken) {
+                    const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+                    if (csrfCookie) {
+                        csrfToken = csrfCookie.split('=')[1];
+                    }
+                }
+
+                // Send AJAX request
+                const url = action === 'accept' ? '{% url "thryve_app:accept_connection_request" %}' : '{% url "thryve_app:decline_connection_request" %}';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrfToken || '',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: `request_id=${requestId}`
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Remove the request card from the UI
+                        requestCard.remove();
+
+                        // Update tab counts
+                        updateTabCounts();
+
+                        // Show toast notification
+                        showToast(data.message);
+                    } else {
+                        // Re-enable buttons on error
+                        buttons.forEach(btn => btn.disabled = false);
+                        alert(data.message || `Failed to ${action} connection request.`);
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error ${action}ing connection request:`, error);
+                    // Re-enable buttons on error
+                    buttons.forEach(btn => btn.disabled = false);
+                    alert(`An error occurred while ${action}ing the request. Please try again.`);
+                });
+            }
+        });
+
+        // Update tab counts after accepting/declining requests
+        function updateTabCounts() {
+            // Get current counts
+            const incomingTab = document.getElementById('incoming-tab');
+            const currentCount = parseInt(incomingTab.textContent.match(/(\d+)/)[1]) - 1;
+
+            // Update the tab text
+            incomingTab.innerHTML = incomingTab.innerHTML.replace(/\(\d+\)/, `(${Math.max(0, currentCount)})`);
+        }
+
+        // Toast notification function
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+
+            // Show toast
+            toast.classList.remove('translate-y-full', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-full', 'opacity-0');
+            }, 3000);
+        }
     </script>
 
 </body>

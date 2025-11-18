@@ -309,3 +309,54 @@ def send_connection_request(request):
         except User.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'User not found.'})
     return JsonResponse({'success': False, 'message': 'Invalid request.'})
+
+@login_required(login_url='login')
+def accept_connection_request(request):
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        request_id = request.POST.get('request_id')
+        try:
+            connection_request = ConnectionRequest.objects.get(
+                id=request_id,
+                receiver=request.user,
+                status='pending'
+            )
+            # Create connection
+            Connection.objects.create(
+                user1=connection_request.sender,
+                user2=connection_request.receiver
+            )
+            # Update request status
+            connection_request.status = 'accepted'
+            connection_request.save()
+
+            return JsonResponse({
+                'success': True,
+                'message': f'Connection request from {connection_request.sender.get_full_name()} accepted.',
+                'sender_name': connection_request.sender.get_full_name()
+            })
+        except ConnectionRequest.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Connection request not found.'})
+    return JsonResponse({'success': False, 'message': 'Invalid request.'})
+
+@login_required(login_url='login')
+def decline_connection_request(request):
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        request_id = request.POST.get('request_id')
+        try:
+            connection_request = ConnectionRequest.objects.get(
+                id=request_id,
+                receiver=request.user,
+                status='pending'
+            )
+            sender_name = connection_request.sender.get_full_name()
+            # Delete the request entirely to allow future requests
+            connection_request.delete()
+
+            return JsonResponse({
+                'success': True,
+                'message': f'Connection request from {sender_name} declined.',
+                'sender_name': sender_name
+            })
+        except ConnectionRequest.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Connection request not found.'})
+    return JsonResponse({'success': False, 'message': 'Invalid request.'})
