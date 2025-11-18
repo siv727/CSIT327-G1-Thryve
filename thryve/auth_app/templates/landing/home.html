@@ -417,85 +417,9 @@
                 </div>
             </article>
             {% empty %}
-            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
-                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
-                    <img src="{% static 'thryve_app/images/listing-placeholder.jpg' %}" alt="No image available" class="w-full h-full object-cover">
-                </div>
-
-                <div class="flex items-center justify-between mb-3">
-                    <span
-                        class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">SALE</span>
-                    <span
-                        class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
-                </div>
-                <h3 class="text-lg font-bold">Industrial 3D Printer</h3>
-                <div class="mt-0.5 text-slate-500 font-medium">TechFab Solutions</div>
-                <p class="mt-3 text-slate-700">High-precision industrial 3D printer, barely used. Ideal for prototyping and
-                    small-scale production.</p>
-                <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">₱8,500</div>
-                <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
-                    <span>📍 New York, NY</span>
-                    <span>📅 1/15/2024</span>
-                </div>
-                <div class="mt-5 grid grid-cols-2 gap-3">
-                    <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
-                    <a href="#"
-                        class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
-                </div>
-            </article>
-
-            <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
-                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
-                    <img src="{% static 'thryve_app/images/listing-placeholder.jpg' %}" alt="No image available" class="w-full h-full object-cover">
-                </div>
-
-                <div class="flex items-center justify-between mb-3">
-                    <span
-                        class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">SWAP</span>
-                    <span
-                        class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
-                </div>
-                <h3 class="text-lg font-bold">Office Furniture Set</h3>
-                <div class="mt-0.5 text-slate-500 font-medium">Creative Spaces Inc</div>
-                <p class="mt-3 text-slate-700">Complete set including 10 desks, chairs, and storage units. Modern design,
-                    excellent condition.</p>
-                <p class="mt-2 text-slate-700">Looking for: <span class="font-semibold">IT equipment or professional
-                        services</span></p>
-                <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
-                    <span>📍 Los Angeles, CA</span>
-                    <span>📅 1/14/2024</span>
-                </div>
-                <div class="mt-5 grid grid-cols-2 gap-3">
-                    <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
-                    <a href="#"
-                        class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
-                </div>
-            </article>
-                <div class="w-full h-48 bg-slate-100 rounded-lg overflow-hidden mb-4">
-                    <img src="{% static 'thryve_app/images/listing-placeholder.png' %}" alt="No image available" class="w-full h-full object-cover">
-                </div>
-
-                <div class="flex items-center justify-between mb-3">
-                    <span
-                        class="inline-flex items-center gap-2 text-[11px] tracking-wide font-bold text-white bg-slate-700 px-2.5 py-1 rounded-full">BUY</span>
-                    <span
-                        class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">available</span>
-                </div>
-                <h3 class="text-lg font-bold">Looking for CNC Machine</h3>
-                <div class="mt-0.5 text-slate-500 font-medium">MetalWorks Ltd</div>
-                <p class="mt-3 text-slate-700">We need a CNC machine for metal fabrication. Budget up to ₱15,000 for the right
-                    fit.</p>
-                <div class="mt-2 text-slate-700">Budget: <span class="font-semibold">₱15,000</span></div>
-                <div class="mt-2 flex items-center justify-between text-sm text-slate-500">
-                    <span>📍 Chicago, IL</span>
-                    <span>📅 1/13/2024</span>
-                </div>
-                <div class="mt-5 grid grid-cols-2 gap-3">
-                    <a href="#" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Details</a>
-                    <a href="#"
-                        class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book Now</a>
-                </div>
-            </article>
+            <div class="col-span-full text-center py-12">
+                <p class="text-slate-500 text-lg">No listings created</p>
+            </div>
             {% endfor %}
         </section>
     </main>
