@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
+from django.db.models import Q
 from .forms import ListingForm
-from .models import ListingImage, Listing
+from .models import ListingImage, Listing, Connection, ConnectionRequest
 
 @login_required(login_url='login')
 def my_listings(request):
@@ -189,3 +190,38 @@ def delete_listing(request, listing_id):
         messages.error(request, 'Listing not found.')
 
     return redirect('thryve_app:my_listings')
+
+
+@login_required(login_url='login')
+def connections(request):
+    # Get user's connections
+    user_connections = Connection.objects.filter(
+        Q(user1=request.user) | Q(user2=request.user)
+    ).select_related('user1', 'user2')
+
+    # Get connection requests
+    incoming_requests = ConnectionRequest.objects.filter(
+        receiver=request.user,
+        status='pending'
+    ).select_related('sender')
+
+    sent_requests = ConnectionRequest.objects.filter(
+        sender=request.user,
+        status='pending'
+    ).select_related('receiver')
+
+    # Count for tabs
+    connections_count = user_connections.count()
+    incoming_count = incoming_requests.count()
+    sent_count = sent_requests.count()
+
+    context = {
+        'connections': user_connections,
+        'incoming_requests': incoming_requests,
+        'sent_requests': sent_requests,
+        'connections_count': connections_count,
+        'incoming_count': incoming_count,
+        'sent_count': sent_count,
+    }
+
+    return render(request, 'thryve_app/connections.html', context)

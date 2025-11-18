@@ -129,3 +129,35 @@ class ListingImage(models.Model):
         if self.is_main:
             ListingImage.objects.filter(listing=self.listing, is_main=True).update(is_main=False)
         super().save(*args, **kwargs)
+
+
+class ConnectionRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('declined', 'Declined'),
+    ]
+
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='sent_requests', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='received_requests', on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['sender', 'receiver']
+
+    def __str__(self):
+        return f"{self.sender} -> {self.receiver} ({self.status})"
+
+
+class Connection(models.Model):
+    user1 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='connections1', on_delete=models.CASCADE)
+    user2 = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='connections2', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user1', 'user2']
+
+    def __str__(self):
+        return f"{self.user1} <-> {self.user2}"

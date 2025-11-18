@@ -64,8 +64,8 @@ ROOT_URLCONF = 'thryve.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates/',
-                 'auth_app/templates/'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'auth_app', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
