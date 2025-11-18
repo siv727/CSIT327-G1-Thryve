@@ -360,3 +360,26 @@ def decline_connection_request(request):
         except ConnectionRequest.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Connection request not found.'})
     return JsonResponse({'success': False, 'message': 'Invalid request.'})
+
+@login_required(login_url='login')
+def cancel_connection_request(request):
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        request_id = request.POST.get('request_id')
+        try:
+            connection_request = ConnectionRequest.objects.get(
+                id=request_id,
+                sender=request.user,
+                status='pending'
+            )
+            receiver_name = connection_request.receiver.get_full_name()
+            # Delete the request entirely
+            connection_request.delete()
+
+            return JsonResponse({
+                'success': True,
+                'message': f'Connection request to {receiver_name} cancelled.',
+                'receiver_name': receiver_name
+            })
+        except ConnectionRequest.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Connection request not found.'})
+    return JsonResponse({'success': False, 'message': 'Invalid request.'})

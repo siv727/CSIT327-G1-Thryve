@@ -264,7 +264,10 @@
                                             <p class="text-sm text-slate-500">{{ request.receiver.company_name }}</p>
                                         </div>
                                     </div>
-                                    <span class="text-sm text-slate-500 bg-slate-200 px-2 py-1 rounded">Pending</span>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm text-slate-500 bg-slate-200 px-2 py-1 rounded">Pending</span>
+                                        <button class="cancel-btn text-red-600 hover:text-red-800 text-sm font-medium" data-request-id="{{ request.id }}">Cancel</button>
+                                    </div>
                                 </div>
                                 {% if request.message %}
                                 <div class="mt-3 pl-13">
@@ -370,17 +373,26 @@
             }
         });
 
-        // Accept/Decline connection request functionality
+        // Accept/Decline/Cancel connection request functionality
         document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('accept-btn') || e.target.classList.contains('decline-btn')) {
+            if (e.target.classList.contains('accept-btn') || e.target.classList.contains('decline-btn') || e.target.classList.contains('cancel-btn')) {
                 const button = e.target;
                 const requestId = button.getAttribute('data-request-id');
-                const action = button.classList.contains('accept-btn') ? 'accept' : 'decline';
-                const requestCard = button.closest('.bg-slate-50');
+                let action, requestCard, buttonsToDisable;
+
+                if (button.classList.contains('accept-btn') || button.classList.contains('decline-btn')) {
+                    action = button.classList.contains('accept-btn') ? 'accept' : 'decline';
+                    requestCard = button.closest('.bg-slate-50');
+                    buttonsToDisable = requestCard.querySelectorAll('.accept-btn, .decline-btn');
+                } else if (button.classList.contains('cancel-btn')) {
+                    action = 'cancel';
+                    requestCard = button.closest('.bg-slate-50');
+                    buttonsToDisable = [button];
+                    button.textContent = 'Cancelling...';
+                }
 
                 // Disable buttons
-                const buttons = requestCard.querySelectorAll('.accept-btn, .decline-btn');
-                buttons.forEach(btn => btn.disabled = true);
+                buttonsToDisable.forEach(btn => btn.disabled = true);
 
                 // Get CSRF token
                 let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
@@ -393,9 +405,17 @@
                     }
                 }
 
-                // Send AJAX request
-                const url = action === 'accept' ? '{% url "thryve_app:accept_connection_request" %}' : '{% url "thryve_app:decline_connection_request" %}';
+                // Determine URL based on action
+                let url;
+                if (action === 'accept') {
+                    url = '{% url "thryve_app:accept_connection_request" %}';
+                } else if (action === 'decline') {
+                    url = '{% url "thryve_app:decline_connection_request" %}';
+                } else if (action === 'cancel') {
+                    url = '{% url "thryve_app:cancel_connection_request" %}';
+                }
 
+                // Send AJAX request
                 fetch(url, {
                     method: 'POST',
                     headers: {
@@ -417,33 +437,48 @@
                         requestCard.remove();
 
                         // Update tab counts
-                        updateTabCounts();
+                        updateTabCounts(action);
 
                         // Show toast notification
                         showToast(data.message);
                     } else {
                         // Re-enable buttons on error
-                        buttons.forEach(btn => btn.disabled = false);
+                        buttonsToDisable.forEach(btn => {
+                            btn.disabled = false;
+                            if (action === 'cancel') {
+                                btn.textContent = 'Cancel';
+                            }
+                        });
                         alert(data.message || `Failed to ${action} connection request.`);
                     }
                 })
                 .catch(error => {
                     console.error(`Error ${action}ing connection request:`, error);
                     // Re-enable buttons on error
-                    buttons.forEach(btn => btn.disabled = false);
+                    buttonsToDisable.forEach(btn => {
+                        btn.disabled = false;
+                        if (action === 'cancel') {
+                            btn.textContent = 'Cancel';
+                        }
+                    });
                     alert(`An error occurred while ${action}ing the request. Please try again.`);
                 });
             }
         });
 
-        // Update tab counts after accepting/declining requests
-        function updateTabCounts() {
-            // Get current counts
-            const incomingTab = document.getElementById('incoming-tab');
-            const currentCount = parseInt(incomingTab.textContent.match(/(\d+)/)[1]) - 1;
-
-            // Update the tab text
-            incomingTab.innerHTML = incomingTab.innerHTML.replace(/\(\d+\)/, `(${Math.max(0, currentCount)})`);
+        // Update tab counts after accepting/declining/canceling requests
+        function updateTabCounts(action) {
+            if (action === 'cancel') {
+                // Update sent tab count
+                const sentTab = document.getElementById('sent-tab');
+                const currentCount = parseInt(sentTab.textContent.match(/(\d+)/)[1]) - 1;
+                sentTab.innerHTML = sentTab.innerHTML.replace(/\(\d+\)/, `(${Math.max(0, currentCount)})`);
+            } else {
+                // Update incoming tab count for accept/decline
+                const incomingTab = document.getElementById('incoming-tab');
+                const currentCount = parseInt(incomingTab.textContent.match(/(\d+)/)[1]) - 1;
+                incomingTab.innerHTML = incomingTab.innerHTML.replace(/\(\d+\)/, `(${Math.max(0, currentCount)})`);
+            }
         }
 
         // Toast notification function
