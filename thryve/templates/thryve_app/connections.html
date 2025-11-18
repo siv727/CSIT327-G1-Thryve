@@ -292,29 +292,15 @@
     </div>
 
     <!-- Logout Modal -->
-    <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-auto">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-slate-900">Logout</h2>
-                    <button id="close-logout-modal" class="text-slate-400 hover:text-slate-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="mb-6">
-                    <p class="text-slate-700">Are you sure you want to logout?</p>
-                </div>
-
-                <div class="flex justify-end gap-3">
-                    <button id="cancel-logout-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                    <a href="{% url 'logout' %}" class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <button onclick="openLogoutModal()" type="button"
+        class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
+        </svg>
+        <span class="leading-none">Logout</span>
+    </button>
 
     <script>
         // Tab switching functionality
@@ -347,30 +333,6 @@
                     tabContent.classList.add('active');
                 }
             });
-        });
-
-        // Logout modal functionality
-        function openLogoutModal() {
-            document.getElementById('logout-modal').classList.remove('hidden');
-            document.getElementById('logout-modal').classList.add('flex');
-        }
-
-        document.getElementById('close-logout-modal').addEventListener('click', () => {
-            document.getElementById('logout-modal').classList.add('hidden');
-            document.getElementById('logout-modal').classList.remove('flex');
-        });
-
-        document.getElementById('cancel-logout-btn').addEventListener('click', () => {
-            document.getElementById('logout-modal').classList.add('hidden');
-            document.getElementById('logout-modal').classList.remove('flex');
-        });
-
-        // Close modal when clicking outside
-        document.getElementById('logout-modal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('logout-modal')) {
-                document.getElementById('logout-modal').classList.add('hidden');
-                document.getElementById('logout-modal').classList.remove('flex');
-            }
         });
 
         // Accept/Decline/Cancel connection request functionality
@@ -499,5 +461,6 @@
         }
     </script>
 
+    {% include 'accounts/logout_modal.html' %}
 </body>
 </html>
