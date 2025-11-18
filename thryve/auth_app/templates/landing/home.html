@@ -10,158 +10,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <style>
-        /* Ensure descriptions wrap nicely across the app */
-        .description-preview,
-        #details-description {
-            white-space: normal;
-            overflow-wrap: anywhere;
-            word-break: break-word;
-        }
-
-        /* Reserve space roughly equal to two lines of text
-           so cards stay visually aligned even for very short descriptions */
-        .card-description {
-            min-height: 3.0rem;
-        }
-
-        /* Utility: clamp text to 2 lines for uniform cards */
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-clamp: 2;
-            /* Standard property for future compatibility */
-        }
-
-        /* Horizontal marquee-on-hover for long text (title/location/looking-for)
-              Title and location always animate when long; looking-for animates
-              when long on cards only. */
-        .title-scroll-container,
-        .location-scroll-container {
-            width: 100%;
-            max-width: 100%;
-            overflow: hidden;
-            position: relative;
-            display: block;
-        }
-
-        .title-scroll-text,
-        .location-scroll-text {
-            display: inline-flex;
-            width: max-content;
-            transform: translateX(0);
-            transition: transform 0.4s ease-out;
-            white-space: nowrap;
-        }
-
-        .title-spacer {
-            margin-left: 2rem;
-        }
-
-        .location-spacer {
-            margin-left: 3rem;
-        }
-
-        /* Run scroll only when hovering a card */
-        article:hover .title-scroll-text {
-            animation: scroll-left-title 12s linear infinite;
-            -webkit-animation: scroll-left-title 12s linear infinite;
-        }
-
-        article:hover .location-scroll-text {
-            animation: scroll-left-location 14s linear infinite;
-            -webkit-animation: scroll-left-location 14s linear infinite;
-        }
-
-        /* Looking-for value scroll container (same pattern as title/location) */
-        .looking-scroll-container {
-            width: 100%;
-            max-width: 100%;
-            overflow: hidden;
-            position: relative;
-            display: block;
-        }
-
-        .looking-scroll-text {
-            display: inline-flex;
-            width: max-content;
-            transform: translateX(0);
-            transition: transform 0.4s ease-out;
-            white-space: nowrap;
-        }
-
-        .looking-spacer {
-            margin-left: 2rem;
-        }
-
-        article:hover .looking-scroll-text {
-            animation: scroll-left-looking 12s linear infinite;
-            -webkit-animation: scroll-left-looking 12s linear infinite;
-        }
-
-        /* Keyframes (duplicate content required via spacer to loop smoothly) */
-        @keyframes scroll-left-title {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-
-        @-webkit-keyframes scroll-left-title {
-            0% {
-                -webkit-transform: translateX(0);
-            }
-
-            100% {
-                -webkit-transform: translateX(-50%);
-            }
-        }
-
-        @keyframes scroll-left-location {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-
-        @-webkit-keyframes scroll-left-location {
-            0% {
-                -webkit-transform: translateX(0);
-            }
-
-            100% {
-                -webkit-transform: translateX(-50%);
-            }
-        }
-
-        @keyframes scroll-left-looking {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-
-        @-webkit-keyframes scroll-left-looking {
-            0% {
-                -webkit-transform: translateX(0);
-            }
-
-            100% {
-                -webkit-transform: translateX(-50%);
-            }
-        }
-    </style>
     <script>
         tailwind.config = {
             theme: {
@@ -243,17 +91,18 @@
                     {% endif %}
                 </a>
 
-                <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
-                    </svg>
-                    <span class="leading-none">Bookings</span>
-                    {% if active == 'bookings' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
+        <!-- Bookings -->
+        <a href="{% url 'bookings' %}" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
+          </svg>
+          <span class="leading-none">Bookings</span>
+          {% if active == 'bookings' %}
+          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+          {% endif %}
+        </a>
 
                 <a href="{% url 'business_profile' %}"
                     class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
@@ -270,18 +119,19 @@
             </nav>
             {% endwith %}
 
-            <button onclick="openLogoutModal()" type="button"
-                class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
-                </svg>
-                <span class="leading-none">Logout</span>
-            </button>
+      <!-- Right: Logout -->
+      <button onclick="openLogoutModal()" type="button"
+        class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
+        </svg>
+        <span class="leading-none">Logout</span>
+      </button>
 
-        </div>
-    </header>
+    </div>
+  </header>
 
 
     <main class="max-w-[1200px] mx-auto px-5 py-8">
@@ -581,8 +431,7 @@
                         <div class="location-scroll-container">
                             <div class="location-scroll-text whitespace-nowrap">
                                 <span class="inline-block">{{ listing.location }}</span>
-                                <span class="location-spacer inline-block" aria-hidden="true">{{
-                                    listing.location}}</span>
+                                <span class="location-spacer inline-block" aria-hidden="true">{{listing.location}}</span>
                             </div>
                         </div>
                         {% else %}
@@ -627,32 +476,32 @@
                     document.getElementById('editModal{{ listing.id }}').classList.remove('flex');
                 }
                 let editNewImagesData{{ listing.id }} = [];
-                
+
                 function handleImagePreview{{ listing.id }}(input) {
                     const previewContainer = document.getElementById('imagePreview{{ listing.id }}');
                     const photoCounter = document.getElementById('photoCounter{{ listing.id }}');
                     const existingCount = {{ listing.images.count }};
                     const fileInput = input;
-                    
+
                     if (input.files && input.files.length > 0) {
                         const currentNewCount = editNewImagesData{{ listing.id }}.length;
                         const availableSlots = 5 - existingCount - currentNewCount;
-                        
+
                         if (availableSlots <= 0) {
                             alert('Maximum 5 images allowed. You have reached the limit.');
                             fileInput.value = '';
                             return;
                         }
-                        
+
                         const filesToAdd = Math.min(input.files.length, availableSlots);
                         if (input.files.length > availableSlots) {
                             alert(`You can only add ${availableSlots} more image(s). Only the first ${availableSlots} will be added.`);
                         }
-                        
+
                         // Add new files to our array
                         for (let i = 0; i < filesToAdd; i++) {
                             editNewImagesData{{ listing.id }}.push(input.files[i]);
-                            
+
                             const reader = new FileReader();
                             const fileIndex = currentNewCount + i;
                             reader.onload = function(e) {
@@ -668,24 +517,24 @@
                             };
                             reader.readAsDataURL(input.files[i]);
                         }
-                        
+
                         const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
                         photoCounter.textContent = `Photos: ${totalCount}/5`;
-                        
+
                         // Clear the file input so the same file can be selected again
                         fileInput.value = '';
                     }
                 }
-                
+
                 function removeNewImage{{ listing.id }}(index) {
                     // Remove from array
                     editNewImagesData{{ listing.id }}.splice(index, 1);
-                    
+
                     // Update preview container
                     const previewContainer = document.getElementById('imagePreview{{ listing.id }}');
                     const allNewPreviews = previewContainer.querySelectorAll('.new-image-preview');
                     allNewPreviews.forEach(preview => preview.remove());
-                    
+
                     // Re-render remaining new images with updated indices
                     editNewImagesData{{ listing.id }}.forEach((file, newIndex) => {
                         const reader = new FileReader();
@@ -702,26 +551,26 @@
                         };
                         reader.readAsDataURL(file);
                     });
-                    
+
                     // Update counter
                     const existingCount = {{ listing.images.count }};
                     const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
                     document.getElementById('photoCounter{{ listing.id }}').textContent = `Photos: ${totalCount}/5`;
                 }
-                
+
                 function submitEditForm{{ listing.id }}(form) {
                     // Create a new DataTransfer object to hold our files
                     const dataTransfer = new DataTransfer();
-                    
+
                     // Add all new images to the file input
                     editNewImagesData{{ listing.id }}.forEach(file => {
                         dataTransfer.items.add(file);
                     });
-                    
+
                     // Update the file input with our collected files
                     const fileInput = form.querySelector('input[type="file"]');
                     fileInput.files = dataTransfer.files;
-                    
+
                     return true; // Allow form submission
                 }
             </script>
@@ -739,7 +588,7 @@
                             </div>
                             <form method="post" action="{% url 'thryve_app:edit_listing' listing.id %}" enctype="multipart/form-data" onsubmit="return submitEditForm{{ listing.id }}(this)">
                                 {% csrf_token %}
-                                
+
                                 <div class="mb-4">
                                     <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
                                     <div class="space-y-2">
@@ -810,7 +659,7 @@
 
                                 <div class="mb-4">
                                     <label class="block text-slate-700 font-semibold mb-2">Listing Images</label>
-                                    
+
                                     <!-- Image Preview Section -->
                                     <div id="imagePreview{{ listing.id }}" class="flex flex-wrap gap-2 mb-3">
                                         {% for image in listing.images.all %}
@@ -819,7 +668,7 @@
                                         </div>
                                         {% endfor %}
                                     </div>
-                                    
+
                                     <div class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors bg-slate-50 relative">
                                         <div class="flex flex-col items-center justify-center space-y-4">
                                             <div class="w-12 h-12 text-slate-400">
@@ -2008,24 +1857,24 @@
         const closeModal = () => {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
-            
+
             // Reset the form completely
             form.reset();
-            
+
             // Clear all error messages
             form.querySelectorAll('.text-red-500').forEach(error => error.remove());
             form.querySelectorAll('.bg-red-100').forEach(error => error.remove());
-            
+
             // Clear image previews and reset counter
             createSelectedFiles = [];
             document.getElementById('create-image-previews').innerHTML = '';
             document.getElementById('create-image-counter').textContent = 'Photos: 0/5';
-            
+
             // Reset category selector
             document.getElementById('id_category').value = '';
             document.getElementById('category-display-text').textContent = 'Choose Category';
             document.getElementById('category-display-text').classList.add('text-slate-400');
-            
+
             // Reset dynamic fields to default (For Sale / Price)
             const saleRadio = form.querySelector('input[name="listing_type"][value="sale"]');
             if (saleRadio) {
@@ -2894,10 +2743,6 @@
         function populateEditCurrentImages(images) {
             const allImagesContainer = document.getElementById('edit-all-images');
             allImagesContainer.innerHTML = '';
-
-            // Reset the edit images state
-            editExistingImagesCount = images.length;
-            editNewImages = [];
 
             if (images.length > 0) {
                 const imagesGrid = document.createElement('div');
