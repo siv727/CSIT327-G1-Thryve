@@ -1,49 +1,32 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Thryve • Business Profile</title>
-
-  <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            brand: {
-              500: '#26a8e6',
-              600: '#199ad7',
-              700: '#148cc5',
-            },
+            brand: {500: '#26a8e6', 600: '#199ad7', 700: '#148cc5'},
             ink: '#0f172a',
-            muted: '#6b7280',
             line: '#e7edf4',
-            bg: '#f6f9fc'
+            bg: '#f7fbfd'
           },
-          boxShadow: {
-            card: '0 10px 24px rgba(15,23,42,.06)'
-          },
-          fontFamily: {
-            inter: ["Inter", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"]
-          }
+          boxShadow: { card: '0 10px 24px rgba(15,23,42,.06)' },
+          fontFamily: { inter: ['Inter','system-ui','-apple-system','Segoe UI','Roboto','sans-serif'] }
         }
       }
     }
   </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-
 <body class="font-inter bg-[#f7fbfd] text-brand-ink">
 
-  <!-- Top Navigation -->
-  <!-- Top Nav -->
-  <!-- Clean, professional navbar (no pill buttons) -->
-  <!-- Professional Navbar with Icons -->
+  <!-- Top header -->
   <header class="bg-[#23d3ee] text-white shadow">
     <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
 
@@ -57,19 +40,43 @@
       <!-- Center: Navigation Links -->
       {% with active=request.resolver_match.url_name %}
       <nav class="flex items-center gap-8 text-[15px] font-medium">
-        <!-- Marketplace/Home -->
+        <!-- Marketplace -->
         <a href="{% url 'home' %}"
           class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0" />
+              d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"></path>
           </svg>
           <span class="leading-none">Marketplace</span>
-          {% if active == 'home1' %}
+          {% if active == 'home' %}
           <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
           {% endif %}
         </a>
+         <a href="{% url 'thryve_app:my_listings' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <span class="leading-none">My Listings</span>
+                    {% if active == 'my_listings' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
+
+        <a href="{% url 'thryve_app:connections' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span class="leading-none">Connections</span>
+                    {% if active == 'connections' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
 
         <!-- Community -->
         <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
@@ -84,7 +91,7 @@
         </a>
 
         <!-- Bookings -->
-        <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+        <a href="{% url 'bookings' %}" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -126,12 +133,7 @@
     </div>
   </header>
 
-
-  <!-- Layout -->
   <div class="max-w-6xl mx-auto px-5 py-7 grid grid-cols-[240px,1fr] gap-6">
-    <!-- Sidebar -->
-    <!-- Sidebar with clean line-style icons -->
-    <!-- Sidebar with clean line-style icons -->
     <!-- Sidebar -->
     <aside class="md:pr-4">
       {% with current=request.resolver_match.url_name %}
@@ -151,157 +153,297 @@
           </svg>
           <span>Roles & Permissions</span>
         </a>
-        <!-- Business Profile -->
-        <a href="{% url 'business_profile' %}" class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
-              {% if current == 'business_profile' %}
-                bg-sky-50 text-[#177fb3] border border-sky-100
-              {% else %}
-                text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
-              {% endif %}">
-          <!-- Business icon -->
+      <nav class="space-y-1 text-[15px] font-medium">
+        <a href="{% url 'business_profile' %}"
+           class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+                  {% if current == 'business_profile' %}
+                    bg-sky-50 text-[#177fb3] border border-sky-100
+                  {% else %}
+                    text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
+                  {% endif %}">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
             <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M3 21h18M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 10h2m2 0h2M9 14h2m2 0h2M9 18h6" />
+                  d="M3 21h18M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 10h2m2 0h2M9 14h2m2 0h2M9 18h6"/>
           </svg>
           <span>Business Profile</span>
         </a>
 
-        <!-- Profile Customization -->
-        <a href="{% url 'profile_customization' %}" class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
-              {% if current == 'profile_customization' %}
-                bg-sky-50 text-[#177fb3] border border-sky-100
-              {% else %}
-                text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
-              {% endif %}">
-          <!-- Pencil icon -->
+        <a href="{% url 'profile_customization' %}"
+           class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+                  {% if current == 'profile_customization' %}
+                    bg-sky-50 text-[#177fb3] border border-sky-100
+                  {% else %}
+                    text-slate-700 hover:bg-sky-50 hover:text-[#177fb3]
+                  {% endif %}">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
             <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M9 13l-6 6h6l10-10a2.5 2.5 0 10-3.5-3.5L9 13z" />
+                  d="M9 13l-6 6h6l10-10a2.5 2.5 0 10-3.5-3.5L9 13z"/>
           </svg>
           <span>Profile Customization</span>
         </a>
-
       </nav>
       {% endwith %}
     </aside>
 
-
-
-
-    <!-- Content -->
+    <!-- Main content -->
     <main class="min-w-0">
       <header class="mb-3">
         <h1 class="text-[28px] leading-[1.1] font-extrabold">Manage Your Business Profile</h1>
-        <p class="text-muted mb-4">
-          Establish and refine your business's presence on Thryve. Provide comprehensive details to
-          build trust and visibility with potential customers.
-        </p>
+        <p class="text-slate-600 mb-4">Establish and refine your business's presence on Thryve.</p>
 
-        <!-- Subtabs -->
-        <div class="flex gap-2">
-          <button class="px-4 py-2 rounded-lg border border-transparent bg-[#e9f6ff] text-[#177fb3] font-bold">Business
-            Information</button>
-          <button class="px-4 py-2 rounded-lg border border-line bg-white font-bold">Business Logo</button>
-          <button class="px-4 py-2 rounded-lg border border-line bg-white font-bold">Contact Details</button>
+        {% with active=request.resolver_match.url_name %}
+        <div class="mb-6 flex gap-3">
+          <a href="{% url 'business_profile' %}" class="px-4 py-2 rounded-lg border text-sm font-medium {% if active == 'business_profile' %}bg-[#e9f6ff] text-[#177fb3] border-transparent{% else %}bg-white text-slate-700 border border-slate-100 hover:bg-slate-50{% endif %}">Business Information</a>
+          <a href="{% url 'business_logo' %}" class="px-4 py-2 rounded-lg border text-sm font-medium {% if active == 'business_logo' %}bg-[#e9f6ff] text-[#177fb3] border-transparent{% else %}bg-white text-slate-700 border border-slate-100 hover:bg-slate-50{% endif %}">Business Logo</a>
         </div>
+        {% endwith %}
       </header>
 
       <!-- Card -->
-      <section class="bg-white border border-line rounded-xl p-5 shadow-card">
-        <h2 class="text-lg font-semibold mb-1">Business Details</h2>
-        <p class="text-[#6b7a90] mb-4">Provide core information about your business.</p>
-
-        <form class="flex flex-col gap-3.5">
-          <!-- Company -->
-          <label class="block">
-            <span class="block font-bold mb-1.5">Company Name</span>
-            <input type="text" placeholder="MarketConnect Pro Solutions"
-              class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30" />
-          </label>
-
-          <!-- Industry -->
-          <label class="block">
-            <span class="block font-bold mb-1.5">Industry</span>
-            <div class="relative">
-              <select
-                class="w-full border border-line rounded-lg bg-white px-3 py-2.5 appearance-none outline-none focus:ring-2 focus:ring-brand-500/30">
-                <option value="">Select industry</option>
-                <option>Manufacturing</option>
-                <option>Technology</option>
-                <option>Logistics</option>
-                <option>Professional Services</option>
-              </select>
-              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">▾</span>
-            </div>
-          </label>
-
-          <!-- Description -->
-          <label class="block">
-            <span class="block font-bold mb-1.5">Business Description</span>
-            <textarea rows="4" placeholder="Describe your company, what you do, and your value proposition."
-              class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none resize-y focus:ring-2 focus:ring-brand-500/30"></textarea>
-          </label>
-
-          <!-- Address row -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-            <label class="block">
-              <span class="block font-bold mb-1.5">Physical Address</span>
-              <input type="text" placeholder="123 Main Street"
-                class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30" />
-            </label>
-            <label class="block">
-              <span class="block font-bold mb-1.5">City</span>
-              <input type="text" placeholder="Anytown"
-                class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30" />
-            </label>
-            <label class="block">
-              <span class="block font-bold mb-1.5">State</span>
-              <input type="text" placeholder="CA"
-                class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30" />
-            </label>
+      <section class="bg-white border border-line rounded-xl p-6 shadow-card">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <h2 class="text-lg font-semibold">Business Details</h2>
+            <p class="text-slate-500">Provide core information about your business.</p>
           </div>
 
-          <!-- Postal/Country -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-            <label class="block">
-              <span class="block font-bold mb-1.5">Postal Code</span>
-              <input type="text" placeholder="90210"
-                class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30" />
-            </label>
-            <label class="block">
-              <span class="block font-bold mb-1.5">Country</span>
-              <input type="text" placeholder="USA"
-                class="w-full border border-line rounded-lg bg-white px-3 py-2.5 outline-none focus:ring-2 focus:ring-brand-500/30" />
-            </label>
+          <!-- Edit toggle — inputs are disabled until this is clicked -->
+          <div>
+            <button id="editToggle" type="button" aria-pressed="false"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-300">
+              <svg id="editIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                   stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-slate-700">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M16.862 4.487l2.651 2.651m-9.193 9.192l-3.534.883.883-3.534 9.193-9.192a1.5 1.5 0 012.122 0l.877.877a1.5 1.5 0 010 2.122l-9.192 9.193z"/>
+              </svg>
+              <span id="editLabel" class="text-sm font-medium text-slate-700">Edit</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Form: view MUST pass `form` in context (BusinessProfileForm) -->
+        <form id="businessForm" method="post" enctype="multipart/form-data" class="space-y-4" novalidate>
+          {% csrf_token %}
+          <!-- Grid: company / industry -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold mb-2">Company Name</label>
+              {{ form.company_name }}
+              {% if form.company_name.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.company_name.errors|join:", " }}</div>{% endif %}
+            </div>
+            <div>
+              <label class="block text-sm font-bold mb-2">Industry</label>
+              {{ form.industry }}
+              {% if form.industry.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.industry.errors|join:", " }}</div>{% endif %}
+            </div>
           </div>
 
-          <!-- Website -->
-          <label class="block">
-            <span class="block font-bold mb-1.5">Website URL</span>
-            <div class="flex items-center gap-2 border border-line rounded-lg px-3 py-2.5">
-              <span class="text-slate-500 select-none">https://</span>
-              <input type="text" placeholder="www.marketconnectpro.com" class="w-full outline-none" />
-            </div>
-          </label>
+          <div>
+            <label class="block text-sm font-bold mb-2">Business Description</label>
+            {{ form.description }}
+            {% if form.description.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.description.errors|join:", " }}</div>{% endif %}
+          </div>
 
-          <!-- Actions -->
-          <div class="flex justify-end gap-2 pt-1">
-            <button type="button" class="px-4 py-2 rounded-lg font-extrabold bg-[#eef2f6] text-[#354a5e]">
-              Cancel
-            </button>
-            <button type="submit"
-              class="px-4 py-2 rounded-lg font-extrabold bg-[#1aa2dd] text-white hover:brightness-95">
-              Save Changes
-            </button>
+          <div>
+            <label class="block text-sm font-bold mb-2">Street Address</label>
+            {{ form.street_address }}
+            {% if form.street_address.errors %}<div class="text-rose-600 text-xs mt-1">{{ form.street_address.errors|join:", " }}</div>{% endif %}
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-bold mb-2">City</label>
+              {{ form.city }}
+            </div>
+            <div>
+              <label class="block text-sm font-bold mb-2">State</label>
+              {{ form.state }}
+            </div>
+            <div>
+              <label class="block text-sm font-bold mb-2">Zip Code</label>
+              {{ form.zip_code }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold mb-2">Country</label>
+            {{ form.country }}
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold mb-2">Website URL</label>
+              <div class="flex items-center gap-2">
+                <div class="flex-1">{{ form.website_url }}</div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold mb-2">Contact Email</label>
+              {{ form.contact_email }}
+            </div>
+          </div>
+
+          <!-- Contact Phone (country code dropdown + local number) -->
+<div>
+  <label class="block text-sm font-bold mb-2">Contact Phone</label>
+
+  {# Keep the Django field as a hidden input so server sees the final combined phone value #}
+  {# If you prefer to render the bound field directly, ensure it has id="id_contact_phone" #}
+  <input type="hidden" id="id_contact_phone" name="contact_phone"
+         value="{{ form.contact_phone.value|default_if_none:'' }}" />
+
+  <div class="flex gap-3">
+    <!-- Country code select (scrollable) -->
+    <div class="relative">
+      <select id="phoneCodeSelect" class="h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm"
+              aria-label="Country code" disabled>
+        <!-- popular country codes; add more as needed -->
+        <option value="+1">+1 (United States)</option>
+        <option value="+63">+63 (Philippines)</option>
+        <option value="+44">+44 (United Kingdom)</option>
+        <option value="+61">+61 (Australia)</option>
+        <option value="+91">+91 (India)</option>
+        <option value="+81">+81 (Japan)</option>
+        <option value="+49">+49 (Germany)</option>
+        <option value="+82">+82 (South Korea)</option>
+        <option value="+7">+7 (Russia)</option>
+        <option value="+86">+86 (China)</option>
+        <!-- If you want a long list you'd normally generate it server-side -->
+      </select>
+      <!-- small down chevron for visual -->
+      
+    </div>
+
+    <!-- Local-number input (visible) -->
+    <input id="phoneLocalInput" type="text"
+           class="flex-1 h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm"
+           placeholder="e.g. 9123456789" disabled aria-label="Local phone number" />
+  </div>
+
+  {% if form.contact_phone.errors %}
+    <div class="text-rose-600 text-xs mt-1">{{ form.contact_phone.errors|join:", " }}</div>
+  {% endif %}
+</div>
+
+
+          <!-- Actions: hidden until edit mode -->
+          <div id="actionRow" class="flex justify-end gap-2 pt-2 hidden">
+            <button id="cancelBtn" type="button" class="px-4 py-2 rounded-lg bg-[#eef2f6] text-[#354a5e]">Cancel</button>
+            <button id="saveBtn" type="submit" class="px-4 py-2 rounded-lg bg-[#1aa2dd] text-white">Save Changes</button>
           </div>
         </form>
+
       </section>
     </main>
   </div>
 
-  <!-- Include Logout Modal -->
+<script>
+(function () {
+  const form = document.getElementById('businessForm');
+  const editToggle = document.getElementById('editToggle');
+  const editLabel = document.getElementById('editLabel');
+  const editIcon = document.getElementById('editIcon');
+  const actionRow = document.getElementById('actionRow');
+  const cancelBtn = document.getElementById('cancelBtn');
+
+  // phone elements
+  const hiddenPhone = document.getElementById('id_contact_phone');
+  const phoneCodeSelect = document.getElementById('phoneCodeSelect');
+  const phoneLocalInput = document.getElementById('phoneLocalInput');
+
+  if (!form || !editToggle) return;
+
+  // Helper: split full phone into code and local
+  function splitPhone(full) {
+    if (!full) return { code: '+1', local: '' };
+    const m = String(full).trim().match(/^(\+\d{1,3})\s*(.*)$/);
+    return m
+      ? { code: m[1], local: m[2].replace(/[()\s\-._]/g, '') }
+      : { code: '+1', local: full.replace(/[()\s\-._]/g, '') };
+  }
+
+  // ✅ Compose + code + space + local into hidden field
+  function composeHiddenPhone() {
+    const code = phoneCodeSelect?.value || '';
+    const local = phoneLocalInput?.value.trim() || '';
+    const normalizedLocal = local.startsWith('0') ? local.slice(1) : local;
+    hiddenPhone.value = local ? `${code} ${normalizedLocal}` : '';
+  }
+
+  // Populate visible inputs from hidden value on load
+  (function initPhoneUI() {
+    const parts = splitPhone(hiddenPhone.value || '');
+    if ([...phoneCodeSelect.options].some(o => o.value === parts.code))
+      phoneCodeSelect.value = parts.code;
+    phoneLocalInput.value = parts.local;
+  })();
+
+  // Readonly toggle
+  function setReadonly(readonly) {
+    form.querySelectorAll('input, textarea, select, button[type="file"]').forEach(el => {
+      if (el === hiddenPhone) return; // keep hidden input active
+      readonly ? el.setAttribute('disabled', 'disabled') : el.removeAttribute('disabled');
+    });
+    if (readonly) {
+      phoneCodeSelect.setAttribute('disabled', 'disabled');
+      phoneLocalInput.setAttribute('disabled', 'disabled');
+    } else {
+      phoneCodeSelect.removeAttribute('disabled');
+      phoneLocalInput.removeAttribute('disabled');
+    }
+    editToggle.removeAttribute('disabled');
+  }
+
+  // Start readonly
+  setReadonly(true);
+  let editing = false;
+
+  editToggle.addEventListener('click', function () {
+    editing = !editing;
+    if (editing) {
+      editLabel.textContent = 'Editing...';
+      editIcon.classList.add('text-sky-600');
+      setReadonly(false);
+      actionRow.classList.remove('hidden');
+      editToggle.setAttribute('aria-pressed', 'true');
+    } else {
+      // cancel edit
+      form.reset();
+      editLabel.textContent = 'Edit';
+      editIcon.classList.remove('text-sky-600');
+      setReadonly(true);
+      actionRow.classList.add('hidden');
+      editToggle.setAttribute('aria-pressed', 'false');
+      initPhoneUI(); // restore phone
+    }
+  });
+
+  cancelBtn?.addEventListener('click', function () {
+    form.reset();
+    editing = false;
+    editLabel.textContent = 'Edit';
+    editIcon.classList.remove('text-sky-600');
+    setReadonly(true);
+    actionRow.classList.add('hidden');
+    editToggle.setAttribute('aria-pressed', 'false');
+    initPhoneUI();
+  });
+
+  // Ensure phone is combined before submit
+  form.addEventListener('submit', function () {
+    composeHiddenPhone();
+    // re-enable disabled inputs before submit
+    form.querySelectorAll('input, textarea, select').forEach(el => el.removeAttribute('disabled'));
+  });
+
+  // Update hidden input live
+  phoneLocalInput?.addEventListener('input', composeHiddenPhone);
+  phoneCodeSelect?.addEventListener('change', composeHiddenPhone);
+})();
+</script>
+
   {% include 'accounts/logout_modal.html' %}
 
 </body>
-
 </html>

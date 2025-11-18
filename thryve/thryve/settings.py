@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'thryve_app',
     'auth_app',
-    'profile_app', 
+    'profile_app',
+    'booking_app',
 ]
 
 MIDDLEWARE = [
@@ -63,8 +64,8 @@ ROOT_URLCONF = 'thryve.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates/thryve_app/',
-                 'auth_app/templates/'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'auth_app', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
