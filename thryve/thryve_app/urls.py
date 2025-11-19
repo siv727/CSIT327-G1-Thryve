@@ -4,6 +4,7 @@ from . import views
 app_name = 'thryve_app'
 
 urlpatterns = [
+    path('dashboard/', views.dashboard, name='dashboard'),
     path('create-listing/', views.create_listing, name='create_listing'),
     path('my-listings/', views.my_listings, name='my_listings'),
     path('edit-listing/<int:listing_id>/', views.edit_listing, name='edit_listing'),

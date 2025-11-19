@@ -1,0 +1,254 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard • Thryve</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            sky: '#83e6f5',
+                            leaf: '#3ac363',
+                            ink: '#0f172a'
+                        }
+                    },
+                    boxShadow: {
+                        soft: '0 10px 28px rgba(2, 8, 23, .06)'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+                    },
+                    borderRadius: {
+                        xl2: '1rem'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="font-inter bg-[#f7fbfd] text-brand-ink">
+
+    <header class="bg-[#23d3ee] text-white shadow">
+        <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
+
+            <a href="{% url 'thryve_app:dashboard' %}" class="flex items-center gap-2">
+                <span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
+                <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
+            </a>
+
+            {% with active=request.resolver_match.url_name %}
+            <nav class="flex items-center gap-6 text-[14px] font-medium">
+                <a href="{% url 'thryve_app:dashboard' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"></path>
+                    </svg>
+                    <span class="leading-none">Dashboard</span>
+                    {% if active == 'dashboard' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
+
+                <a href="{% url 'home' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"></path>
+                    </svg>
+                    <span class="leading-none">Marketplace</span>
+                    {% if active == 'home' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
+
+                <a href="{% url 'thryve_app:my_listings' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <span class="leading-none">My Listings</span>
+                    {% if active == 'my_listings' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
+
+                <a href="{% url 'thryve_app:connections' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span class="leading-none">Connections</span>
+                    {% if active == 'connections' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
+
+                <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
+                    </svg>
+                    <span class="leading-none">Community</span>
+                    {% if active == 'community' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
+
+                <a href="{% url 'bookings' %}" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
+                    </svg>
+                    <span class="leading-none">Bookings</span>
+                    {% if active == 'bookings' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
+
+                <a href="{% url 'business_profile' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z" />
+                    </svg>
+                    <span class="leading-none">Profile</span>
+                    {% if active == 'business_profile' %}
+                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+                    {% endif %}
+                </a>
+            </nav>
+            {% endwith %}
+
+            <button onclick="openLogoutModal()" type="button"
+                class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
+                </svg>
+                <span class="leading-none">Logout</span>
+            </button>
+
+        </div>
+    </header>
+
+    <main class="max-w-[1200px] mx-auto px-5 py-8">
+        <div class="flex items-start justify-between gap-4 mb-6">
+            <div>
+                <h1 class="text-[38px] leading-[1.1] font-extrabold">Dashboard</h1>
+                <p class="text-slate-600 mt-1">Welcome back! Here's what's happening.</p>
+            </div>
+        </div>
+
+        <!-- Top Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- My Bookings -->
+            <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
+                <h2 class="text-xl font-bold text-slate-900 mb-2">My Bookings</h2>
+                <p class="text-slate-600 mb-4">Your recent booking requests</p>
+                {% for booking in recent_bookings %}
+                <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-b-0">
+                    <div>
+                        <p class="font-medium text-slate-900">{{ booking.item }}</p>
+                        <p class="text-sm text-slate-500">{{ booking.date }}</p>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">
+                        {{ booking.status }}
+                    </span>
+                </div>
+                {% empty %}
+                <p class="text-slate-500 text-sm">No recent bookings</p>
+                {% endfor %}
+            </div>
+
+            <!-- My Listings -->
+            <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
+                <h2 class="text-xl font-bold text-slate-900 mb-2">My Listings</h2>
+                <p class="text-slate-600 mb-4">Your active marketplace items</p>
+                {% for listing in active_listings %}
+                <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-b-0">
+                    <div>
+                        <p class="font-medium text-slate-900">{{ listing.title }}</p>
+                        <p class="text-sm text-slate-500">{{ listing.type }} - {{ listing.other }}</p>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        {{ listing.status }}
+                    </span>
+                </div>
+                {% empty %}
+                <p class="text-slate-500 text-sm">No active listings</p>
+                {% endfor %}
+            </div>
+
+            <!-- Marketplace Updates -->
+            <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
+                <h2 class="text-xl font-bold text-slate-900 mb-2">Marketplace Updates</h2>
+                <p class="text-slate-600 mb-4">Recently listed items</p>
+                {% for update in marketplace_updates %}
+                <div class="py-2 border-b border-slate-100 last:border-b-0">
+                    <p class="font-medium text-slate-900">{{ update.item }}</p>
+                    <p class="text-sm text-slate-500">{{ update.detail }}</p>
+                </div>
+                {% empty %}
+                <p class="text-slate-500 text-sm">No recent updates</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Activity Summary -->
+        <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6 mb-8">
+            <h2 class="text-xl font-bold text-slate-900 mb-2">Activity Summary</h2>
+            <p class="text-slate-600 mb-6">Quick overview of your account activity</p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-brand-leaf mb-1">{{ activity_summary.total_bookings }}</div>
+                    <div class="text-sm text-slate-600">Total Bookings</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-brand-leaf mb-1">{{ activity_summary.active_listings }}</div>
+                    <div class="text-sm text-slate-600">Active Listings</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-brand-leaf mb-1">{{ activity_summary.pending_booking_requests }}</div>
+                    <div class="text-sm text-slate-600">Pending Booking Requests</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-brand-leaf mb-1">{{ activity_summary.connection_requests }}</div>
+                    <div class="text-sm text-slate-600">Connection Requests</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Upcoming Events</h2>
+                    <p class="text-slate-600">Community events you can attend</p>
+                </div>
+                <button class="inline-flex items-center gap-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 shadow-soft transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14" />
+                    </svg>
+                    Submit Event
+                </button>
+            </div>
+
+            <div class="text-center py-12">
+                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-slate-900 mb-2">No upcoming events</h3>
+                <p class="text-slate-500">Submit one to get started!</p>
+            </div>
+        </div>
+    </main>
+
+    {% include 'accounts/logout_modal.html' %}
+</body>
+</html>
