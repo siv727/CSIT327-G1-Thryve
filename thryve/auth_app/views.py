@@ -20,10 +20,10 @@ def register (request):
 
 def user_login(request):
     just_registered = request.session.pop('just_registered', False)
-    
+
     if request.user.is_authenticated and not just_registered:
-        return redirect('home')
-    
+        return redirect('thryve_app:dashboard')
+
     if request.method == 'POST':
         form = LoginForm(request, request.POST)
         if form.is_valid():
@@ -33,7 +33,7 @@ def user_login(request):
 
             if user is not None:
                 login(request, user)
-                return redirect('home')
+                return redirect('thryve_app:dashboard')
     else:
         form = LoginForm()
 
@@ -44,7 +44,7 @@ def user_login(request):
 def user_logout(request):
     if request.method == 'POST':
         logout(request)
-        return redirect('home')
+        return redirect('thryve_app:dashboard')
     
     return render(request, 'accounts/logout.html')
 

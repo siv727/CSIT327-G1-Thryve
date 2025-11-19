@@ -227,6 +227,64 @@ def delete_listing(request, listing_id):
 
 
 @login_required(login_url='login')
+def dashboard(request):
+    # Get user's recent bookings (placeholder data)
+    recent_bookings = [
+        {
+            'item': 'Mousepad',
+            'date': '10/20/2025 – 10/29/2025',
+            'status': 'pending'
+        }
+    ]
+
+    # Get user's active listings (placeholder data)
+    active_listings = [
+        {
+            'title': 'Kpop Card',
+            'type': 'Swap',
+            'other': 'Other',
+            'status': 'available'
+        },
+        {
+            'title': 'Mousepad',
+            'type': 'Sale',
+            'other': 'Electronics',
+            'status': 'available'
+        },
+        {
+            'title': 'Mousepad',
+            'type': 'Sale',
+            'other': 'Electronics',
+            'status': 'available'
+        }
+    ]
+
+    # Get recent marketplace updates (placeholder data)
+    marketplace_updates = [
+        {
+            'item': 'Tractor',
+            'detail': 'Sale - $600'
+        }
+    ]
+
+    # Activity summary counts (placeholder data)
+    activity_summary = {
+        'total_bookings': 1,
+        'active_listings': 4,
+        'pending_booking_requests': 1,
+        'connection_requests': 0
+    }
+
+    context = {
+        'recent_bookings': recent_bookings,
+        'active_listings': active_listings,
+        'marketplace_updates': marketplace_updates,
+        'activity_summary': activity_summary,
+    }
+
+    return render(request, 'thryve_app/dashboard.html', context)
+
+@login_required(login_url='login')
 def connections(request):
     # Get user's connections
     user_connections = Connection.objects.filter(
