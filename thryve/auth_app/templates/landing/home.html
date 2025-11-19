@@ -192,9 +192,12 @@
 
 <body class="font-inter bg-[#f7fbfd] text-brand-ink">
 
-    <header class="bg-[#23d3ee] text-white shadow">
+     <header class="bg-[#23d3ee] text-white shadow">
         <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
-
+            <a href="{% url 'dashboard' %}" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+          <span class="leading-none">Dashboard</span>
+        </a>
+      </nav>
             <a href="{% url 'home' %}" class="flex items-center gap-2">
                 <span
                     class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
