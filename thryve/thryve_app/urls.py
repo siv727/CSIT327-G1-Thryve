@@ -15,4 +15,5 @@ urlpatterns = [
     path('accept-connection-request/', views.accept_connection_request, name='accept_connection_request'),
     path('decline-connection-request/', views.decline_connection_request, name='decline_connection_request'),
     path('cancel-connection-request/', views.cancel_connection_request, name='cancel_connection_request'),
+    path('remove-connection/', views.remove_connection, name='remove_connection'),
 ]

@@ -199,11 +199,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <button class="text-slate-500 hover:text-slate-700">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01"></path>
-                                    </svg>
-                                </button>
+                                <button class="remove-connection-btn text-red-600 hover:text-red-800 text-sm font-medium" data-connection-id="{{ connection.id }}" data-username="{% if connection.user1 == request.user %}{{ connection.user2.get_full_name }}{% else %}{{ connection.user1.get_full_name }}{% endif %}">Remove Connection</button>
                             </div>
                         {% endfor %}
                     </div>
@@ -317,6 +313,20 @@
         </div>
     </div>
 
+    <!-- Remove Connection Modal -->
+    <div id="remove-connection-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                <h3 class="text-lg font-semibold mb-4">Remove Connection</h3>
+                <p id="remove-modal-message" class="text-slate-600"></p>
+                <div class="mt-4 flex justify-end gap-2">
+                    <button onclick="closeRemoveConnectionModal()" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                    <button id="confirm-remove-btn" class="px-4 py-2 bg-red-500 text-white rounded font-bold">Remove</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Logout Modal -->
     <button onclick="openLogoutModal()" type="button"
         class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
@@ -366,6 +376,10 @@
             if (e.target.classList.contains('view-message-btn')) {
                 const message = e.target.getAttribute('data-message');
                 openMessageModal(message);
+            } else if (e.target.classList.contains('remove-connection-btn')) {
+                const username = e.target.getAttribute('data-username');
+                const connectionId = e.target.getAttribute('data-connection-id');
+                openRemoveConnectionModal(username, connectionId);
             } else if (e.target.classList.contains('accept-btn') || e.target.classList.contains('decline-btn') || e.target.classList.contains('cancel-btn')) {
                 const button = e.target;
                 const requestId = button.getAttribute('data-request-id');
@@ -498,6 +512,68 @@
 
         function closeMessageModal() {
             document.getElementById('message-modal').classList.add('hidden');
+        }
+
+        // Remove connection modal functions
+        function openRemoveConnectionModal(username, connectionId) {
+            document.getElementById('remove-modal-message').textContent = `Are you sure you want to remove ${username} as a connection?`;
+            const confirmBtn = document.getElementById('confirm-remove-btn');
+            confirmBtn.onclick = () => removeConnection(connectionId);
+            document.getElementById('remove-connection-modal').classList.remove('hidden');
+        }
+
+        function closeRemoveConnectionModal() {
+            document.getElementById('remove-connection-modal').classList.add('hidden');
+        }
+
+        function removeConnection(connectionId) {
+            // Get CSRF token
+            let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            if (!csrfToken) {
+                const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+                if (csrfCookie) {
+                    csrfToken = csrfCookie.split('=')[1];
+                }
+            }
+
+            // Send AJAX request to remove connection
+            fetch('{% url "thryve_app:remove_connection" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `connection_id=${connectionId}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Remove the connection card from the UI
+                    const connectionCard = document.querySelector(`[data-connection-id="${connectionId}"]`).closest('.bg-slate-50');
+                    connectionCard.remove();
+
+                    // Update connections count
+                    const connectionsTab = document.getElementById('my-connections-tab');
+                    const currentCount = parseInt(connectionsTab.textContent.match(/(\d+)/)[1]) - 1;
+                    connectionsTab.innerHTML = connectionsTab.innerHTML.replace(/\(\d+\)/, `(${Math.max(0, currentCount)})`);
+
+                    // Close modal and show toast
+                    closeRemoveConnectionModal();
+                    showToast(data.message);
+                } else {
+                    alert(data.message || 'Failed to remove connection.');
+                }
+            })
+            .catch(error => {
+                console.error('Error removing connection:', error);
+                alert('An error occurred while removing the connection. Please try again.');
+            });
         }
     </script>
 
