@@ -169,7 +169,7 @@
 
                 {% if connections %}
                     <!-- Display connections here -->
-                    <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
                         {% for connection in connections %}
                             <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
                                 <div class="flex items-center gap-3">
@@ -228,20 +228,27 @@
                     <!-- Display incoming requests here -->
                     <div class="space-y-4">
                         {% for request in incoming_requests %}
-                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-brand-sky rounded-full flex items-center justify-center">
-                                        <span class="text-white font-semibold">{{ request.sender.first_name|first|upper }}</span>
+                            <div class="p-4 bg-slate-50 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-brand-sky rounded-full flex items-center justify-center">
+                                            <span class="text-white font-semibold">{{ request.sender.first_name|first|upper }}</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-slate-900">{{ request.sender.get_full_name }}</p>
+                                            <p class="text-sm text-slate-500">{{ request.sender.company_name }}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="font-semibold text-slate-900">{{ request.sender.get_full_name }}</p>
-                                        <p class="text-sm text-slate-500">{{ request.sender.company_name }}</p>
+                                    <div class="flex gap-2">
+                                        <button class="accept-btn px-3 py-1 bg-brand-leaf hover:bg-green-600 text-white text-sm font-medium rounded" data-request-id="{{ request.id }}">Accept</button>
+                                        <button class="decline-btn px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded" data-request-id="{{ request.id }}">Decline</button>
                                     </div>
                                 </div>
-                                <div class="flex gap-2">
-                                    <button class="accept-btn px-3 py-1 bg-brand-leaf hover:bg-green-600 text-white text-sm font-medium rounded" data-request-id="{{ request.id }}">Accept</button>
-                                    <button class="decline-btn px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded" data-request-id="{{ request.id }}">Decline</button>
+                                {% if request.message %}
+                                <div class="mt-3 pl-13">
+                                    <p class="text-sm text-slate-600 italic">Message: "{{ request.message }}"</p>
                                 </div>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
@@ -263,7 +270,7 @@
 
                 {% if sent_requests %}
                     <!-- Display sent requests here -->
-                    <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
                         {% for request in sent_requests %}
                             <div class="p-4 bg-slate-50 rounded-lg">
                                 <div class="flex items-center justify-between">
@@ -281,11 +288,6 @@
                                         <button class="cancel-btn text-red-600 hover:text-red-800 text-sm font-medium" data-request-id="{{ request.id }}">Cancel</button>
                                     </div>
                                 </div>
-                                {% if request.message %}
-                                <div class="mt-3 pl-13">
-                                    <p class="text-sm text-slate-600 italic">Message: "{{ request.message }}"</p>
-                                </div>
-                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
