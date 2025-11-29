@@ -140,7 +140,7 @@
                 <h1 class="text-[38px] leading-[1.1] font-extrabold">Connections</h1>
                 <p class="text-slate-600 mt-1">Manage your business connections and network</p>
             </div>
-            <a href="{% url 'thryve_app:browse_businesses' %}" class="inline-flex items-center gap-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2.5 shadow-soft transition">
+            <a href="{% url 'thryve_app:browse_businesses' %}" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white font-semibold px-4 py-2.5 shadow-soft transition">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path stroke-width="2" d="M12 5v14M5 12h14"/>
                 </svg>
@@ -169,9 +169,9 @@
 
                 {% if connections %}
                     <!-- Display connections here -->
-                    <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
                         {% for connection in connections %}
-                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-brand-sky rounded-full flex items-center justify-center">
                                         <span class="text-white font-semibold">
@@ -199,11 +199,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <button class="text-slate-500 hover:text-slate-700">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01"></path>
-                                    </svg>
-                                </button>
+                                <button class="remove-connection-btn text-red-600 hover:text-red-800 text-sm font-medium" data-connection-id="{{ connection.id }}" data-username="{% if connection.user1 == request.user %}{{ connection.user2.get_full_name }}{% else %}{{ connection.user1.get_full_name }}{% endif %}">Remove Connection</button>
                             </div>
                         {% endfor %}
                     </div>
@@ -214,7 +210,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
                         </div>
-                        <h3 class="text-lg font-semibold text-slate-900 mb-2">No connections yet</h3>
+                        <h3 class="text-lg font-semibold text-slate-900 mb-2">No Connections Yet</h3>
                         <p class="text-slate-500">Start connecting with other businesses!</p>
                     </div>
                 {% endif %}
@@ -228,19 +224,36 @@
                     <!-- Display incoming requests here -->
                     <div class="space-y-4">
                         {% for request in incoming_requests %}
-                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-brand-sky rounded-full flex items-center justify-center">
-                                        <span class="text-white font-semibold">{{ request.sender.first_name|first|upper }}</span>
+                            <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-brand-sky rounded-full flex items-center justify-center">
+                                            <span class="text-white font-semibold">{{ request.sender.first_name|first|upper }}</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-slate-900">{{ request.sender.get_full_name }}</p>
+                                            <p class="text-sm text-slate-500">{{ request.sender.company_name }}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="font-semibold text-slate-900">{{ request.sender.get_full_name }}</p>
-                                        <p class="text-sm text-slate-500">{{ request.sender.company_name }}</p>
+                                    <div class="flex gap-2">
+                                        {% if request.message %}
+                                        <button class="view-message-btn px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded" data-message="{{ request.message }}">View Message</button>
+                                        {% else %}
+                                        <button class="px-3 py-1 bg-slate-200 text-slate-500 text-sm font-medium rounded cursor-not-allowed" disabled>View Message</button>
+                                        {% endif %}
+                                        <button class="accept-btn px-3 py-1 bg-brand-leaf hover:bg-green-600 text-white text-sm font-medium rounded flex items-center" data-request-id="{{ request.id }}">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            Accept
+                                        </button>
+                                        <button class="decline-btn px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded flex items-center" data-request-id="{{ request.id }}">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                            Decline
+                                        </button>
                                     </div>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button class="accept-btn px-3 py-1 bg-brand-leaf hover:bg-green-600 text-white text-sm font-medium rounded" data-request-id="{{ request.id }}">Accept</button>
-                                    <button class="decline-btn px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded" data-request-id="{{ request.id }}">Decline</button>
                                 </div>
                             </div>
                         {% endfor %}
@@ -249,10 +262,11 @@
                     <div class="text-center py-12">
                         <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
                         </div>
-                        <h3 class="text-lg font-semibold text-slate-900 mb-2">No incoming connection requests</h3>
+                        <h3 class="text-lg font-semibold text-slate-900 mb-2">No Incoming Requests</h3>
+                        <p class="text-slate-500">Any connection requests you receive will appear here!</p>
                     </div>
                 {% endif %}
             </div>
@@ -263,9 +277,9 @@
 
                 {% if sent_requests %}
                     <!-- Display sent requests here -->
-                    <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
                         {% for request in sent_requests %}
-                            <div class="p-4 bg-slate-50 rounded-lg">
+                            <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 bg-brand-sky rounded-full flex items-center justify-center">
@@ -277,21 +291,21 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-3">
-                                        <span class="text-sm text-slate-500 bg-slate-200 px-2 py-1 rounded">Pending</span>
-                                        <button class="cancel-btn text-red-600 hover:text-red-800 text-sm font-medium" data-request-id="{{ request.id }}">Cancel</button>
+                                        <button class="cancel-btn text-red-600 hover:text-red-800 text-sm font-medium" data-request-id="{{ request.id }}">Cancel Request</button>
                                     </div>
                                 </div>
-                                {% if request.message %}
-                                <div class="mt-3 pl-13">
-                                    <p class="text-sm text-slate-600 italic">Message: "{{ request.message }}"</p>
-                                </div>
-                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
                     <div class="text-center py-12">
-                        <h3 class="text-lg font-semibold text-slate-900 mb-2">No pending sent requests</h3>
+                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-slate-900 mb-2">No Pending Sent Requests</h3>
+                        <p class="text-slate-500">Once you send a request, you can manage it here!</p>
                     </div>
                 {% endif %}
             </div>
@@ -301,6 +315,33 @@
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-300 z-50">
         <p id="toast-message" class="text-sm font-medium"></p>
+    </div>
+
+    <!-- Message Modal -->
+    <div id="message-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                <h3 id="modal-title" class="text-lg font-semibold mb-4">Message</h3>
+                <p id="modal-message" class="text-slate-600 max-h-60 overflow-y-auto break-words"></p>
+                <div class="mt-4 flex justify-end">
+                    <button onclick="closeMessageModal()" class="px-6 py-2 bg-blue-500 text-white rounded font-bold">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove Connection Modal -->
+    <div id="remove-connection-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                <h3 class="text-lg font-semibold mb-4">Remove Connection</h3>
+                <p id="remove-modal-message" class="text-slate-600"></p>
+                <div class="mt-4 flex justify-end gap-2">
+                    <button onclick="closeRemoveConnectionModal()" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                    <button id="confirm-remove-btn" class="px-4 py-2 bg-red-500 text-white rounded font-bold">Remove</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Logout Modal -->
@@ -349,7 +390,14 @@
 
         // Accept/Decline/Cancel connection request functionality
         document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('accept-btn') || e.target.classList.contains('decline-btn') || e.target.classList.contains('cancel-btn')) {
+            if (e.target.classList.contains('view-message-btn')) {
+                const message = e.target.getAttribute('data-message');
+                openMessageModal(message);
+            } else if (e.target.classList.contains('remove-connection-btn')) {
+                const username = e.target.getAttribute('data-username');
+                const connectionId = e.target.getAttribute('data-connection-id');
+                openRemoveConnectionModal(username, connectionId);
+            } else if (e.target.classList.contains('accept-btn') || e.target.classList.contains('decline-btn') || e.target.classList.contains('cancel-btn')) {
                 const button = e.target;
                 const requestId = button.getAttribute('data-request-id');
                 let action, requestCard, buttonsToDisable;
@@ -470,6 +518,79 @@
                 toast.classList.remove('translate-y-0', 'opacity-100');
                 toast.classList.add('translate-y-full', 'opacity-0');
             }, 3000);
+        }
+
+        // Message modal functions
+        function openMessageModal(message) {
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('modal-title').textContent = "Received Message";
+            document.getElementById('message-modal').classList.remove('hidden');
+        }
+
+        function closeMessageModal() {
+            document.getElementById('message-modal').classList.add('hidden');
+        }
+
+        // Remove connection modal functions
+        function openRemoveConnectionModal(username, connectionId) {
+            document.getElementById('remove-modal-message').textContent = `Are you sure you want to remove ${username} as a connection?`;
+            const confirmBtn = document.getElementById('confirm-remove-btn');
+            confirmBtn.onclick = () => removeConnection(connectionId);
+            document.getElementById('remove-connection-modal').classList.remove('hidden');
+        }
+
+        function closeRemoveConnectionModal() {
+            document.getElementById('remove-connection-modal').classList.add('hidden');
+        }
+
+        function removeConnection(connectionId) {
+            // Get CSRF token
+            let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            if (!csrfToken) {
+                const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+                if (csrfCookie) {
+                    csrfToken = csrfCookie.split('=')[1];
+                }
+            }
+
+            // Send AJAX request to remove connection
+            fetch('{% url "thryve_app:remove_connection" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `connection_id=${connectionId}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Remove the connection card from the UI
+                    const connectionCard = document.querySelector(`[data-connection-id="${connectionId}"]`).closest('.bg-slate-50');
+                    connectionCard.remove();
+
+                    // Update connections count
+                    const connectionsTab = document.getElementById('my-connections-tab');
+                    const currentCount = parseInt(connectionsTab.textContent.match(/(\d+)/)[1]) - 1;
+                    connectionsTab.innerHTML = connectionsTab.innerHTML.replace(/\(\d+\)/, `(${Math.max(0, currentCount)})`);
+
+                    // Close modal and show toast
+                    closeRemoveConnectionModal();
+                    showToast(data.message);
+                } else {
+                    alert(data.message || 'Failed to remove connection.');
+                }
+            })
+            .catch(error => {
+                console.error('Error removing connection:', error);
+                alert('An error occurred while removing the connection. Please try again.');
+            });
         }
     </script>
 

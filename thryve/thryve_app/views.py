@@ -376,14 +376,6 @@ def send_connection_request(request):
         message = request.POST.get('message', '').strip()
         try:
             receiver = User.objects.get(id=receiver_id)
-            # Check if request already exists
-            existing_request = ConnectionRequest.objects.filter(
-                sender=request.user,
-                receiver=receiver,
-                status='pending'
-            ).exists()
-            if existing_request:
-                return JsonResponse({'success': False, 'message': 'Connection request already sent.'})
             # Check if already connected
             existing_connection = Connection.objects.filter(
                 (Q(user1=request.user) & Q(user2=receiver)) |
@@ -391,6 +383,11 @@ def send_connection_request(request):
             ).exists()
             if existing_connection:
                 return JsonResponse({'success': False, 'message': 'Already connected.'})
+            # Delete any existing request between these users to allow resending
+            ConnectionRequest.objects.filter(
+                (Q(sender=request.user) & Q(receiver=receiver)) |
+                (Q(sender=receiver) & Q(receiver=request.user))
+            ).delete()
             # Create request with optional message
             ConnectionRequest.objects.create(
                 sender=request.user,
@@ -474,4 +471,32 @@ def cancel_connection_request(request):
             })
         except ConnectionRequest.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Connection request not found.'})
+    return JsonResponse({'success': False, 'message': 'Invalid request.'})
+
+@login_required(login_url='login')
+def remove_connection(request):
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        connection_id = request.POST.get('connection_id')
+        try:
+            connection = Connection.objects.get(
+                Q(id=connection_id) & (Q(user1=request.user) | Q(user2=request.user))
+            )
+            # Get the other user's name
+            other_user = connection.user2 if connection.user1 == request.user else connection.user1
+            other_user_name = other_user.get_full_name()
+            # Delete the connection
+            connection.delete()
+            # Also delete any connection requests between these users
+            ConnectionRequest.objects.filter(
+                (Q(sender=request.user) & Q(receiver=other_user)) |
+                (Q(sender=other_user) & Q(receiver=request.user))
+            ).delete()
+
+            return JsonResponse({
+                'success': True,
+                'message': f'Connection with {other_user_name} removed successfully.',
+                'other_user_name': other_user_name
+            })
+        except Connection.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Connection not found.'})
     return JsonResponse({'success': False, 'message': 'Invalid request.'})
