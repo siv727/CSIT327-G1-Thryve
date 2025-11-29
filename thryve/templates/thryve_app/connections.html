@@ -140,7 +140,7 @@
                 <h1 class="text-[38px] leading-[1.1] font-extrabold">Connections</h1>
                 <p class="text-slate-600 mt-1">Manage your business connections and network</p>
             </div>
-            <a href="{% url 'thryve_app:browse_businesses' %}" class="inline-flex items-center gap-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2.5 shadow-soft transition">
+            <a href="{% url 'thryve_app:browse_businesses' %}" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white font-semibold px-4 py-2.5 shadow-soft transition">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path stroke-width="2" d="M12 5v14M5 12h14"/>
                 </svg>
@@ -241,8 +241,18 @@
                                         {% else %}
                                         <button class="px-3 py-1 bg-slate-200 text-slate-500 text-sm font-medium rounded cursor-not-allowed" disabled>View Message</button>
                                         {% endif %}
-                                        <button class="accept-btn px-3 py-1 bg-brand-leaf hover:bg-green-600 text-white text-sm font-medium rounded" data-request-id="{{ request.id }}">Accept</button>
-                                        <button class="decline-btn px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded" data-request-id="{{ request.id }}">Decline</button>
+                                        <button class="accept-btn px-3 py-1 bg-brand-leaf hover:bg-green-600 text-white text-sm font-medium rounded flex items-center" data-request-id="{{ request.id }}">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            Accept
+                                        </button>
+                                        <button class="decline-btn px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded flex items-center" data-request-id="{{ request.id }}">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                            Decline
+                                        </button>
                                     </div>
                                 </div>
                             </div>
