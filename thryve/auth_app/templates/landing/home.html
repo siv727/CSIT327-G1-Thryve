@@ -1868,39 +1868,46 @@
             if (input.files && input.files.length > 0) {
                 const currentCount = createSelectedFiles.length;
                 const availableSlots = 5 - currentCount;
-
                 if (availableSlots <= 0) {
                     alert('Maximum 5 images allowed. You have reached the limit.');
                     input.value = '';
                     return;
                 }
-
                 const filesToAdd = Array.from(input.files).slice(0, availableSlots);
-
                 filesToAdd.forEach(file => {
                     createSelectedFiles.push(file);
                 });
-
-                // Re-render previews from accumulated files
-                previewContainer.innerHTML = '';
-                createSelectedFiles.forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const previewDiv = document.createElement('div');
-                        previewDiv.className = 'relative group';
-                        previewDiv.innerHTML = `
-                            <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
-                        `;
-                        previewContainer.appendChild(previewDiv);
-                    };
-                    reader.readAsDataURL(file);
-                });
-
+                renderCreateImagePreviews();
                 photoCounter.textContent = `Photos: ${createSelectedFiles.length}/5`;
-
-                // Clear the input so user can pick more
                 input.value = '';
             }
+        }
+
+        // Helper to render previews with remove (x) button
+        function renderCreateImagePreviews() {
+            const previewContainer = document.getElementById('create-image-previews');
+            if (!previewContainer) return;
+            previewContainer.innerHTML = '';
+            createSelectedFiles.forEach((file, idx) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'relative group inline-block mr-2 mb-2';
+                    previewDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
+                        <button type="button" aria-label="Remove image" class="absolute top-0 right-0 bg-white bg-opacity-80 rounded-full p-0.5 text-slate-700 hover:bg-red-500 hover:text-white transition-colors text-xs font-bold z-10" style="line-height:1; width:1.5rem; height:1.5rem;" data-remove-idx="${idx}">×</button>
+                    `;
+                    // Add event listener to the remove button
+                    previewDiv.querySelector('button[data-remove-idx]').onclick = function () {
+                        createSelectedFiles.splice(idx, 1);
+                        renderCreateImagePreviews();
+                        const photoCounter = document.getElementById('create-image-counter');
+                        if (photoCounter) photoCounter.textContent = `Photos: ${createSelectedFiles.length}/5`;
+                    };
+                    previewContainer.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            });
         }
 
         function syncCreateFilesToInput() {
