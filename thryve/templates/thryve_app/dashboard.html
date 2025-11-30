@@ -167,19 +167,21 @@
             <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
                 <h2 class="text-xl font-bold text-slate-900 mb-2">My Listings</h2>
                 <p class="text-slate-600 mb-4">Your active marketplace items</p>
-                {% for listing in active_listings %}
-                <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-b-0">
-                    <div>
-                        <p class="font-medium text-slate-900">{{ listing.title }}</p>
-                        <p class="text-sm text-slate-500">{{ listing.type }} - {{ listing.other }}</p>
+                <div class="max-h-64 overflow-y-auto">
+                    {% for listing in active_listings %}
+                    <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-b-0">
+                        <div>
+                            <p class="font-medium text-slate-900 truncate max-w-[10rem]">{{ listing.title }}</p>
+                            <p class="text-sm text-slate-500 truncate max-w-[14rem]">{{ listing.type }} - {{ listing.other }}</p>
+                        </div>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            {{ listing.status }}
+                        </span>
                     </div>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        {{ listing.status }}
-                    </span>
+                    {% empty %}
+                    <p class="text-slate-500 text-sm">No active listings</p>
+                    {% endfor %}
                 </div>
-                {% empty %}
-                <p class="text-slate-500 text-sm">No active listings</p>
-                {% endfor %}
             </div>
 
             <!-- Marketplace Updates -->
