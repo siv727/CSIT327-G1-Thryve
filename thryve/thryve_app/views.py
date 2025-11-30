@@ -237,27 +237,16 @@ def dashboard(request):
         }
     ]
 
-    # Get user's active listings (placeholder data)
-    active_listings = [
-        {
-            'title': 'Kpop Card',
-            'type': 'Swap',
-            'other': 'Other',
-            'status': 'available'
-        },
-        {
-            'title': 'Mousepad',
-            'type': 'Sale',
-            'other': 'Electronics',
-            'status': 'available'
-        },
-        {
-            'title': 'Mousepad',
-            'type': 'Sale',
-            'other': 'Electronics',
-            'status': 'available'
-        }
-    ]
+    # Get user's active listings (real data)
+    user_active_listings = Listing.objects.filter(user=request.user, is_available=True)
+    active_listings = []
+    for listing in user_active_listings:
+        active_listings.append({
+            'title': listing.title,
+            'type': dict(Listing.LISTING_TYPE_CHOICES).get(listing.listing_type, listing.listing_type).title(),
+            'other': listing.category_display,
+            'status': 'available' if listing.is_available else 'unavailable',
+        })
 
     # Get recent marketplace updates (placeholder data)
     marketplace_updates = [
@@ -270,7 +259,7 @@ def dashboard(request):
     # Activity summary counts (placeholder data)
     activity_summary = {
         'total_bookings': 1,
-        'active_listings': 4,
+        'active_listings': user_active_listings.count(),
         'pending_booking_requests': 1,
         'connection_requests': 0
     }
