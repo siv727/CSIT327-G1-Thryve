@@ -270,7 +270,7 @@ class AuthenticationViewsTest(TestCase):
         """Test GET request to home view"""
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'landing/home.html')
+        self.assertTemplateUsed(response, 'marketplace.html')
 
     def test_user_authentication(self):
         """Test user authentication with authenticate function"""
