@@ -110,10 +110,10 @@ def create_listing(request):
                     # If validation fails, delete the listing and return error
                     listing.delete()
                     messages.error(request, str(e))
-                    return redirect('home')
+                    return redirect('marketplace')
 
             messages.success(request, 'Your listing has been created successfully!')
-            return redirect('home')
+            return redirect('marketplace')
         else:
             # Form is invalid - store errors in session and redirect
             form_errors = form.errors.get_json_data()
@@ -125,7 +125,7 @@ def create_listing(request):
             request.session['form_errors'] = form_errors
             request.session['form_data'] = request.POST.dict()
             request.session['show_create_modal'] = True
-            return redirect('home')
+            return redirect('marketplace')
     else:
         form = ListingForm()
     return render(request, 'thryve_app/create_listing.html', {'form': form})
