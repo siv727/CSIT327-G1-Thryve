@@ -93,7 +93,7 @@ def home(request):
 
     listings = listings_qs.order_by('-created_at')
 
-    return render(request, 'landing/home.html', {
+    return render(request, 'thryve_app:dashboard', {
         'form': form,
         'listings': listings,
         'categories': Listing.get_categories_dict(),

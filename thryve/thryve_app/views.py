@@ -50,7 +50,7 @@ def my_listings(request):
         }
         processed_listings.append(listing_data)
 
-    return render(request, 'landing/home.html', {
+    return render(request, 'marketplace.html', {
         'listings': user_listings,  # Keep original for backward compatibility
         'processed_listings': processed_listings,
         'is_my_listings': True,
