@@ -18,7 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from auth_app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,6 +25,7 @@ urlpatterns = [
     path('profile/', include('profile_app.urls')),
     path('listings/', include('thryve_app.urls')),
     path('bookings/', include('booking_app.urls')),
+    path('marketplace/', include('marketplace_app.urls')),
 ]
 
 # Serve media files during development

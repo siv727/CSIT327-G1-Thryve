@@ -1,5 +1,5 @@
 from django import template
-from ..models import Listing
+from thryve_app.models import Listing
 
 register = template.Library()
 

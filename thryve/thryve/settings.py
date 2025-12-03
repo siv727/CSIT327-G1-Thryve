@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'auth_app',
     'profile_app',
     'booking_app',
+    'marketplace_app',
 ]
 
 MIDDLEWARE = [
@@ -65,7 +66,11 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
-                 os.path.join(BASE_DIR, 'auth_app', 'templates')],
+                 os.path.join(BASE_DIR, 'auth_app', 'templates'),
+                 os.path.join(BASE_DIR, 'booking_app', 'templates'),
+                 os.path.join(BASE_DIR, 'connection_app', 'templates'),
+                 os.path.join(BASE_DIR, 'marketplace_app', 'templates'),
+                 os.path.join(BASE_DIR, 'profile_app', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -129,9 +134,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = (
+STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-)
+    os.path.join(BASE_DIR, 'auth_app', 'static'),
+    os.path.join(BASE_DIR, 'booking_app', 'static'),
+    os.path.join(BASE_DIR, 'marketplace_app', 'static'),
+]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
