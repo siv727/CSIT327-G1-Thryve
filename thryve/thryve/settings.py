@@ -141,7 +141,6 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'auth_app', 'static'),
     os.path.join(BASE_DIR, 'booking_app', 'static'),
     os.path.join(BASE_DIR, 'marketplace_app', 'static'),
 ]

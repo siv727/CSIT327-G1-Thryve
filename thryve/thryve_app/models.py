@@ -184,7 +184,7 @@ class Listing(models.Model):
 class ListingImage(models.Model):
     listing = models.ForeignKey(Listing, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(
-        upload_to='listings/',  # Organized in Cloudinary under thryve/ folder
+        upload_to='listings/',
         validators=[validate_listing_image_size, validate_listing_image_format],
         help_text='Upload a listing image (max 5MB, JPEG/PNG/GIF/WebP only)'
     )
