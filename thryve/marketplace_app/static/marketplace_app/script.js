@@ -2,7 +2,7 @@
  * Requires window.MARKETPLACE_CONFIG and 'categories-data' JSON script to be loaded in the HTML
  */
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize everything
     initLocationAutocomplete();
 
@@ -418,7 +418,7 @@ function openEditModal(listingId) {
     // This function is for the specific implementation in your home.html loop
     // If you used the generic one from edit_listing.html, this might need adjustment
     const modal = document.getElementById(`editModal${listingId}`);
-    if(modal) {
+    if (modal) {
         modal.classList.remove('hidden');
         modal.classList.add('flex');
     }
@@ -426,7 +426,7 @@ function openEditModal(listingId) {
 
 function closeEditModal(listingId) {
     const modal = document.getElementById(`editModal${listingId}`);
-    if(modal) {
+    if (modal) {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
@@ -509,15 +509,15 @@ const closeAddListingModal = () => {
     document.querySelectorAll('.error-message').forEach(e => e.remove());
     createSelectedFiles = [];
     const previews = document.getElementById('create-image-previews');
-    if(previews) previews.innerHTML = '';
+    if (previews) previews.innerHTML = '';
     const counter = document.getElementById('create-image-counter');
-    if(counter) counter.textContent = 'Photos: 0/5';
+    if (counter) counter.textContent = 'Photos: 0/5';
 
     // Reset category selector
     const catInput = document.getElementById('id_category');
-    if(catInput) catInput.value = '';
+    if (catInput) catInput.value = '';
     const catDisplay = document.getElementById('category-display-text');
-    if(catDisplay) {
+    if (catDisplay) {
         catDisplay.textContent = 'Choose Category';
         catDisplay.classList.add('text-slate-400');
     }
@@ -544,7 +544,7 @@ const swapContainer = document.getElementById('swap-container');
 const budgetContainer = document.getElementById('budget-container');
 
 function updateDynamicField(selectedType) {
-    if(!priceContainer) return;
+    if (!priceContainer) return;
 
     // Clear errors
     document.querySelectorAll('.error-message').forEach(el => {
@@ -678,7 +678,7 @@ function openListingDetailsModal(listingId) {
     let badgeHtml = '';
     let priceHtml = '';
 
-    if(type === 'sale') {
+    if (type === 'sale') {
         badgeHtml = `
             <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -687,7 +687,7 @@ function openListingDetailsModal(listingId) {
                 SALE
             </span>`;
         priceHtml = listingCard.dataset.price;
-    } else if(type === 'swap') {
+    } else if (type === 'swap') {
         badgeHtml = `
             <span class="inline-flex items-center gap-1 text-[11px] tracking-wide font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-full">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -770,7 +770,7 @@ document.getElementById('close-details-modal')?.addEventListener('click', closeL
 // --- Validation Logic ---
 
 function setupRealTimeValidation() {
-    if(!listingForm) return;
+    if (!listingForm) return;
     const inputs = listingForm.querySelectorAll('input, select, textarea');
     inputs.forEach(input => {
         if (input.id !== 'id_category') {
@@ -785,12 +785,12 @@ function clearFieldError(fieldName) {
     // Logic to find container and remove .error-message
     // (Simplifying for brevity - assumes standard Django form structure)
     const field = document.getElementById(`id_${fieldName}`);
-    if(field) {
+    if (field) {
         field.classList.remove('border-red-500');
         const container = field.closest('div');
-        if(container) {
+        if (container) {
             const err = container.querySelector('.error-message');
-            if(err) err.remove();
+            if (err) err.remove();
         }
     }
 }
@@ -798,13 +798,26 @@ function clearFieldError(fieldName) {
 // Function to handle price input formatting (commas)
 function handlePriceInput(event) {
     const input = event.target;
-    const value = input.value.replace(/[^\d.]/g, '');
+    // Remove all non-digit and non-decimal characters
+    let value = input.value.replace(/[^\d.]/g, '');
+
+    // Allow only one decimal point
     const parts = value.split('.');
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    input.value = parts.join('.');
+    if (parts.length > 2) {
+        value = parts[0] + '.' + parts.slice(1).join('');
+    }
+
+    // Split into integer and decimal parts
+    const [integerPart, decimalPart] = value.split('.');
+
+    // Add commas to integer part
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    // Reconstruct the value with decimal part if it exists
+    input.value = decimalPart !== undefined ? formattedInteger + '.' + decimalPart : formattedInteger;
 }
 
 const priceIn = document.getElementById('id_price');
 const budgetIn = document.getElementById('id_budget');
-if(priceIn) priceIn.addEventListener('input', handlePriceInput);
-if(budgetIn) budgetIn.addEventListener('input', handlePriceInput);
+if (priceIn) priceIn.addEventListener('input', handlePriceInput);
+if (budgetIn) budgetIn.addEventListener('input', handlePriceInput);
