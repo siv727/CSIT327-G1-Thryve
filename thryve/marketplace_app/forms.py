@@ -25,6 +25,15 @@ def validate_image_file(image):
 
 
 class ListingForm(forms.ModelForm):
+    # Use CharField for price/budget to allow formatted input (e.g., "1,234.56")
+    price = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400',
+            'placeholder': '0.00'
+        })
+    )
+    
     swap_for = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
@@ -32,12 +41,12 @@ class ListingForm(forms.ModelForm):
             'placeholder': 'What are you looking to swap for?'
         })
     )
-    budget = forms.DecimalField(
+    
+    budget = forms.CharField(
         required=False,
-        widget=forms.NumberInput(attrs={
+        widget=forms.TextInput(attrs={
             'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400',
-            'placeholder': '0.00',
-            'step': '0.01'
+            'placeholder': '0.00'
         })
     )
 
@@ -53,9 +62,6 @@ class ListingForm(forms.ModelForm):
             'description': forms.Textarea(attrs={
                 'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky resize-none',
                 'rows': 4, 'placeholder': 'Describe your item or service'}),
-            'price': forms.NumberInput(attrs={
-                'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400',
-                'placeholder': '0.00', 'step': '0.01'}),
             'location': forms.TextInput(attrs={
                 'class': 'w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400',
                 'placeholder': 'City, State/Country'}),
@@ -92,6 +98,42 @@ class ListingForm(forms.ModelForm):
                 raise forms.ValidationError('Date cannot be in the past')
         return date
 
+    def clean_price(self):
+        """Convert formatted price string to decimal"""
+        price_str = self.cleaned_data.get('price', '').strip()
+        if not price_str:
+            return None
+        
+        # Remove commas and currency symbols
+        price_str = price_str.replace(',', '').replace('₱', '').replace('$', '').strip()
+        
+        try:
+            from decimal import Decimal, InvalidOperation
+            price = Decimal(price_str)
+            if price < 0:
+                raise forms.ValidationError('Price cannot be negative')
+            return price
+        except (InvalidOperation, ValueError):
+            raise forms.ValidationError('Please enter a valid price (e.g., 1234.56)')
+    
+    def clean_budget(self):
+        """Convert formatted budget string to decimal"""
+        budget_str = self.cleaned_data.get('budget', '').strip()
+        if not budget_str:
+            return None
+        
+        # Remove commas and currency symbols
+        budget_str = budget_str.replace(',', '').replace('₱', '').replace('$', '').strip()
+        
+        try:
+            from decimal import Decimal, InvalidOperation
+            budget = Decimal(budget_str)
+            if budget < 0:
+                raise forms.ValidationError('Budget cannot be negative')
+            return budget
+        except (InvalidOperation, ValueError):
+            raise forms.ValidationError('Please enter a valid budget (e.g., 1234.56)')
+
     def clean(self):
         cleaned_data = super().clean()
         listing_type = cleaned_data.get('listing_type')
@@ -100,8 +142,6 @@ class ListingForm(forms.ModelForm):
             price = cleaned_data.get('price')
             if not price:
                 raise forms.ValidationError({'price': 'Price is required for sale listings'})
-            if price < 0:
-                raise forms.ValidationError({'price': 'Price cannot be negative'})
 
         if listing_type == 'swap':
             swap_for = cleaned_data.get('swap_for')
@@ -112,8 +152,6 @@ class ListingForm(forms.ModelForm):
             budget = cleaned_data.get('budget')
             if not budget:
                 raise forms.ValidationError({'budget': 'Budget is required for buy listings'})
-            if budget < 0:
-                raise forms.ValidationError({'budget': 'Budget cannot be negative'})
 
         if hasattr(self, 'data') and 'category' in self.data:
             category_value = self.data.get('category', '')

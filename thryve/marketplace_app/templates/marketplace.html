@@ -54,9 +54,12 @@
             <nav class="flex items-center gap-6 text-[14px] font-medium">
                 <a href="{% url 'thryve_app:dashboard' %}"
                     class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"></path>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"></path>
                     </svg>
                     <span class="leading-none">Dashboard</span>
                     {% if active == 'dashboard' %}
@@ -94,9 +97,11 @@
 
                 <a href="{% url 'thryve_app:connections' %}"
                     class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                        </path>
                     </svg>
                     <span class="leading-none">Connections</span>
                     {% if active == 'connections' %}
@@ -116,7 +121,8 @@
                     {% endif %}
                 </a>
 
-                <a href="{% url 'bookings' %}" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
+                <a href="{% url 'bookings' %}"
+                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -214,10 +220,12 @@
                     <div class="relative">
                         <select
                             class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-brand-sky"
-                            id="filter-category-select" onchange="document.getElementById('filter-category-input').value=this.value; document.getElementById('filter-form').submit();">
+                            id="filter-category-select"
+                            onchange="document.getElementById('filter-category-input').value=this.value; document.getElementById('filter-form').submit();">
                             <option value="">All Categories</option>
                             {% for key, data in categories.items %}
-                            <option value="{{ key }}" {% if category_filter == key %}selected{% endif %}>{{ data.label }}</option>
+                            <option value="{{ key }}" {% if category_filter == key %}selected{% endif %}>{{ data.label }}
+                            </option>
                             {% endfor %}
                         </select>
                         <span
@@ -420,7 +428,7 @@
                 </div>
 
                 {% if listing.listing_type == 'sale' and listing.price %}
-                <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">₱{{ listing.price }}</div>
+                <div class="mt-4 text-[22px] font-extrabold text-brand-leaf">{{ listing.formatted_price }}</div>
                 {% elif listing.listing_type == 'swap' and listing.swap_for %}
                 <div class="mt-4 text-[22px] font-extrabold flex items-baseline gap-2">
                     <span class="text-slate-700 shrink-0">Looking for:</span>
@@ -438,7 +446,7 @@
                 </div>
                 {% elif listing.listing_type == 'buy' and listing.budget %}
                 <div class="mt-4 text-[22px] font-extrabold"><span class="text-slate-700">Budget:</span> <span
-                        class="text-brand-leaf">₱{{ listing.budget }}</span></div>
+                        class="text-brand-leaf">{{ listing.formatted_budget }}</span></div>
                 {% endif %}
 
                 <div class="mt-2 flex items-center justify-between text-sm text-slate-500 font-medium">
@@ -454,7 +462,8 @@
                         <div class="location-scroll-container">
                             <div class="location-scroll-text whitespace-nowrap">
                                 <span class="inline-block">{{ listing.location }}</span>
-                                <span class="location-spacer inline-block" aria-hidden="true">{{listing.location}}</span>
+                                <span class="location-spacer inline-block"
+                                    aria-hidden="true">{{listing.location}}</span>
                             </div>
                         </div>
                         {% else %}
@@ -490,66 +499,66 @@
             <!-- Individual Edit Modal for Listing {{ listing.id }} -->
             {% if is_my_listings %}
             <script>
-                function openEditModal{{ listing.id }}() {
+                function openEditModal{{listing.id}} () {
                     document.getElementById('editModal{{ listing.id }}').classList.remove('hidden');
                     document.getElementById('editModal{{ listing.id }}').classList.add('flex');
                 }
-                function closeEditModal{{ listing.id }}() {
+                function closeEditModal{{ listing.id}} () {
                     document.getElementById('editModal{{ listing.id }}').classList.add('hidden');
                     document.getElementById('editModal{{ listing.id }}').classList.remove('flex');
                 }
-                let editNewImagesData{{ listing.id }} = [];
+                let editNewImagesData{{ listing.id }} =[];
 
-                function handleImagePreview{{ listing.id }}(input) {
+                function handleImagePreview{{ listing.id}} (input) {
                     const previewContainer = document.getElementById('imagePreview{{ listing.id }}');
                     const photoCounter = document.getElementById('photoCounter{{ listing.id }}');
                     const existingCount = {{ listing.images.count }};
-                    const fileInput = input;
+                const fileInput = input;
 
-                    if (input.files && input.files.length > 0) {
-                        const currentNewCount = editNewImagesData{{ listing.id }}.length;
-                        const availableSlots = 5 - existingCount - currentNewCount;
+                if (input.files && input.files.length > 0) {
+                    const currentNewCount = editNewImagesData{{ listing.id }}.length;
+                const availableSlots = 5 - existingCount - currentNewCount;
 
-                        if (availableSlots <= 0) {
-                            alert('Maximum 5 images allowed. You have reached the limit.');
-                            fileInput.value = '';
-                            return;
-                        }
+                if (availableSlots <= 0) {
+                    alert('Maximum 5 images allowed. You have reached the limit.');
+                    fileInput.value = '';
+                    return;
+                }
 
-                        const filesToAdd = Math.min(input.files.length, availableSlots);
-                        if (input.files.length > availableSlots) {
-                            alert(`You can only add ${availableSlots} more image(s). Only the first ${availableSlots} will be added.`);
-                        }
+                const filesToAdd = Math.min(input.files.length, availableSlots);
+                if (input.files.length > availableSlots) {
+                    alert(`You can only add ${availableSlots} more image(s). Only the first ${availableSlots} will be added.`);
+                }
 
-                        // Add new files to our array
-                        for (let i = 0; i < filesToAdd; i++) {
+                // Add new files to our array
+                for (let i = 0; i < filesToAdd; i++) {
                             editNewImagesData{{ listing.id }}.push(input.files[i]);
 
-                            const reader = new FileReader();
-                            const fileIndex = currentNewCount + i;
-                            reader.onload = function(e) {
-                                const previewDiv = document.createElement('div');
-                                previewDiv.className = 'relative group new-image-preview';
-                                previewDiv.setAttribute('data-index', fileIndex);
-                                previewDiv.innerHTML = `
+                    const reader = new FileReader();
+                    const fileIndex = currentNewCount + i;
+                    reader.onload = function (e) {
+                        const previewDiv = document.createElement('div');
+                        previewDiv.className = 'relative group new-image-preview';
+                        previewDiv.setAttribute('data-index', fileIndex);
+                        previewDiv.innerHTML = `
                                     <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
                                     <div class="absolute top-1 right-1 bg-brand-sky text-white text-xs px-1.5 py-0.5 rounded">New</div>
                                     <button type="button" onclick="removeNewImage{{ listing.id }}(${fileIndex})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">×</button>
                                 `;
-                                previewContainer.appendChild(previewDiv);
-                            };
-                            reader.readAsDataURL(input.files[i]);
-                        }
+                        previewContainer.appendChild(previewDiv);
+                    };
+                    reader.readAsDataURL(input.files[i]);
+                }
 
-                        const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
-                        photoCounter.textContent = `Photos: ${totalCount}/5`;
+                const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
+                photoCounter.textContent = `Photos: ${totalCount}/5`;
 
-                        // Clear the file input so the same file can be selected again
-                        fileInput.value = '';
+                // Clear the file input so the same file can be selected again
+                fileInput.value = '';
                     }
                 }
 
-                function removeNewImage{{ listing.id }}(index) {
+                function removeNewImage{{ listing.id }} (index) {
                     // Remove from array
                     editNewImagesData{{ listing.id }}.splice(index, 1);
 
@@ -561,7 +570,7 @@
                     // Re-render remaining new images with updated indices
                     editNewImagesData{{ listing.id }}.forEach((file, newIndex) => {
                         const reader = new FileReader();
-                        reader.onload = function(e) {
+                        reader.onload = function (e) {
                             const previewDiv = document.createElement('div');
                             previewDiv.className = 'relative group new-image-preview';
                             previewDiv.setAttribute('data-index', newIndex);
@@ -577,11 +586,11 @@
 
                     // Update counter
                     const existingCount = {{ listing.images.count }};
-                    const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
-                    document.getElementById('photoCounter{{ listing.id }}').textContent = `Photos: ${totalCount}/5`;
+                const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
+                document.getElementById('photoCounter{{ listing.id }}').textContent = `Photos: ${totalCount}/5`;
                 }
 
-                function submitEditForm{{ listing.id }}(form) {
+                function submitEditForm{{ listing.id }} (form) {
                     // Create a new DataTransfer object to hold our files
                     const dataTransfer = new DataTransfer();
 
@@ -597,34 +606,41 @@
                     return true; // Allow form submission
                 }
             </script>
-            <div id="editModal{{ listing.id }}" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50" onclick="if(event.target === this) closeEditModal{{ listing.id }}()">
+            <div id="editModal{{ listing.id }}" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50"
+                onclick="if(event.target === this) closeEditModal{{ listing.id }}()">
                 <div class="flex items-center justify-center min-h-screen p-4 w-full">
                     <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-6">
                                 <h2 class="text-xl font-bold text-slate-900">Edit Listing</h2>
-                                <button onclick="closeEditModal{{ listing.id }}()" type="button" class="text-slate-400 hover:text-slate-600">
+                                <button onclick="closeEditModal{{ listing.id }}()" type="button"
+                                    class="text-slate-400 hover:text-slate-600">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
                                     </svg>
                                 </button>
                             </div>
-                            <form method="post" action="{% url 'marketplace:edit_listing' listing.id %}" enctype="multipart/form-data" onsubmit="return submitEditForm{{ listing.id }}(this)">
+                            <form method="post" action="{% url 'marketplace:edit_listing' listing.id %}"
+                                enctype="multipart/form-data" onsubmit="return submitEditForm{{ listing.id }}(this)">
                                 {% csrf_token %}
 
                                 <div class="mb-4">
                                     <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
                                     <div class="space-y-2">
                                         <label class="flex items-center">
-                                            <input type="radio" name="listing_type" value="sale" class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'sale' %}checked{% endif %} required>
+                                            <input type="radio" name="listing_type" value="sale"
+                                                class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'sale' %}checked{% endif %} required>
                                             <span class="ml-2 text-slate-700">For Sale</span>
                                         </label>
                                         <label class="flex items-center">
-                                            <input type="radio" name="listing_type" value="swap" class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'swap' %}checked{% endif %} required>
+                                            <input type="radio" name="listing_type" value="swap"
+                                                class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'swap' %}checked{% endif %} required>
                                             <span class="ml-2 text-slate-700">For Swap</span>
                                         </label>
                                         <label class="flex items-center">
-                                            <input type="radio" name="listing_type" value="buy" class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'buy' %}checked{% endif %} required>
+                                            <input type="radio" name="listing_type" value="buy"
+                                                class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'buy' %}checked{% endif %} required>
                                             <span class="ml-2 text-slate-700">Looking to Buy</span>
                                         </label>
                                     </div>
@@ -632,20 +648,27 @@
 
                                 <div class="mb-4">
                                     <label class="block text-slate-700 font-semibold mb-2">Category *</label>
-                                    <input type="hidden" name="category" value="{% if listing.subcategory %}{{ listing.category }}-{{ listing.subcategory }}{% else %}{{ listing.category }}{% endif %}">
-                                    <div class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-slate-100 text-slate-700">
-                                        {{ listing.category_display }}{% if listing.subcategory_display %} - {{ listing.subcategory_display }}{% endif %}
+                                    <input type="hidden" name="category"
+                                        value="{% if listing.subcategory %}{{ listing.category }}-{{ listing.subcategory }}{% else %}{{ listing.category }}{% endif %}">
+                                    <div
+                                        class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-slate-100 text-slate-700">
+                                        {{ listing.category_display }}{% if listing.subcategory_display %} - {{listing.subcategory_display }}{% endif %}
                                     </div>
                                 </div>
 
                                 <div class="mb-4">
                                     <label class="block text-slate-700 font-semibold mb-2">Title *</label>
-                                    <input type="text" name="title" value="{{ listing.title }}" placeholder="Enter listing title" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" required>
+                                    <input type="text" name="title" value="{{ listing.title }}"
+                                        placeholder="Enter listing title"
+                                        class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                        required>
                                 </div>
 
                                 <div class="mb-4">
                                     <label class="block text-slate-700 font-semibold mb-2">Description *</label>
-                                    <textarea name="description" rows="4" placeholder="Describe your item or service" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400 resize-y" required>{{ listing.description }}</textarea>
+                                    <textarea name="description" rows="4" placeholder="Describe your item or service"
+                                        class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400 resize-y"
+                                        required>{{ listing.description }}</textarea>
                                 </div>
 
                                 <div class="mb-4">
@@ -658,26 +681,35 @@
                                     {% if listing.listing_type == 'sale' %}
                                     <div class="relative">
                                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                        <input type="text" name="price" value="{{ listing.price }}" placeholder="0.00" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                                        <input type="text" name="price" value="{{ listing.price }}" placeholder="0.00"
+                                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
                                     </div>
                                     {% elif listing.listing_type == 'swap' %}
-                                    <input type="text" name="swap_for" value="{{ listing.swap_for }}" placeholder="What are you looking to swap for?" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                                    <input type="text" name="swap_for" value="{{ listing.swap_for }}"
+                                        placeholder="What are you looking to swap for?"
+                                        class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
                                     {% elif listing.listing_type == 'buy' %}
                                     <div class="relative">
                                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                        <input type="text" name="budget" value="{{ listing.budget }}" placeholder="0.00" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
+                                        <input type="text" name="budget" value="{{ listing.budget }}" placeholder="0.00"
+                                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
                                     </div>
                                     {% endif %}
                                 </div>
 
                                 <div class="mb-4">
                                     <label class="block text-slate-700 font-semibold mb-2">Location *</label>
-                                    <input type="text" name="location" value="{{ listing.location }}" placeholder="City, State/Country" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" required>
+                                    <input type="text" name="location" value="{{ listing.location }}"
+                                        placeholder="City, State/Country"
+                                        class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                        required>
                                 </div>
 
                                 <div class="mb-4">
                                     <label class="block text-slate-700 font-semibold mb-2">Date *</label>
-                                    <input type="date" name="date" value="{{ listing.date|date:'Y-m-d' }}" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400" required>
+                                    <input type="date" name="date" value="{{ listing.date|date:'Y-m-d' }}"
+                                        class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                        required>
                                 </div>
 
                                 <div class="mb-4">
@@ -687,25 +719,36 @@
                                     <div id="imagePreview{{ listing.id }}" class="flex flex-wrap gap-2 mb-3">
                                         {% for image in listing.images.all %}
                                         <div class="relative group">
-                                            <img src="{{ image.image.url }}" alt="Listing image" class="w-20 h-20 object-cover rounded-lg border-2 border-slate-300">
+                                            <img src="{{ image.image.url }}" alt="Listing image"
+                                                class="w-20 h-20 object-cover rounded-lg border-2 border-slate-300">
                                         </div>
                                         {% endfor %}
                                     </div>
 
-                                    <div class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors bg-slate-50 relative">
+                                    <div
+                                        class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors bg-slate-50 relative">
                                         <div class="flex flex-col items-center justify-center space-y-4">
                                             <div class="w-12 h-12 text-slate-400">
                                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                                    </path>
                                                 </svg>
                                             </div>
                                             <div>
-                                                <p class="text-lg font-medium text-slate-700">Drag and drop your images here</p>
-                                                <p class="text-sm text-slate-500">or <span class="text-brand-sky font-medium">click to browse</span></p>
+                                                <p class="text-lg font-medium text-slate-700">Drag and drop your images
+                                                    here</p>
+                                                <p class="text-sm text-slate-500">or <span
+                                                        class="text-brand-sky font-medium">click to browse</span></p>
                                             </div>
-                                            <p id="photoCounter{{ listing.id }}" class="text-sm font-medium text-slate-600">Photos: {{ listing.images.count }}/5</p>
+                                            <p id="photoCounter{{ listing.id }}"
+                                                class="text-sm font-medium text-slate-600">Photos: {{listing.images.count }}/5</p>
                                         </div>
-                                        <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer pointer-events-auto" onchange="handleImagePreview{{ listing.id }}(this)">
+                                        <input type="file" name="images"
+                                            accept="image/jpeg,image/png,image/gif,image/webp" multiple
+                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer pointer-events-auto"
+                                            onchange="handleImagePreview{{ listing.id }}(this)">
                                     </div>
                                     <div class="mt-2 text-sm text-slate-500">
                                         <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
@@ -713,8 +756,11 @@
                                 </div>
 
                                 <div class="flex justify-end gap-3">
-                                    <button type="button" onclick="closeEditModal{{ listing.id }}()" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                                    <button type="submit" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update Listing</button>
+                                    <button type="button" onclick="closeEditModal{{ listing.id }}()"
+                                        class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                                    <button type="submit"
+                                        class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update
+                                        Listing</button>
                                 </div>
                             </form>
                         </div>
@@ -1120,20 +1166,17 @@
                             <div class="space-y-2">
                                 <label class="flex items-center">
                                     <input type="radio" name="listing_type" value="sale"
-                                        class="text-brand-sky focus:ring-brand-sky" required
-                                        {% if form.listing_type.value == 'sale' %}checked{% endif %}>
+                                        class="text-brand-sky focus:ring-brand-sky" required {% if form.listing_type.value == 'sale' %}checked{% endif %}>
                                     <span class="ml-2 text-slate-700">For Sale</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="radio" name="listing_type" value="swap"
-                                        class="text-brand-sky focus:ring-brand-sky" required
-                                        {% if form.listing_type.value == 'swap' %}checked{% endif %}>
+                                        class="text-brand-sky focus:ring-brand-sky" required {% if form.listing_type.value == 'swap' %}checked{% endif %}>
                                     <span class="ml-2 text-slate-700">For Swap</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="radio" name="listing_type" value="buy"
-                                        class="text-brand-sky focus:ring-brand-sky" required
-                                        {% if form.listing_type.value == 'buy' %}checked{% endif %}>
+                                        class="text-brand-sky focus:ring-brand-sky" required {% if form.listing_type.value == 'buy' %}checked{% endif %}>
                                     <span class="ml-2 text-slate-700">Looking to Buy</span>
                                 </label>
                             </div>
@@ -1147,7 +1190,8 @@
                                 class="block text-slate-700 font-semibold mb-2">Category *</label>
                             <div class="relative">
                                 <!-- Hidden input to store the selected value -->
-                                <input type="hidden" name="category" id="id_category" value="{{ form.category.value|default:'' }}">
+                                <input type="hidden" name="category" id="id_category"
+                                    value="{{ form.category.value|default:'' }}">
 
                                 <!-- Custom category selector trigger -->
                                 <div id="category-selector-trigger"
@@ -1228,7 +1272,8 @@
                             <div class="hidden" id="swap-container">
                                 <input type="text" name="swap_for"
                                     class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
-                                    placeholder="What are you looking to swap for?" id="id_swap_for" value="{{ form.swap_for.value|default:'' }}">
+                                    placeholder="What are you looking to swap for?" id="id_swap_for"
+                                    value="{{ form.swap_for.value|default:'' }}">
                                 {% if form.swap_for.errors %}
                                 <p class="text-red-500 text-xs mt-1">{{ form.swap_for.errors.0 }}</p>
                                 {% endif %}
