@@ -1,9 +1,13 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Dashboard • Thryve</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -33,9 +37,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body class="font-inter bg-[#f7fbfd] text-brand-ink">
 
-    {%  include 'thryve_app/navbar.html' %}
+    {% include 'thryve_app/navbar.html' %}
 
     <main class="max-w-[1200px] mx-auto px-5 py-8">
         <div class="flex items-start justify-between gap-4 mb-6">
@@ -46,7 +51,7 @@
         </div>
 
         <!-- Top Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <!-- My Bookings -->
             <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
                 <h2 class="text-xl font-bold text-slate-900 mb-2">My Bookings</h2>
@@ -57,34 +62,14 @@
                         <p class="font-medium text-slate-900">{{ booking.item }}</p>
                         <p class="text-sm text-slate-500">{{ booking.date }}</p>
                     </div>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">
+                    <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">
                         {{ booking.status }}
                     </span>
                 </div>
                 {% empty %}
                 <p class="text-slate-500 text-sm">No recent bookings</p>
                 {% endfor %}
-            </div>
-
-            <!-- My Listings -->
-            <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
-                <h2 class="text-xl font-bold text-slate-900 mb-2">My Listings</h2>
-                <p class="text-slate-600 mb-4">Your active marketplace items</p>
-                <div class="max-h-64 overflow-y-auto">
-                    {% for listing in active_listings %}
-                    <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-b-0">
-                        <div>
-                            <p class="font-medium text-slate-900 truncate max-w-[10rem]">{{ listing.title }}</p>
-                            <p class="text-sm text-slate-500 truncate max-w-[14rem]">{{ listing.type }} - {{ listing.other }}</p>
-                        </div>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            {{ listing.status }}
-                        </span>
-                    </div>
-                    {% empty %}
-                    <p class="text-slate-500 text-sm">No active listings</p>
-                    {% endfor %}
-                </div>
             </div>
 
             <!-- Marketplace Updates -->
@@ -117,43 +102,621 @@
                     <div class="text-sm text-slate-600">Active Listings</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl font-bold text-brand-leaf mb-1">{{ activity_summary.pending_booking_requests }}</div>
+                    <div class="text-3xl font-bold text-brand-leaf mb-1">{{ activity_summary.pending_booking_requests }}
+                    </div>
                     <div class="text-sm text-slate-600">Pending Booking Requests</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl font-bold text-brand-leaf mb-1">{{ activity_summary.connection_requests }}</div>
+                    <div class="text-3xl font-bold text-brand-leaf mb-1">{{ activity_summary.connection_requests }}
+                    </div>
                     <div class="text-sm text-slate-600">Connection Requests</div>
                 </div>
             </div>
         </div>
 
-        <!-- Upcoming Events -->
+        <!-- My Listings Section -->
         <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
             <div class="flex items-center justify-between mb-6">
                 <div>
-                    <h2 class="text-xl font-bold text-slate-900">Upcoming Events</h2>
-                    <p class="text-slate-600">Community events you can attend</p>
+                    <h2 class="text-xl font-bold text-slate-900">My Listings</h2>
+                    <p class="text-slate-600">Manage your marketplace listings</p>
                 </div>
-                <button class="inline-flex items-center gap-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 shadow-soft transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14" />
-                    </svg>
-                    Submit Event
-                </button>
             </div>
 
+            {% if user_listings %}
+            <!-- Desktop Table View (hidden on mobile) -->
+            <div class="hidden md:block overflow-x-auto">
+                <table class="w-full table-fixed">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th
+                                class="w-[40%] px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                Title</th>
+                            <th
+                                class="w-[15%] px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                Type</th>
+                            <th
+                                class="w-[25%] px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                Category</th>
+                            <th
+                                class="w-[20%] px-20 py-3 text-right text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        {% for listing in user_listings %}
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-4 py-3">
+                                <p class="font-medium text-slate-900 truncate" title="{{ listing.title }}">{{ listing.title }}</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                {% if listing.listing_type == 'sale' %}
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                                    Sale
+                                </span>
+                                {% elif listing.listing_type == 'swap' %}
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                    Swap
+                                </span>
+                                {% elif listing.listing_type == 'buy' %}
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    Buy
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3">
+                                <p class="text-sm text-slate-600">{{ listing.category_display }}</p>
+                            </td>
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button onclick="openEditModal{{ listing.id }}()"
+                                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                            </path>
+                                        </svg>
+                                        Edit
+                                    </button>
+                                    <button onclick="openDeleteModal('{{ listing.id }}')"
+                                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                            </path>
+                                        </svg>
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Card View (hidden on desktop) -->
+            <div class="md:hidden space-y-4">
+                {% for listing in user_listings %}
+                <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1 min-w-0 pr-2">
+                            <h3 class="font-semibold text-slate-900 text-base mb-1 break-words">{{ listing.title }}</h3>
+                            <p class="text-sm text-slate-600">{{ listing.category_display }}</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            {% if listing.listing_type == 'sale' %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                                Sale
+                            </span>
+                            {% elif listing.listing_type == 'swap' %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                Swap
+                            </span>
+                            {% elif listing.listing_type == 'buy' %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                Buy
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openEditModal{{ listing.id }}()"
+                            class="flex-1 inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-slate-700 bg-white hover:bg-slate-100 rounded-lg transition border border-slate-300">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                </path>
+                            </svg>
+                            Edit
+                        </button>
+                        <button onclick="openDeleteModal('{{ listing.id }}')"
+                            class="flex-1 inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
             <div class="text-center py-12">
                 <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
                     </svg>
                 </div>
-                <h3 class="text-lg font-semibold text-slate-900 mb-2">No upcoming events</h3>
-                <p class="text-slate-500">Submit one to get started!</p>
+                <h3 class="text-lg font-semibold text-slate-900 mb-2">No listings yet</h3>
+                <p class="text-slate-500">Create your first listing to get started!</p>
             </div>
+            {% endif %}
         </div>
     </main>
 
+    <!-- Global Delete Confirmation Modal -->
+    <div id="delete-modal"
+        class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50"
+        onclick="if(event.target === this) closeDeleteModal()">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-slate-900">Delete Listing</h2>
+                    <button onclick="closeDeleteModal()" type="button" class="text-slate-400 hover:text-slate-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-slate-700">Are you sure you want to delete this listing? This action cannot be undone.</p>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="closeDeleteModal()"
+                        class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                    <button type="button" onclick="confirmDelete()"
+                        class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">Delete
+                        Listing</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden CSRF token for delete form -->
+    {% csrf_token %}
+
+    <!-- Modal Scripts -->
+    <script>
+        // Global delete modal state
+        let currentDeleteListingId = null;
+
+        function openDeleteModal(listingId) {
+            console.log('Opening delete modal for listing:', listingId);
+            currentDeleteListingId = listingId;
+            const modal = document.getElementById('delete-modal');
+            console.log('Modal element:', modal);
+            if (modal) {
+                modal.classList.remove('hidden');
+            } else {
+                console.error('Delete modal not found!');
+            }
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('delete-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+            currentDeleteListingId = null;
+        }
+
+        function confirmDelete() {
+            if (currentDeleteListingId) {
+                // Create a hidden form for deletion
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/listings/delete-listing/${currentDeleteListingId}/`;
+
+                // Add CSRF token
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = 'csrfmiddlewaretoken';
+                    csrfInput.value = csrfToken.value;
+                    form.appendChild(csrfInput);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        // Debug: Check if modal exists when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('delete-modal');
+            console.log('Page loaded. Delete modal exists:', !!modal);
+            if (modal) {
+                console.log('Modal classes:', modal.className);
+            }
+        });
+    </script>
+
+    {% for listing in user_listings %}
+    <script>
+        function openEditModal{{ listing.id }} () {
+            document.getElementById('editModal{{ listing.id }}').classList.remove('hidden');
+            document.getElementById('editModal{{ listing.id }}').classList.add('flex');
+        }
+        function closeEditModal{{ listing.id }} () {
+            document.getElementById('editModal{{ listing.id }}').classList.add('hidden');
+            document.getElementById('editModal{{ listing.id }}').classList.remove('flex');
+        }
+        let editNewImagesData{{ listing.id }} =[];
+
+        function handleImagePreview{{ listing.id }} (input) {
+            const previewContainer = document.getElementById('imagePreview{{ listing.id }}');
+            const photoCounter = document.getElementById('photoCounter{{ listing.id }}');
+            const existingCount = {{ listing.images.count }};
+        const fileInput = input;
+
+        if (input.files && input.files.length > 0) {
+            const currentNewCount = editNewImagesData{{ listing.id }}.length;
+        const availableSlots = 5 - existingCount - currentNewCount;
+
+        if (availableSlots <= 0) {
+            alert('Maximum 5 images allowed. You have reached the limit.');
+            fileInput.value = '';
+            return;
+        }
+
+        const filesToAdd = Math.min(input.files.length, availableSlots);
+        if (input.files.length > availableSlots) {
+            alert(`You can only add ${availableSlots} more image(s). Only the first ${availableSlots} will be added.`);
+        }
+
+        // Add new files to our array
+        for (let i = 0; i < filesToAdd; i++) {
+                            editNewImagesData{{ listing.id }}.push(input.files[i]);
+
+            const reader = new FileReader();
+            const fileIndex = currentNewCount + i;
+            reader.onload = function (e) {
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'relative group new-image-preview';
+                previewDiv.setAttribute('data-index', fileIndex);
+                previewDiv.innerHTML = `
+                                    <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
+                                    <div class="absolute top-1 right-1 bg-brand-sky text-white text-xs px-1.5 py-0.5 rounded">New</div>
+                                    <button type="button" onclick="removeNewImage{{ listing.id }}(${fileIndex})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">×</button>
+                                `;
+                previewContainer.appendChild(previewDiv);
+            };
+            reader.readAsDataURL(input.files[i]);
+        }
+
+        const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
+        photoCounter.textContent = `Photos: ${totalCount}/5`;
+
+        // Clear the file input so the same file can be selected again
+        fileInput.value = '';
+                    }
+                }
+
+        function removeNewImage{{ listing.id }} (index) {
+                    // Remove from array
+                    editNewImagesData{{ listing.id }}.splice(index, 1);
+
+            // Update preview container
+            const previewContainer = document.getElementById('imagePreview{{ listing.id }}');
+            const allNewPreviews = previewContainer.querySelectorAll('.new-image-preview');
+            allNewPreviews.forEach(preview => preview.remove());
+
+                    // Re-render remaining new images with updated indices
+                    editNewImagesData{{ listing.id }}.forEach((file, newIndex) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'relative group new-image-preview';
+                    previewDiv.setAttribute('data-index', newIndex);
+                    previewDiv.innerHTML = `
+                                <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
+                                <div class="absolute top-1 right-1 bg-brand-sky text-white text-xs px-1.5 py-0.5 rounded">New</div>
+                                <button type="button" onclick="removeNewImage{{ listing.id }}(${newIndex})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">×</button>
+                            `;
+                    previewContainer.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Update counter
+            const existingCount = {{ listing.images.count }};
+        const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
+        document.getElementById('photoCounter{{ listing.id }}').textContent = `Photos: ${totalCount}/5`;
+                            }
+
+                function updateEditDynamicField{{ listing.id }}(type) {
+                    const priceContainer = document.getElementById('edit-price-container-{{ listing.id }}');
+                    const swapContainer = document.getElementById('edit-swap-container-{{ listing.id }}');
+                    const budgetContainer = document.getElementById('edit-budget-container-{{ listing.id }}');
+                    const label = document.getElementById('edit-dynamic-label-{{ listing.id }}');
+                    const priceInput = document.getElementById('edit-price-{{ listing.id }}');
+                    const swapInput = document.getElementById('edit-swap-{{ listing.id }}');
+                    const budgetInput = document.getElementById('edit-budget-{{ listing.id }}');
+
+                    // Hide all containers first
+                    priceContainer.classList.add('hidden');
+                    swapContainer.classList.add('hidden');
+                    budgetContainer.classList.add('hidden');
+
+                    // Remove required from all inputs
+                    priceInput.removeAttribute('required');
+                    swapInput.removeAttribute('required');
+                    budgetInput.removeAttribute('required');
+
+                    // Show the appropriate container and update label
+                    if (type === 'sale') {
+                        priceContainer.classList.remove('hidden');
+                        priceInput.setAttribute('required', 'required');
+                        label.textContent = 'Price *';
+                    } else if (type === 'swap') {
+                        swapContainer.classList.remove('hidden');
+                        swapInput.setAttribute('required', 'required');
+                        label.textContent = 'Looking to Swap For *';
+                    } else if (type === 'buy') {
+                        budgetContainer.classList.remove('hidden');
+                        budgetInput.setAttribute('required', 'required');
+                        label.textContent = 'Budget *';
+                    }
+                }
+
+                function submitEditForm{{ listing.id }} (form) {
+                    // Create a new DataTransfer object to hold our files
+                    const dataTransfer = new DataTransfer();                    // Add all new images to the file input
+                    editNewImagesData{{ listing.id }}.forEach(file => {
+                dataTransfer.items.add(file);
+            });
+
+            // Update the file input with our collected files
+            const fileInput = form.querySelector('input[type="file"]');
+            fileInput.files = dataTransfer.files;
+
+            return true; // Allow form submission
+        }
+    </script>
+    {% endfor %}
+
+    <!-- Edit Modals -->
+    {% for listing in user_listings %}
+
+    <!-- Edit Modal -->
+    <div id="editModal{{ listing.id }}" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50"
+        onclick="if(event.target === this) closeEditModal{{ listing.id }}()">
+        <div class="flex items-center justify-center min-h-screen p-4 w-full">
+            <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-slate-900">Edit Listing</h2>
+                        <button onclick="closeEditModal{{ listing.id }}()" type="button"
+                            class="text-slate-400 hover:text-slate-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <form method="post" action="{% url 'thryve_app:edit_listing' listing.id %}"
+                        enctype="multipart/form-data" onsubmit="return submitEditForm{{ listing.id }}(this)">
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="listing_type" value="sale" id="edit-type-sale-{{ listing.id }}"
+                                        class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'sale' %}checked{% endif %}
+                                        onchange="updateEditDynamicField{{ listing.id }}('sale')" required>
+                                    <span class="ml-2 text-slate-700">For Sale</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="listing_type" value="swap" id="edit-type-swap-{{ listing.id }}"
+                                        class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'swap' %}checked{% endif %}
+                                        onchange="updateEditDynamicField{{ listing.id }}('swap')" required>
+                                    <span class="ml-2 text-slate-700">For Swap</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="listing_type" value="buy" id="edit-type-buy-{{ listing.id }}"
+                                        class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'buy' %}checked{% endif %}
+                                        onchange="updateEditDynamicField{{ listing.id }}('buy')" required>
+                                    <span class="ml-2 text-slate-700">Looking to Buy</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Category *</label>
+                            <input type="hidden" name="category"
+                                value="{% if listing.subcategory %}{{ listing.category }}-{{ listing.subcategory }}{% else %}{{ listing.category }}{% endif %}">
+                            <div
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-slate-100 text-slate-700">
+                                {{ listing.category_display }}{% if listing.subcategory_display %} -
+                                {{listing.subcategory_display }}{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Title *</label>
+                            <input type="text" name="title" value="{{ listing.title }}"
+                                placeholder="Enter listing title"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                required>
+                            <p class="text-red-500 text-xs mt-1 hidden" id="title-error-{{ listing.id }}"></p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Description *</label>
+                            <textarea name="description" rows="4" placeholder="Describe your item or service"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400 resize-y"
+                                required>{{ listing.description }}</textarea>
+                            <p class="text-red-500 text-xs mt-1 hidden" id="description-error-{{ listing.id }}"></p>
+                        </div>
+
+                        <div class="mb-4" id="edit-dynamic-field-{{ listing.id }}">
+                            <label id="edit-dynamic-label-{{ listing.id }}" class="block text-slate-700 font-semibold mb-2">
+                                {% if listing.listing_type == 'sale' %}Price *
+                                {% elif listing.listing_type == 'swap' %}Looking to Swap For *
+                                {% elif listing.listing_type == 'buy' %}Budget *
+                                {% endif %}
+                            </label>
+
+                            <!-- Price Field -->
+                            <div id="edit-price-container-{{ listing.id }}" class="relative {% if listing.listing_type != 'sale' %}hidden{% endif %}">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
+                                <input type="text" name="price" id="edit-price-{{ listing.id }}" value="{% if listing.price %}{{ listing.price }}{% endif %}" placeholder="0.00"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                    {% if listing.listing_type == 'sale' %}required{% endif %}>
+                                <p class="text-red-500 text-xs mt-1 hidden" id="price-error-{{ listing.id }}"></p>
+                            </div>
+
+                            <!-- Swap Field -->
+                            <div id="edit-swap-container-{{ listing.id }}" class="{% if listing.listing_type != 'swap' %}hidden{% endif %}">
+                                <input type="text" name="swap_for" id="edit-swap-{{ listing.id }}" value="{% if listing.swap_for %}{{ listing.swap_for }}{% endif %}"
+                                    placeholder="What are you looking to swap for?"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                    {% if listing.listing_type == 'swap' %}required{% endif %}>
+                                <p class="text-red-500 text-xs mt-1 hidden" id="swap_for-error-{{ listing.id }}"></p>
+                            </div>
+
+                            <!-- Budget Field -->
+                            <div id="edit-budget-container-{{ listing.id }}" class="relative {% if listing.listing_type != 'buy' %}hidden{% endif %}">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
+                                <input type="text" name="budget" id="edit-budget-{{ listing.id }}" value="{% if listing.budget %}{{ listing.budget }}{% endif %}" placeholder="0.00"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                    {% if listing.listing_type == 'buy' %}required{% endif %}>
+                                <p class="text-red-500 text-xs mt-1 hidden" id="budget-error-{{ listing.id }}"></p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Location *</label>
+                            <input type="text" name="location" value="{{ listing.location }}"
+                                placeholder="City, State/Country"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                required>
+                            <p class="text-red-500 text-xs mt-1 hidden" id="location-error-{{ listing.id }}"></p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Date *</label>
+                            <input type="date" name="date" value="{{ listing.date|date:'Y-m-d' }}"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                required>
+                            <p class="text-red-500 text-xs mt-1 hidden" id="date-error-{{ listing.id }}"></p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Listing Images</label>
+
+                            <!-- Image Preview Section -->
+                            <div id="imagePreview{{ listing.id }}" class="flex flex-wrap gap-2 mb-3">
+                                {% for image in listing.images.all %}
+                                <div class="relative group">
+                                    <img src="{{ image.image.url }}" alt="Listing image"
+                                        class="w-20 h-20 object-cover rounded-lg border-2 border-slate-300">
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <div
+                                class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors bg-slate-50 relative">
+                                <div class="flex flex-col items-center justify-center space-y-4">
+                                    <div class="w-12 h-12 text-slate-400">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-lg font-medium text-slate-700">Drag and drop your images
+                                            here</p>
+                                        <p class="text-sm text-slate-500">or <span
+                                                class="text-brand-sky font-medium">click to browse</span></p>
+                                    </div>
+                                    <p id="photoCounter{{ listing.id }}" class="text-sm font-medium text-slate-600">
+                                        Photos: {{listing.images.count }}/5</p>
+                                </div>
+                                <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp"
+                                    multiple
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer pointer-events-auto"
+                                    onchange="handleImagePreview{{ listing.id }}(this)">
+                            </div>
+                            <div class="mt-2 text-sm text-slate-500">
+                                <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end gap-3">
+                            <button type="button" onclick="closeEditModal{{ listing.id }}()"
+                                class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                            <button type="submit"
+                                class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update
+                                Listing</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Error Handling Script -->
+    {% if edit_errors and edit_listing_id %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Open the modal with errors
+            const listingId = {{ edit_listing_id }};
+        const editErrors = {{ edit_errors| safe }};
+
+        // Open the modal
+        const openModalFunc = window['openEditModal' + listingId];
+        if (openModalFunc) {
+            openModalFunc();
+        }
+
+        // Display errors
+        if (editErrors) {
+            Object.keys(editErrors).forEach(function (field) {
+                const errors = editErrors[field];
+                const errorElement = document.getElementById(field + '-error-' + listingId);
+
+                if (errorElement && errors && errors.length > 0) {
+                    // Handle both string and object error formats
+                    const errorMessage = typeof errors[0] === 'string' ? errors[0] : errors[0].message;
+                    errorElement.textContent = errorMessage;
+                    errorElement.classList.remove('hidden');
+                }
+            });
+        }
+        });
+    </script>
+    {% endif %}
+
     {% include 'accounts/logout_modal.html' %}
 </body>
+
 </html>
