@@ -56,6 +56,20 @@ def dashboard(request):
     edit_errors = request.session.pop('edit_errors', None)
     edit_listing_id = request.session.pop('edit_listing_id', None)
 
+    category_dropdown_data = []
+
+    # Loop through the main categories defined in your Model
+    for cat_key, cat_label in Listing.CATEGORY_CHOICES:
+        # Get the subcategories for this specific category key
+        # Returns an empty list [] if the key isn't found
+        subcats = Listing.SUBCATEGORY_CHOICES.get(cat_key, [])
+
+        category_dropdown_data.append({
+            'code': cat_key,  # e.g. 'electronics'
+            'label': cat_label,  # e.g. 'Electronics'
+            'subcategories': subcats  # The list of tuples for that category
+        })
+
     context = {
         'recent_bookings': recent_bookings,
         'active_listings': active_listings,
@@ -65,6 +79,7 @@ def dashboard(request):
         'categories': Listing.get_categories_dict(),
         'edit_errors': edit_errors,
         'edit_listing_id': edit_listing_id,
+        'category_dropdown_data': category_dropdown_data,
     }
 
     return render(request, 'thryve_app/dashboard.html', context)
