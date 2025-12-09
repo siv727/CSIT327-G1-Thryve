@@ -50,8 +50,10 @@
             max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
         }
 
         .feed-container {
@@ -101,72 +103,72 @@
 
     {% include 'thryve_app/navbar.html' %}
 
-    <div class="feed-wrapper mt-4">
+    <div class="feed-wrapper">
 
         <div class="flex justify-between items-center mb-4">
             <div>
-                <h2 class="text-2xl font-semibold">Community Feed</h2>
-                <p class="text-gray-500">Share experiences and connect with other SMEs</p>
+                <h2 class="text-[38px] leading-[1.1] font-extrabold">Community Feed</h2>
+                <p class="text-slate-600 mt-1">Share experiences and connect with other SMEs</p>
             </div>
-            <button class="bg-brand-500 hover:bg-brand-600 text-white font-medium py-2 px-4 rounded-md shadow"
+            <button class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white font-semibold px-4 py-2.5 shadow-soft transition"
                 data-modal-target="#createPostModal">
-                <i class="fas fa-plus-circle mr-1"></i> Create Post
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-width="2" d="M12 5v14M5 12h14"/>
+                </svg>
+                Create Post
             </button>
         </div>
 
-        <div id="createPostModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 overflow-y-auto"
+        <div id="createPostModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 flex items-center justify-center p-4"
             aria-modal="true" role="dialog" tabindex="-1">
-            <div class="relative w-full max-w-lg mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-                <div class="flex justify-between items-center pb-3 border-b border-line">
-                    <h5 class="text-xl font-semibold" id="createPostLabel">Create New Post</h5>
-                    <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close>
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+            <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center pb-3 border-b border-line">
+                        <h5 class="text-xl font-semibold" id="createPostLabel">Create New Post</h5>
+                        <button type="button" class="text-gray-400 hover:text-gray-600" data-modal-close>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="POST" action="{% url 'community_app:create_community_post' %}">
+                        {% csrf_token %}
+                        <div class="py-4">
+                            {{ form.content }}
+                            {% if form.content.errors %}
+                            <div class="text-red-600 mt-2 text-sm">{{ form.content.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="flex justify-end gap-3">
+                            <button type="button" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium" data-modal-close>Cancel</button>
+                            <button type="submit" class="px-6 py-2 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-lg transition">Post</button>
+                        </div>
+                    </form>
                 </div>
-                <form method="POST" action="{% url 'community_app:create_community_post' %}">
-                    {% csrf_token %}
-                    <div class="py-4">
-                        {{ form.content }}
-                        {% if form.content.errors %}
-                        <div class="text-red-600 mt-2 text-sm">{{ form.content.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="flex justify-end pt-3 border-t border-line">
-                        <button type="button"
-                            class="bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-md mr-2 hover:bg-gray-300"
-                            data-modal-close>Cancel</button>
-                        <button type="submit"
-                            class="bg-brand-500 hover:bg-brand-600 text-white font-medium py-2 px-4 rounded-md">Post</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
 
     <!-- Edit Post Modal -->
-    <div id="editPostModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 overflow-y-auto"
+    <div id="editPostModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 flex items-center justify-center p-4"
         aria-modal="true" role="dialog" tabindex="-1">
-        <div class="relative w-full max-w-lg mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-            <div class="flex justify-between items-center pb-3 border-b border-line">
-                <h5 class="text-xl font-semibold">Edit Post</h5>
-                <button type="button" class="text-gray-400 hover:text-gray-600" onclick="closeEditModal()">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center pb-3 border-b border-line">
+                    <h5 class="text-xl font-semibold">Edit Post</h5>
+                    <button type="button" class="text-gray-400 hover:text-gray-600" onclick="closeEditModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="editPostForm">
+                    <div class="py-4">
+                        <textarea name="content" id="editPostContent" rows="4"
+                            class="w-full border border-gray-300 rounded p-2 focus:ring-brand-500 focus:border-brand-500"></textarea>
+                    </div>
+                    <div class="flex justify-end gap-3">
+                        <button type="button" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium" onclick="closeEditModal()">Cancel</button>
+                        <button type="submit" class="px-6 py-2 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-lg transition">Save Changes</button>
+                    </div>
+                </form>
             </div>
-            <form id="editPostForm">
-                <div class="py-4">
-                    <textarea name="content" id="editPostContent" rows="4"
-                        class="w-full border border-gray-300 rounded p-2 focus:ring-brand-500 focus:border-brand-500"></textarea>
-                </div>
-                <div class="flex justify-end pt-3 border-t border-line">
-                    <button type="button"
-                        class="bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-md mr-2 hover:bg-gray-300"
-                        onclick="closeEditModal()">Cancel</button>
-                    <button type="submit"
-                        class="bg-brand-500 hover:bg-brand-600 text-white font-medium py-2 px-4 rounded-md">Save
-                        Changes</button>
-                </div>
-            </form>
         </div>
     </div>
     <div class="feed-container">
@@ -180,17 +182,17 @@
                         {% if display_name %}
                         {{ display_name }}
                         {% else %}
-                        {{ post.user.username }}
+                        {{ post.user.get_full_name|default:post.user.email }}
                         {% endif %}
                         {% endwith %}
                     </h5>
                     <p class="text-gray-500 text-sm mb-0">
                         <span class="post-info-text">
-                            <i class="fas fa-building"></i>
-                            {{ post.user.businessprofile.company_name|default:"SME User" }} </span>
+                            <i class="fas fa-building mr-2"></i>
+                            {{ post.user.company_name|default:"SME User" }} </span>
                         <span class="mx-1">•</span>
                         <span class="post-info-text">
-                            <i class="fas fa-clock"></i>
+                            <i class="fas fa-clock mr-2"></i>
                             {{ post.created_at|date:"n/j/Y" }}
                         </span>
                     </p>
@@ -265,7 +267,7 @@
                             </p>
                             <p class="mb-0 text-xs text-gray-500">
                                 {# Removed <i class="fas fa-building mr-1"></i> #}
-                                {{ comment.user.businessprofile.company_name|default:"SME User" }}
+                                {{ comment.user.company_name|default:"SME User" }}
                                 <span class="mx-1">•</span>
                                 {{ comment.created_at|date:"n/j/Y" }}
                             </p>
