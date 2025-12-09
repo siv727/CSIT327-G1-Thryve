@@ -66,7 +66,7 @@
 
 
             <!-- Tab Content -->
-            <div id="received-content" class="tab-content mt-6" style="display: block;">
+            <div id="received-content" class="tab-content mt-6 hidden">
 
                 <div class="flex justify-between items-start mb-6">
                     <div>
@@ -74,7 +74,7 @@
                         <p class="text-slate-600">Booking requests from other businesses</p>
                     </div>
 
-                    <div class="max-w-xs w-full mt-1">
+                    <div class="max-w-sm w-full mt-1">
                          <form id="booking-search-form" method="get" action="{% url 'bookings' %}">
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
@@ -86,7 +86,7 @@
                                 <input
                                     class="w-full rounded-lg border border-slate-200 pl-9 pr-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
                                     type="text" name="q" value="{{ search_query|default:'' }}"
-                                    placeholder="Search by listing title or company name…" />
+                                    placeholder="Search by listing title, company name, and etc..." />
                             </div>
                         </form>
                     </div>
@@ -232,7 +232,7 @@
                {% endif %}
            </div>
 
-           <div id="sent-content" class="tab-content mt-6" style="display: none;">
+           <div id="sent-content" class="tab-content mt-6 hidden">
 
                <div class="flex justify-between items-start mb-6">
                    <div>
@@ -300,9 +300,8 @@
                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
                                  </svg>
                                </button>
-                               <div class="booking-menu-dropdown absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-10 hidden" data-booking-id="{{ request.id }}">
-                                 <button class="booking-view-message w-full text-left px-4 py-2 text-sm hover:bg-slate-50" data-message="{{ request.message }}" data-listing-title="{{ request.listing.title }}">View your message</button>
-                                 <button class="booking-cancel-request w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50" data-booking-id="{{ request.id }}">Cancel booking</button>
+                               <div class="booking-menu-dropdown min-w-max absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg py-2 z-10 hidden" data-booking-id="{{ request.id }}">
+                                 <button class="booking-view-message w-full text-left px-5 py-2 text-sm hover:bg-slate-50 rounded-md" data-message="{{ request.message }}" data-listing-title="{{ request.listing.title }}">View your message</button>
                                </div>
                              </div>
                              {% endif %}
@@ -383,6 +382,12 @@
                           </div>
                       </div>
 
+                      {% if request.status == 'pending' %}
+                      <div class="mt-4 flex gap-2">
+                        <a href="/marketplace/" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition">View Listing</a>
+                        <button class="booking-cancel-request px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition" data-booking-id="{{ request.id }}">Cancel Booking</button>
+                      </div>
+                      {% endif %}
 
                       {% if request.status == 'accepted' %}
                       <div class="text-sm text-green-700 font-semibold">
@@ -429,17 +434,18 @@
         function updateTabContent(activeButton) {
             const receivedContent = document.getElementById('received-content');
             const sentContent = document.getElementById('sent-content');
-
+    
             const targetId = activeButton.id.replace('tab', '').toLowerCase() + '-content';
-
+    
+            // 1. Hide ALL content containers using block/none
+            receivedContent.style.display = 'none';
+            sentContent.style.display = 'none';
+    
+            // 2. Show the target content container
             if (targetId === 'sent-content') {
-                // Show Sent, Hide Received
-                sentContent.style.display = 'grid';
-                receivedContent.style.display = 'none';
+                sentContent.style.display = 'block';
             } else {
-                // Show Received, Hide Sent
-                receivedContent.style.display = 'grid';
-                sentContent.style.display = 'none';
+                receivedContent.style.display = 'block';
             }
         }
 
@@ -483,7 +489,139 @@
             initializeTabs();
         });
 
-        // Booking menu functionality (omitted for brevity, assume original logic is here)
+        // Booking menu functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.booking-menu-btn')) {
+                e.stopPropagation();
+                const button = e.target.closest('.booking-menu-btn');
+                const bookingId = button.getAttribute('data-booking-id');
+                const dropdown = document.querySelector(`.booking-menu-dropdown[data-booking-id="${bookingId}"]`);
+
+                // Close all other dropdowns
+                document.querySelectorAll('.booking-menu-dropdown').forEach(d => {
+                    if (d !== dropdown) d.classList.add('hidden');
+                });
+
+                // Toggle this dropdown
+                dropdown.classList.toggle('hidden');
+            } else if (e.target.classList.contains('booking-view-message')) {
+                const message = e.target.getAttribute('data-message');
+                const listingTitle = e.target.getAttribute('data-listing-title');
+                openBookingMessageModal(message, listingTitle);
+                // Close dropdown
+                document.querySelectorAll('.booking-menu-dropdown').forEach(d => d.classList.add('hidden'));
+            } else if (e.target.classList.contains('booking-cancel-request')) {
+                const bookingId = e.target.getAttribute('data-booking-id');
+                openCancelBookingModal(bookingId);
+                // Close dropdown
+                document.querySelectorAll('.booking-menu-dropdown').forEach(d => d.classList.add('hidden'));
+            } else if (!e.target.closest('.booking-menu-btn') && !e.target.closest('.booking-menu-dropdown')) {
+                document.querySelectorAll('.booking-menu-dropdown').forEach(d => d.classList.add('hidden'));
+            }
+        });
+
+        // Booking modal functions
+        function openBookingMessageModal(message, listingTitle) {
+            document.getElementById('booking-modal-message').textContent = message;
+            document.getElementById('booking-modal-listing-title').textContent = listingTitle;
+            document.getElementById('booking-message-modal').classList.remove('hidden');
+        }
+
+        function closeBookingMessageModal() {
+            document.getElementById('booking-message-modal').classList.add('hidden');
+        }
+
+        function openCancelBookingModal(bookingId) {
+            const confirmBtn = document.getElementById('confirm-cancel-booking-btn');
+            confirmBtn.onclick = () => cancelBooking(bookingId);
+            document.getElementById('cancel-booking-modal').classList.remove('hidden');
+        }
+
+        function closeCancelBookingModal() {
+            document.getElementById('cancel-booking-modal').classList.add('hidden');
+        }
+
+        function cancelBooking(bookingId) {
+            // Get CSRF token
+            let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            if (!csrfToken) {
+                const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+                if (csrfCookie) {
+                    csrfToken = csrfCookie.split('=')[1];
+                }
+            }
+
+            // Send AJAX request
+            fetch(`/bookings/cancel/${bookingId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: ''
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update the status tag
+                    const bookingCard = document.querySelector(`[data-booking-id="${bookingId}"]`).closest('.bg-white');
+                    const statusSpan = bookingCard.querySelector('.inline-flex.items-center.gap-1\\.5');
+                    statusSpan.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-200 text-red-900';
+                    statusSpan.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-current flex-shrink-0"></span> Cancelled';
+
+                    // Remove the menu button
+                    const menuContainer = bookingCard.querySelector('.relative');
+                    if (menuContainer) menuContainer.remove();
+
+                    // Update card border
+                    bookingCard.className = bookingCard.className.replace(/border-[a-z]+-[0-9]+\/50/, 'border-red-100/50');
+
+                    // Close modal and show success message
+                    closeCancelBookingModal();
+                    showToast(data.message);
+                } else {
+                    alert(data.message || 'Failed to cancel booking request.');
+                }
+            })
+            .catch(error => {
+                console.error('Error cancelling booking:', error);
+                alert('An error occurred while cancelling the booking. Please try again.');
+            });
+        }
+
+        // Toast notification function
+        function showToast(message) {
+            // Remove existing toast if any
+            const existingToast = document.getElementById('toast');
+            if (existingToast) existingToast.remove();
+
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-300 z-50';
+            toast.innerHTML = `<p class="text-sm font-medium">${message}</p>`;
+
+            document.body.appendChild(toast);
+
+            // Show toast
+            setTimeout(() => {
+                toast.classList.remove('translate-y-full', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+            }, 100);
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-full', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
     </script>
 
