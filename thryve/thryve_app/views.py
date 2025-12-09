@@ -9,18 +9,23 @@ from marketplace_app.forms import ListingForm, validate_images_count, validate_i
 from marketplace_app.views import LISTING_TYPES
 from thryve_app.models import Listing, ListingImage
 from .models import Connection, ConnectionRequest
+from booking_app.models import BookingRequest
 
 
 @login_required(login_url='login')
 def dashboard(request):
-    # Get user's recent bookings (placeholder data)
-    recent_bookings = [
-        {
-            'item': 'Mousepad',
-            'date': '10/20/2025 – 10/29/2025',
-            'status': 'pending'
-        }
-    ]
+    # Get user's recent bookings (5 most recent)
+    recent_bookings_qs = BookingRequest.objects.filter(
+        sender=request.user
+    ).select_related('listing').order_by('-created_at')[:5]
+    
+    recent_bookings = []
+    for booking in recent_bookings_qs:
+        recent_bookings.append({
+            'item': booking.listing.title,
+            'date': f"{booking.proposed_start_date.strftime('%m/%d/%Y')} – {booking.proposed_end_date.strftime('%m/%d/%Y')}",
+            'status': booking.status
+        })
 
     # Get user's active listings (real data)
     user_active_listings = Listing.objects.filter(user=request.user, is_available=True)
@@ -43,10 +48,13 @@ def dashboard(request):
     ).count()
 
     # Activity summary counts
+    total_bookings_count = BookingRequest.objects.filter(sender=request.user).count()
+    pending_bookings_count = BookingRequest.objects.filter(sender=request.user, status='pending').count()
+    
     activity_summary = {
-        'total_bookings': 1,
+        'total_bookings': total_bookings_count,
         'active_listings': user_active_listings.count(),
-        'pending_booking_requests': 1,
+        'pending_booking_requests': pending_bookings_count,
         'connection_requests': incoming_connection_requests_count
     }
 
