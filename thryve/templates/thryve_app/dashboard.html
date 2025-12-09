@@ -205,6 +205,7 @@
                                         data-location="{{ listing.location }}"
                                         data-date="{{ listing.date|date:'Y-m-d' }}"
                                         data-images='[{% for img in listing.images.all %}"{{ img.image.url }}"{% if not forloop.last %},{% endif %}{% endfor %}]'
+                                        data-image-ids='[{% for img in listing.images.all %}{{ img.id }}{% if not forloop.last %},{% endif %}{% endfor %}]'
                                         class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -471,7 +472,9 @@
 
                         <div class="mb-6">
                             <label class="block text-slate-700 font-semibold mb-2">Listing Images</label>
+                            <p class="text-sm text-slate-500 mb-2">Drag images to reorder. First image will be the main image.</p>
 
+                            <input type="hidden" name="image_order" id="edit-image-order">
                             <div id="edit-image-previews" class="flex flex-wrap gap-2 mb-3">
                             </div>
 
@@ -504,6 +507,9 @@
                                 <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
                             </div>
                         </div>
+
+                        <!-- Hidden inputs for image management -->
+                        <input type="hidden" id="edit-deleted-images" name="deleted_images" value="">
 
                         <div class="flex justify-end gap-3">
                             <button type="button" onclick="closeGlobalEditModal()"
@@ -571,6 +577,9 @@
         // --- 2. Edit Modal Logic (Global Variables) ---
         let editNewFiles = [];
         let editExistingCount = 0;
+        let editExistingImages = []; // Track existing images with their IDs
+        let editDeletedImageIds = []; // Track images marked for deletion
+        let draggedElement = null;
 
         // --- 3. Custom Category Dropdown Logic ---
         function toggleEditCategoryDropdown() {
@@ -699,16 +708,44 @@
 
             // --- IMAGE LOGIC ---
             editNewFiles = [];
+            editExistingImages = [];
+            editDeletedImageIds = [];
             const previewContainer = document.getElementById('edit-image-previews');
             previewContainer.innerHTML = '';
 
             try {
-                const images = JSON.parse(d.images || '[]');
-                editExistingCount = images.length;
-                images.forEach(url => {
+                const imagesData = JSON.parse(d.images || '[]');
+                editExistingCount = imagesData.length;
+                
+                // Get image IDs from data attribute
+                const imageIds = d.imageIds ? JSON.parse(d.imageIds) : [];
+                
+                imagesData.forEach((url, index) => {
+                    const imageId = imageIds[index] || null;
+                    editExistingImages.push({ id: imageId, url: url });
+                    
                     const div = document.createElement('div');
-                    div.className = 'relative group w-20 h-20';
-                    div.innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-lg border border-slate-200">`;
+                    div.className = 'relative group w-20 h-20 cursor-move';
+                    div.draggable = true;
+                    div.dataset.imageId = imageId;
+                    div.dataset.imageType = 'existing';
+                    div.innerHTML = `
+                        <img src="${url}" class="w-full h-full object-cover rounded-lg border-2 ${index === 0 ? 'border-brand-sky' : 'border-slate-200'}">
+                        ${index === 0 ? '<div class="absolute top-0 left-0 bg-brand-sky text-white text-xs px-1 rounded-br">Main</div>' : ''}
+                        <button type="button" onclick="event.stopPropagation(); removeExistingImage(${imageId})" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10" style="line-height: 1;">×</button>
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all rounded-lg flex items-center justify-center pointer-events-none">
+                            <svg class="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                            </svg>
+                        </div>
+                    `;
+                    
+                    // Add drag event listeners
+                    div.addEventListener('dragstart', handleDragStart);
+                    div.addEventListener('dragover', handleDragOver);
+                    div.addEventListener('drop', handleDrop);
+                    div.addEventListener('dragend', handleDragEnd);
+                    
                     previewContainer.appendChild(div);
                 });
             } catch (e) {
@@ -716,6 +753,7 @@
                 editExistingCount = 0;
             }
             updateEditPhotoCounter();
+            updateImageOrder();
 
             // Show Modal
             modal.classList.remove('hidden');
@@ -767,18 +805,33 @@
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         const div = document.createElement('div');
-                        div.className = 'relative group w-20 h-20 new-image-preview';
+                        div.className = 'relative group w-20 h-20 new-image-preview cursor-move';
+                        div.draggable = true;
+                        div.dataset.imageType = 'new';
                         const index = editNewFiles.indexOf(file);
                         div.innerHTML = `
                             <img src="${e.target.result}" class="w-full h-full object-cover rounded-lg border-2 border-brand-sky">
                             <div class="absolute top-0 right-0 bg-brand-sky text-white text-xs px-1 rounded-bl">New</div>
-                            <button type="button" onclick="removeEditNewImage(${index})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600">&times;</button>
+                            <button type="button" onclick="removeEditNewImage(${index})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 z-10">&times;</button>
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all rounded-lg flex items-center justify-center pointer-events-none">
+                                <svg class="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                                </svg>
+                            </div>
                         `;
+                        
+                        // Add drag event listeners
+                        div.addEventListener('dragstart', handleDragStart);
+                        div.addEventListener('dragover', handleDragOver);
+                        div.addEventListener('drop', handleDrop);
+                        div.addEventListener('dragend', handleDragEnd);
+                        
                         previewContainer.appendChild(div);
                     };
                     reader.readAsDataURL(file);
                 });
                 updateEditPhotoCounter();
+                updateImageOrder();
                 input.value = '';
             }
         }
@@ -804,10 +857,127 @@
             updateEditPhotoCounter();
         }
 
+        function removeExistingImage(imageId) {
+            if (!imageId) return;
+            
+            // Add to deleted list
+            editDeletedImageIds.push(imageId);
+            
+            // Remove from UI
+            const imageDiv = document.querySelector(`[data-image-id="${imageId}"]`);
+            if (imageDiv) {
+                imageDiv.remove();
+            }
+            
+            // Update existing images array
+            editExistingImages = editExistingImages.filter(img => img.id != imageId);
+            editExistingCount = editExistingImages.length;
+            
+            updateEditPhotoCounter();
+            updateImageOrder();
+        }
+
         function updateEditPhotoCounter() {
             const total = editExistingCount + editNewFiles.length;
             const counter = document.getElementById('edit-photo-counter');
             if (counter) counter.textContent = `Photos: ${total}/5`;
+        }
+
+        // Drag and drop handlers
+        function handleDragStart(e) {
+            draggedElement = e.target.closest('.w-20');
+            draggedElement.style.opacity = '0.5';
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            
+            const target = e.target.closest('.w-20');
+            if (target && target !== draggedElement) {
+                target.style.borderColor = '#3ac363';
+            }
+            return false;
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            const target = e.target.closest('.w-20');
+            if (draggedElement && target && draggedElement !== target) {
+                const container = document.getElementById('edit-image-previews');
+                const all = Array.from(container.children);
+                const draggedIndex = all.indexOf(draggedElement);
+                const targetIndex = all.indexOf(target);
+                
+                if (draggedIndex < targetIndex) {
+                    target.parentNode.insertBefore(draggedElement, target.nextSibling);
+                } else {
+                    target.parentNode.insertBefore(draggedElement, target);
+                }
+                
+                updateMainImageIndicator();
+                updateImageOrder();
+            }
+            
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            draggedElement.style.opacity = '';
+            
+            // Reset all border colors
+            const container = document.getElementById('edit-image-previews');
+            container.querySelectorAll('.w-20').forEach(el => {
+                const img = el.querySelector('img');
+                if (img) {
+                    img.style.borderColor = '';
+                }
+            });
+            
+            draggedElement = null;
+        }
+
+        function updateMainImageIndicator() {
+            const container = document.getElementById('edit-image-previews');
+            const images = container.querySelectorAll('.w-20');
+            
+            images.forEach((div, index) => {
+                const img = div.querySelector('img');
+                const mainLabel = div.querySelector('div.absolute.top-0.left-0');
+                
+                if (index === 0) {
+                    // First image is main
+                    img.className = 'w-full h-full object-cover rounded-lg border-2 border-brand-sky';
+                    if (!mainLabel) {
+                        const label = document.createElement('div');
+                        label.className = 'absolute top-0 left-0 bg-brand-sky text-white text-xs px-1 rounded-br';
+                        label.textContent = 'Main';
+                        div.insertBefore(label, div.firstChild);
+                    }
+                } else {
+                    // Other images
+                    img.className = 'w-full h-full object-cover rounded-lg border-2 border-slate-200';
+                    if (mainLabel && mainLabel.textContent === 'Main') {
+                        mainLabel.remove();
+                    }
+                }
+            });
+        }
+
+        function updateImageOrder() {
+            const container = document.getElementById('edit-image-previews');
+            const images = container.querySelectorAll('.w-20[data-image-type="existing"]');
+            const imageIds = Array.from(images)
+                .map(img => img.dataset.imageId)
+                .filter(id => id && id !== 'null');
+            
+            document.getElementById('edit-image-order').value = imageIds.join(',');
         }
 
         document.getElementById('global-edit-form').addEventListener('submit', function (e) {
@@ -815,6 +985,12 @@
             const dataTransfer = new DataTransfer();
             editNewFiles.forEach(file => dataTransfer.items.add(file));
             fileInput.files = dataTransfer.files;
+            
+            // Add deleted image IDs to form
+            const deletedInput = document.getElementById('edit-deleted-images');
+            if (deletedInput) {
+                deletedInput.value = editDeletedImageIds.join(',');
+            }
         });
     </script>
 
