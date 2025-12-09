@@ -6,12 +6,14 @@ from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseForbid
 from .forms import CommunityPostForm, CommentForm 
 from .models import CommunityPost, PostLike, Comment 
 
-@login_required
+# -----------------------------------------------------------
+# CHANGE 1: Added login_url='login' to community_feed
+@login_required(login_url='login')
 def community_feed(request):
     """Displays the community feed page."""
     
     # Pre-fetch comments to reduce database queries (N+1 problem)
-    posts = CommunityPost.objects.all().select_related('user').prefetch_related('comments__user')
+    posts = CommunityPost.objects.all().select_related('user__userprofile').prefetch_related('comments__user__userprofile')
     form = CommunityPostForm()
     comment_form = CommentForm() 
     
@@ -32,7 +34,9 @@ def community_feed(request):
     }
     return render(request, 'community_app/community.html', context)
 
-@login_required
+# -----------------------------------------------------------
+# CHANGE 2: Added login_url='login' to create_community_post
+@login_required(login_url='login')
 def create_community_post(request):
     """Handles the form submission for creating a new post."""
     if request.method == 'POST':
@@ -46,7 +50,9 @@ def create_community_post(request):
     return redirect('community_app:community_feed')
 
 
-@login_required
+# -----------------------------------------------------------
+# CHANGE 3: Added login_url='login' to toggle_post_like
+@login_required(login_url='login')
 def toggle_post_like(request, post_id):
     """Toggles a like on a post (handled via AJAX)."""
     if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -68,7 +74,9 @@ def toggle_post_like(request, post_id):
     return HttpResponseBadRequest("Invalid request.")
 
 
-@login_required
+# -----------------------------------------------------------
+# CHANGE 4: Added login_url='login' to delete_community_post
+@login_required(login_url='login')
 def delete_community_post(request, post_id):
     """Deletes a community post if the user is the author (via AJAX)."""
     if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -88,7 +96,9 @@ def delete_community_post(request, post_id):
     return HttpResponseBadRequest("Invalid request.")
 
 
-@login_required
+# -----------------------------------------------------------
+# CHANGE 5: Added login_url='login' to add_comment
+@login_required(login_url='login')
 def add_comment(request, post_id):
     """Handles adding a new comment via an AJAX POST request."""
     if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -103,6 +113,9 @@ def add_comment(request, post_id):
             comment.save()
 
             user_full_name = f"{request.user.first_name} {request.user.last_name}"
+            # NEW: Use display_name if available
+            if hasattr(request.user, 'userprofile') and request.user.userprofile.display_name:
+                user_full_name = request.user.userprofile.display_name
             try:
                 business_name = request.user.businessprofile.company_name
             except AttributeError:
@@ -114,7 +127,7 @@ def add_comment(request, post_id):
                 'comment_id': comment.pk, 
                 'new_count': post.comments_count, 
                 'content': comment.content,
-                'user_full_name': user_full_name,
+                'user_display_name': user_full_name,
                 'business_name': business_name,
                 'created_at': comment.created_at.strftime("%#m/%#d/%Y"), 
             })
@@ -128,7 +141,9 @@ def add_comment(request, post_id):
     return HttpResponseBadRequest("Invalid request.")
 
 
-@login_required
+# -----------------------------------------------------------
+# CHANGE 6: Added login_url='login' to delete_comment
+@login_required(login_url='login')
 def delete_comment(request, post_id, comment_id):
     """Deletes a comment if the user is the author (via AJAX)."""
     if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
