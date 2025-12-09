@@ -738,6 +738,83 @@ document.getElementById('next-image')?.addEventListener('click', () => {
     if (currentImageIndex < currentGalleryImages.length - 1) { currentImageIndex++; updateGalleryDisplay(); }
 });
 
+// Zoom Controls
+document.getElementById('zoom-in')?.addEventListener('click', () => {
+    if (currentZoom < 3) {
+        currentZoom += 0.25;
+        updateImageTransform();
+    }
+});
+
+document.getElementById('zoom-out')?.addEventListener('click', () => {
+    if (currentZoom > 0.5) {
+        currentZoom -= 0.25;
+        updateImageTransform();
+    }
+});
+
+document.getElementById('zoom-reset')?.addEventListener('click', () => {
+    currentZoom = 1;
+    currentTranslateX = 0;
+    currentTranslateY = 0;
+    updateImageTransform();
+});
+
+// Mouse wheel zoom
+function handleWheelZoom(event) {
+    event.preventDefault();
+    const delta = event.deltaY > 0 ? -0.1 : 0.1;
+    const newZoom = Math.max(0.5, Math.min(3, currentZoom + delta));
+    
+    if (newZoom !== currentZoom) {
+        currentZoom = newZoom;
+        updateImageTransform();
+    }
+}
+
+// Image dragging for panning when zoomed
+const galleryImage = document.getElementById('gallery-main-image');
+if (galleryImage) {
+    galleryImage.addEventListener('mousedown', (e) => {
+        if (currentZoom > 1) {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            startTranslateX = currentTranslateX;
+            startTranslateY = currentTranslateY;
+            galleryImage.style.cursor = 'grabbing';
+            e.preventDefault();
+        }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            currentTranslateX = startTranslateX + deltaX;
+            currentTranslateY = startTranslateY + deltaY;
+            updateImageTransform();
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            if (galleryImage) {
+                galleryImage.style.cursor = currentZoom > 1 ? 'grab' : 'default';
+            }
+        }
+    });
+}
+
+function updateImageTransform() {
+    const mainImage = document.getElementById('gallery-main-image');
+    if (mainImage) {
+        mainImage.style.transform = `scale(${currentZoom}) translate(${currentTranslateX / currentZoom}px, ${currentTranslateY / currentZoom}px)`;
+        mainImage.style.cursor = currentZoom > 1 ? 'grab' : 'default';
+    }
+}
+
 // --- Listing Details Modal ---
 function openListingDetailsModal(listingId) {
     const listingCard = document.querySelector(`[data-listing-id="${listingId}"]`);
