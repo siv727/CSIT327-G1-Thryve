@@ -20,7 +20,7 @@ class BookingRequest(models.Model):
     # Status to track negotiation/transaction process
     STATUS_CHOICES = [
         ('pending', 'Pending'),
-        ('accepted', 'Accepted'),
+        ('scheduled', 'Scheduled'),
         ('declined', 'Declined'),
         ('cancelled', 'Cancelled'),
         ('completed', 'Completed')
@@ -28,6 +28,7 @@ class BookingRequest(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
 
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Booking Request for {self.listing.title} from {self.sender.email}"

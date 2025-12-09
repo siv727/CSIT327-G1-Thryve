@@ -23,6 +23,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize everything
     initLocationAutocomplete();
 
+    // Check for view_listing parameter to open modal
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewListingId = urlParams.get('view_listing');
+    if (viewListingId) {
+        // Wait a bit for the page to load, then open the modal
+        setTimeout(() => {
+            openListingDetailsModal(viewListingId);
+        }, 500);
+    }
+
     // Auto-open modal if requested (e.g. on validation error)
     if (window.MARKETPLACE_CONFIG.showCreateModal) {
         const modal = document.getElementById('add-listing-modal');

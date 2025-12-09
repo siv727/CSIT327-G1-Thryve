@@ -16,6 +16,12 @@ def bookings(request):
     # Get booking requests sent by the user
     sent_requests = BookingRequest.objects.filter(sender=request.user).select_related('listing', 'receiver').order_by('-created_at')
 
+    # Get scheduled booking requests where user is either sender or receiver
+    scheduled_requests = BookingRequest.objects.filter(
+        (models.Q(sender=request.user) | models.Q(receiver=request.user)),
+        status='scheduled'
+    ).select_related('listing', 'sender', 'receiver').order_by('-created_at')
+
     # Get booking requests received by the user
     received_requests = BookingRequest.objects.filter(receiver=request.user).select_related('listing', 'sender').order_by('-created_at')
 
@@ -47,8 +53,10 @@ def bookings(request):
 
     context = {
         'sent_requests': sent_requests,
+        'scheduled_requests': scheduled_requests,
         'received_requests': received_requests,
         'sent_count': sent_requests.count(),
+        'scheduled_count': scheduled_requests.count(),
         'received_count': received_requests.count(),
         'search_query': search_query,
     }
@@ -111,11 +119,17 @@ def create_booking_request(request):
 def cancel_booking_request(request, booking_id):
     """Handles POST requests to cancel a booking request."""
     try:
-        booking = BookingRequest.objects.get(id=booking_id, sender=request.user)
-
-        # Only allow cancelling pending requests
-        if booking.status != 'pending':
-            return JsonResponse({'success': False, 'message': 'Only pending booking requests can be cancelled.'}, status=400)
+        # First try to get as sender (for pending requests)
+        try:
+            booking = BookingRequest.objects.get(id=booking_id, sender=request.user, status='pending')
+        except BookingRequest.DoesNotExist:
+            # If not found as sender, try as receiver (for scheduled requests)
+            booking = BookingRequest.objects.filter(
+                id=booking_id,
+                status='scheduled'
+            ).filter(
+                models.Q(sender=request.user) | models.Q(receiver=request.user)
+            ).get()
 
         booking.status = 'cancelled'
         booking.save()
@@ -128,6 +142,85 @@ def cancel_booking_request(request, booking_id):
         })
 
     except BookingRequest.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Booking request not found or you do not have permission to cancel it.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'An internal error occurred: {str(e)}'}, status=500)
+
+@login_required(login_url='login')
+@require_POST
+def decline_booking_request(request, booking_id):
+    """Handles POST requests to decline a booking request."""
+    try:
+        booking = BookingRequest.objects.get(id=booking_id, receiver=request.user)
+
+        # Only allow declining pending requests
+        if booking.status != 'pending':
+            return JsonResponse({'success': False, 'message': 'Only pending booking requests can be declined.'}, status=400)
+
+        booking.status = 'declined'
+        booking.save()
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Booking request declined successfully.',
+            'new_status': 'declined',
+            'status_display': booking.get_status_display()
+        })
+
+    except BookingRequest.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Booking request not found.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'An internal error occurred: {str(e)}'}, status=500)
+
+@login_required(login_url='login')
+@require_POST
+def schedule_booking_request(request, booking_id):
+    """Handles POST requests to schedule a booking request."""
+    try:
+        booking = BookingRequest.objects.get(id=booking_id, receiver=request.user)
+
+        # Only allow scheduling pending requests
+        if booking.status != 'pending':
+            return JsonResponse({'success': False, 'message': 'Only pending booking requests can be scheduled.'}, status=400)
+
+        booking.status = 'scheduled'
+        booking.save()
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Booking request scheduled successfully.',
+            'new_status': 'scheduled',
+            'status_display': booking.get_status_display()
+        })
+
+    except BookingRequest.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Booking request not found.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'An internal error occurred: {str(e)}'}, status=500)
+
+@login_required(login_url='login')
+@require_POST
+def complete_booking_request(request, booking_id):
+    """Handles POST requests to complete a scheduled booking."""
+    try:
+        booking = BookingRequest.objects.filter(
+            id=booking_id,
+            status='scheduled'
+        ).filter(
+            models.Q(sender=request.user) | models.Q(receiver=request.user)
+        ).get()
+
+        booking.status = 'completed'
+        booking.save()
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Booking completed successfully.',
+            'new_status': 'completed',
+            'status_display': booking.get_status_display()
+        })
+
+    except BookingRequest.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Booking request not found or you do not have permission to complete it.'}, status=404)
     except Exception as e:
         return JsonResponse({'success': False, 'message': f'An internal error occurred: {str(e)}'}, status=500)
