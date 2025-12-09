@@ -2,11 +2,9 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponseBadRequest
-# Import the new models and forms
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseForbidden 
 from .forms import CommunityPostForm, CommentForm 
 from .models import CommunityPost, PostLike, Comment 
-# Make sure to import Comment
 
 @login_required
 def community_feed(request):
@@ -15,9 +13,9 @@ def community_feed(request):
     # Pre-fetch comments to reduce database queries (N+1 problem)
     posts = CommunityPost.objects.all().select_related('user').prefetch_related('comments__user')
     form = CommunityPostForm()
-    comment_form = CommentForm() # Initialize the CommentForm
+    comment_form = CommentForm() 
     
-    # 2. Determine which posts the current user has liked
+    # Determine which posts the current user has liked
     liked_posts_ids = []
     if request.user.is_authenticated:
         liked_posts_ids = PostLike.objects.filter(
@@ -28,14 +26,14 @@ def community_feed(request):
     context = {
         'posts': posts,
         'form': form,
-        'comment_form': comment_form, # Add the comment form to context
+        'comment_form': comment_form, 
         'liked_posts_ids': list(liked_posts_ids),
+        'user': request.user, # Explicitly pass the user for the template condition
     }
     return render(request, 'community_app/community.html', context)
 
 @login_required
 def create_community_post(request):
-    # ... (existing code for creating post) ...
     """Handles the form submission for creating a new post."""
     if request.method == 'POST':
         form = CommunityPostForm(request.POST)
@@ -50,7 +48,6 @@ def create_community_post(request):
 
 @login_required
 def toggle_post_like(request, post_id):
-    # ... (existing code for toggling like) ...
     """Toggles a like on a post (handled via AJAX)."""
     if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
         post = get_object_or_404(CommunityPost, id=post_id)
@@ -71,42 +68,57 @@ def toggle_post_like(request, post_id):
     return HttpResponseBadRequest("Invalid request.")
 
 
-# --- NEW VIEW: Add Comment ---
+@login_required
+def delete_community_post(request, post_id):
+    """Deletes a community post if the user is the author (via AJAX)."""
+    if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        post = get_object_or_404(CommunityPost, id=post_id)
+        
+        # CRITICAL: Check if the current user is the author of the post
+        if post.user != request.user:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'You are not authorized to delete this post.'
+            }, status=403)
+
+        post.delete()
+        
+        return JsonResponse({'status': 'success', 'message': 'Post deleted successfully.'})
+    
+    return HttpResponseBadRequest("Invalid request.")
+
+
 @login_required
 def add_comment(request, post_id):
     """Handles adding a new comment via an AJAX POST request."""
     if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
         post = get_object_or_404(CommunityPost, id=post_id)
         
-        # Use the CommentForm to validate content
         form = CommentForm(request.POST) 
         
         if form.is_valid():
-            # Create and save the new comment
             comment = form.save(commit=False)
             comment.post = post
             comment.user = request.user
             comment.save()
 
-            # Get user and business name for display in the client
             user_full_name = f"{request.user.first_name} {request.user.last_name}"
-            # Safely get the company name (assuming user has a related businessprofile)
             try:
                 business_name = request.user.businessprofile.company_name
             except AttributeError:
                 business_name = "SME User" 
             
-            # Prepare the data to return to the client
+            # NOTE: We now return comment.id (comment.pk) for the frontend delete function
             return JsonResponse({
                 'status': 'success',
-                'new_count': post.comments_count, # Use the model property for count
+                'comment_id': comment.pk, 
+                'new_count': post.comments_count, 
                 'content': comment.content,
                 'user_full_name': user_full_name,
                 'business_name': business_name,
                 'created_at': comment.created_at.strftime("%#m/%#d/%Y"), 
             })
         else:
-            # Return form errors if validation fails
             return JsonResponse({
                 'status': 'error', 
                 'message': dict(form.errors), 
@@ -114,4 +126,24 @@ def add_comment(request, post_id):
             }, status=400)
     
     return HttpResponseBadRequest("Invalid request.")
-# -----------------------------
+
+
+@login_required
+def delete_comment(request, post_id, comment_id):
+    """Deletes a comment if the user is the author (via AJAX)."""
+    if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # Retrieve the specific comment, ensuring it belongs to the post_id 
+        comment = get_object_or_404(Comment, id=comment_id, post_id=post_id)
+        
+        # CRITICAL: Check if the current user is the author of the comment
+        if comment.user != request.user:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'You are not authorized to delete this comment.'
+            }, status=403) # 403 Forbidden
+
+        comment.delete()
+        
+        return JsonResponse({'status': 'success', 'message': 'Comment deleted successfully.'})
+    
+    return HttpResponseBadRequest("Invalid request.")

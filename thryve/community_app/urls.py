@@ -7,14 +7,15 @@ from . import views
 app_name = 'community_app' 
 
 urlpatterns = [
-    # Maps /community/ to the community_feed view function
+    # General Feed
     path('', views.community_feed, name='community_feed'),
     
-    # Other paths like /community/create/
+    # Post Actions
     path('create/', views.create_community_post, name='create_community_post'),
     path('<int:post_id>/like/', views.toggle_post_like, name='toggle_post_like'),
-    
-    # --- NEW URL: Add Comment ---
+    path('<int:post_id>/delete/', views.delete_community_post, name='delete_community_post'),
+
+    # Comment Actions
     path('<int:post_id>/comment/', views.add_comment, name='add_comment'),
-    # -----------------------------
+    path('<int:post_id>/comment/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
 ]
