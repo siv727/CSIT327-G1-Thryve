@@ -33,20 +33,21 @@ def dashboard(request):
             'status': 'available' if listing.is_available else 'unavailable',
         })
 
-    # Get recent marketplace updates (placeholder data)
-    marketplace_updates = [
-        {
-            'item': 'Tractor',
-            'detail': 'Sale - $600'
-        }
-    ]
+    # Get recent marketplace updates (5 most recent listings excluding user's own)
+    marketplace_updates = Listing.objects.exclude(user=request.user).order_by('-created_at')[:5]
 
-    # Activity summary counts (placeholder data)
+    # Get incoming connection requests count
+    incoming_connection_requests_count = ConnectionRequest.objects.filter(
+        receiver=request.user,
+        status='pending'
+    ).count()
+
+    # Activity summary counts
     activity_summary = {
         'total_bookings': 1,
         'active_listings': user_active_listings.count(),
         'pending_booking_requests': 1,
-        'connection_requests': 0
+        'connection_requests': incoming_connection_requests_count
     }
 
     # Get all user's listings for the "My Listings" section

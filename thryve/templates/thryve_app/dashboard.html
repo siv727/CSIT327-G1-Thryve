@@ -76,10 +76,32 @@
             <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
                 <h2 class="text-xl font-bold text-slate-900 mb-2">Marketplace Updates</h2>
                 <p class="text-slate-600 mb-4">Recently listed items</p>
-                {% for update in marketplace_updates %}
-                <div class="py-2 border-b border-slate-100 last:border-b-0">
-                    <p class="font-medium text-slate-900">{{ update.item }}</p>
-                    <p class="text-sm text-slate-500">{{ update.detail }}</p>
+                {% for listing in marketplace_updates %}
+                <div class="py-3 border-b border-slate-100 last:border-b-0">
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <p class="text-sm font-semibold text-slate-900 flex-1">{{ listing.title }}</p>
+                        {% if listing.listing_type == 'sale' %}
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                            Sale
+                        </span>
+                        {% elif listing.listing_type == 'swap' %}
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                            Swap
+                        </span>
+                        {% elif listing.listing_type == 'buy' %}
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            Buy
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <p class="text-xs text-slate-500">{{ listing.category_display }}</p>
+                        <span class="text-slate-300">•</span>
+                        <p class="text-xs text-slate-500">{{ listing.created_at|timesince }} ago</p>
+                    </div>
                 </div>
                 {% empty %}
                 <p class="text-slate-500 text-sm">No recent updates</p>
@@ -172,12 +194,8 @@
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <button
-                                        type="button"
-                                        onclick="openGlobalEditModal(this)"
-                                        data-id="{{ listing.id }}"
-                                        data-title="{{ listing.title }}"
-                                        data-type="{{ listing.listing_type }}"
+                                    <button type="button" onclick="openGlobalEditModal(this)" data-id="{{ listing.id }}"
+                                        data-title="{{ listing.title }}" data-type="{{ listing.listing_type }}"
                                         data-category="{{ listing.category }}"
                                         data-subcategory="{{ listing.subcategory }}"
                                         data-description="{{ listing.description }}"
@@ -189,7 +207,9 @@
                                         data-images='[{% for img in listing.images.all %}"{{ img.image.url }}"{% if not forloop.last %},{% endif %}{% endfor %}]'
                                         class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                            </path>
                                         </svg>
                                         Edit
                                     </button>
@@ -197,7 +217,9 @@
                                     <button onclick="openDeleteModal('{{ listing.id }}')"
                                         class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition ml-2">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                            </path>
                                         </svg>
                                         Delete
                                     </button>
@@ -277,8 +299,7 @@
     </main>
 
     <!-- Global Delete Confirmation Modal -->
-    <div id="delete-modal"
-        class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50"
+    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50"
         onclick="if(event.target === this) closeDeleteModal()">
         <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-auto">
             <div class="p-6">
@@ -293,7 +314,8 @@
                 </div>
 
                 <div class="mb-6">
-                    <p class="text-slate-700">Are you sure you want to delete this listing? This action cannot be undone.</p>
+                    <p class="text-slate-700">Are you sure you want to delete this listing? This action cannot be
+                        undone.</p>
                 </div>
 
                 <div class="flex justify-end gap-3">
@@ -309,14 +331,19 @@
 
     {% csrf_token %}
 
-    <div id="global-edit-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50" onclick="if(event.target === this) closeGlobalEditModal()">
+    <div id="global-edit-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50"
+        onclick="if(event.target === this) closeGlobalEditModal()">
         <div class="flex items-center justify-center min-h-screen p-4 w-full">
             <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-slate-900">Edit Listing</h2>
-                        <button onclick="closeGlobalEditModal()" type="button" class="text-slate-400 hover:text-slate-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        <button onclick="closeGlobalEditModal()" type="button"
+                            class="text-slate-400 hover:text-slate-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
                         </button>
                     </div>
 
@@ -327,15 +354,21 @@
                             <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
                             <div class="space-y-2">
                                 <label class="flex items-center">
-                                    <input type="radio" name="listing_type" value="sale" class="text-brand-sky focus:ring-brand-sky" onchange="updateEditDynamicField('sale')" required>
+                                    <input type="radio" name="listing_type" value="sale"
+                                        class="text-brand-sky focus:ring-brand-sky"
+                                        onchange="updateEditDynamicField('sale')" required>
                                     <span class="ml-2 text-slate-700">For Sale</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" name="listing_type" value="swap" class="text-brand-sky focus:ring-brand-sky" onchange="updateEditDynamicField('swap')" required>
+                                    <input type="radio" name="listing_type" value="swap"
+                                        class="text-brand-sky focus:ring-brand-sky"
+                                        onchange="updateEditDynamicField('swap')" required>
                                     <span class="ml-2 text-slate-700">For Swap</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" name="listing_type" value="buy" class="text-brand-sky focus:ring-brand-sky" onchange="updateEditDynamicField('buy')" required>
+                                    <input type="radio" name="listing_type" value="buy"
+                                        class="text-brand-sky focus:ring-brand-sky"
+                                        onchange="updateEditDynamicField('buy')" required>
                                     <span class="ml-2 text-slate-700">Looking to Buy</span>
                                 </label>
                             </div>
@@ -346,18 +379,20 @@
 
                             <input type="hidden" name="category" id="edit-category-hidden-input" required>
 
-                            <div id="edit-category-trigger"
-                                onclick="toggleEditCategoryDropdown()"
+                            <div id="edit-category-trigger" onclick="toggleEditCategoryDropdown()"
                                 class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-sky flex items-center justify-between hover:border-slate-300 transition-colors">
                                 <span id="edit-category-display-text" class="text-slate-700">Choose Category</span>
                                 <span class="text-slate-400">▾</span>
                             </div>
 
-                            <div id="edit-category-dropdown" class="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-xl z-20 hidden">
+                            <div id="edit-category-dropdown"
+                                class="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-xl z-20 hidden">
                                 <div class="flex h-64">
                                     <div class="w-1/2 border-r border-slate-100 overflow-y-auto custom-scrollbar">
                                         <div class="p-2 space-y-1">
-                                            <div class="text-xs text-slate-500 font-bold mb-2 px-2 uppercase tracking-wide">Categories</div>
+                                            <div
+                                                class="text-xs text-slate-500 font-bold mb-2 px-2 uppercase tracking-wide">
+                                                Categories</div>
                                             {% for key, data in categories.items %}
                                             <button type="button"
                                                 onclick="selectEditMainCategory('{{ key }}', '{{ data.label }}', this)"
@@ -371,7 +406,9 @@
 
                                     <div class="w-1/2 overflow-y-auto custom-scrollbar bg-slate-50/50">
                                         <div class="p-2">
-                                            <div class="text-xs text-slate-500 font-bold mb-2 px-2 uppercase tracking-wide">Subcategories</div>
+                                            <div
+                                                class="text-xs text-slate-500 font-bold mb-2 px-2 uppercase tracking-wide">
+                                                Subcategories</div>
                                             <div id="edit-subcategories-list" class="space-y-1">
                                                 <div class="px-3 py-10 text-center text-sm text-slate-400 italic">
                                                     Select a category
@@ -384,49 +421,62 @@
                         </div>
                         <div class="mb-4">
                             <label class="block text-slate-700 font-semibold mb-2">Title *</label>
-                            <input type="text" name="title" id="edit-title-input" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" required>
+                            <input type="text" name="title" id="edit-title-input"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                                required>
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-slate-700 font-semibold mb-2">Description *</label>
-                            <textarea name="description" id="edit-description-input" rows="4" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky resize-y" required></textarea>
+                            <textarea name="description" id="edit-description-input" rows="4"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky resize-y"
+                                required></textarea>
                         </div>
 
                         <div class="mb-4">
-                            <label id="edit-dynamic-label" class="block text-slate-700 font-semibold mb-2">Price *</label>
+                            <label id="edit-dynamic-label" class="block text-slate-700 font-semibold mb-2">Price
+                                *</label>
 
                             <div id="edit-price-container" class="relative hidden">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                <input type="text" name="price" id="edit-price-input" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky">
+                                <input type="text" name="price" id="edit-price-input"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky">
                             </div>
 
                             <div id="edit-swap-container" class="hidden">
-                                <input type="text" name="swap_for" id="edit-swap-input" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky">
+                                <input type="text" name="swap_for" id="edit-swap-input"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky">
                             </div>
 
                             <div id="edit-budget-container" class="relative hidden">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                <input type="text" name="budget" id="edit-budget-input" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky">
+                                <input type="text" name="budget" id="edit-budget-input"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky">
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-slate-700 font-semibold mb-2">Location *</label>
-                            <input type="text" name="location" id="edit-location-input" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" required>
+                            <input type="text" name="location" id="edit-location-input"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                                required>
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-slate-700 font-semibold mb-2">Date *</label>
-                            <input type="date" name="date" id="edit-date-input" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" required>
+                            <input type="date" name="date" id="edit-date-input"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                                required>
                         </div>
 
                         <div class="mb-6">
                             <label class="block text-slate-700 font-semibold mb-2">Listing Images</label>
 
                             <div id="edit-image-previews" class="flex flex-wrap gap-2 mb-3">
-                                </div>
+                            </div>
 
-                            <div class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors bg-slate-50 relative">
+                            <div
+                                class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors bg-slate-50 relative">
                                 <div class="flex flex-col items-center justify-center space-y-4">
                                     <div class="w-12 h-12 text-slate-400">
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -437,13 +487,15 @@
                                     </div>
                                     <div>
                                         <p class="text-lg font-medium text-slate-700">Drag and drop your images here</p>
-                                        <p class="text-sm text-slate-500">or <span class="text-brand-sky font-medium">click to browse</span></p>
+                                        <p class="text-sm text-slate-500">or <span
+                                                class="text-brand-sky font-medium">click to browse</span></p>
                                     </div>
-                                    <p id="edit-photo-counter" class="text-sm font-medium text-slate-600">Photos: 0/5</p>
+                                    <p id="edit-photo-counter" class="text-sm font-medium text-slate-600">Photos: 0/5
+                                    </p>
                                 </div>
 
-                                <input type="file" id="edit-file-input" name="images" accept="image/jpeg,image/png,image/gif,image/webp"
-                                    multiple
+                                <input type="file" id="edit-file-input" name="images"
+                                    accept="image/jpeg,image/png,image/gif,image/webp" multiple
                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer pointer-events-auto"
                                     onchange="handleEditImagePreview(this)">
                             </div>
@@ -454,8 +506,11 @@
                         </div>
 
                         <div class="flex justify-end gap-3">
-                            <button type="button" onclick="closeGlobalEditModal()" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                            <button type="submit" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update Listing</button>
+                            <button type="button" onclick="closeGlobalEditModal()"
+                                class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                            <button type="submit"
+                                class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update
+                                Listing</button>
                         </div>
                     </form>
                 </div>
@@ -467,15 +522,15 @@
         // Create a structured object of categories and subcategories from Django context
         const categoriesData = {
             {% for key, data in categories.items %}
-            "{{ key }}": {
-                label: "{{ data.label }}",
+        "{{ key }}": {
+            label: "{{ data.label }}",
                 subcategories: [
                     {% for sub in data.subcategories %}
-                    { value: "{{ sub.value }}", label: "{{ sub.label }}" },
-                    {% endfor %}
+        { value: "{{ sub.value }}", label: "{{ sub.label }}" },
+        {% endfor %}
                 ]
             },
-            {% endfor %}
+        {% endfor %}
         };
     </script>
 
@@ -524,7 +579,7 @@
         }
 
         // Handle clicking outside to close dropdown
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             const trigger = document.getElementById('edit-category-trigger');
             const dropdown = document.getElementById('edit-category-dropdown');
             if (trigger && dropdown && !trigger.contains(event.target) && !dropdown.contains(event.target)) {
@@ -682,13 +737,13 @@
 
             const label = document.getElementById('edit-dynamic-label');
 
-            if(type === 'sale') {
+            if (type === 'sale') {
                 document.getElementById('edit-price-container').classList.remove('hidden');
                 label.textContent = "Price *";
-            } else if(type === 'swap') {
+            } else if (type === 'swap') {
                 document.getElementById('edit-swap-container').classList.remove('hidden');
                 label.textContent = "Looking to Swap For *";
-            } else if(type === 'buy') {
+            } else if (type === 'buy') {
                 document.getElementById('edit-budget-container').classList.remove('hidden');
                 label.textContent = "Budget *";
             }
@@ -710,7 +765,7 @@
                 filesToAdd.forEach(file => {
                     editNewFiles.push(file);
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         const div = document.createElement('div');
                         div.className = 'relative group w-20 h-20 new-image-preview';
                         const index = editNewFiles.indexOf(file);
@@ -733,7 +788,7 @@
             document.querySelectorAll('.new-image-preview').forEach(el => el.remove());
             editNewFiles.forEach(file => {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const div = document.createElement('div');
                     div.className = 'relative group w-20 h-20 new-image-preview';
                     const newIdx = editNewFiles.indexOf(file);
@@ -755,7 +810,7 @@
             if (counter) counter.textContent = `Photos: ${total}/5`;
         }
 
-        document.getElementById('global-edit-form').addEventListener('submit', function(e) {
+        document.getElementById('global-edit-form').addEventListener('submit', function (e) {
             const fileInput = document.getElementById('edit-file-input');
             const dataTransfer = new DataTransfer();
             editNewFiles.forEach(file => dataTransfer.items.add(file));
@@ -767,25 +822,26 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const listingId = {{ edit_listing_id }};
-            const editErrors = {{ edit_errors| safe }};
-            const openModalFunc = window['openEditModal' + listingId]; // Fallback if you have specific modal functions
+        const editErrors = {{ edit_errors| safe }};
+        const openModalFunc = window['openEditModal' + listingId]; // Fallback if you have specific modal functions
 
-            // Try to find the button for this listing to trigger openGlobalEditModal correctly
-            const btn = document.querySelector(`button[data-id="${listingId}"]`);
-            if(btn) {
-                openGlobalEditModal(btn);
-            }
+        // Try to find the button for this listing to trigger openGlobalEditModal correctly
+        const btn = document.querySelector(`button[data-id="${listingId}"]`);
+        if (btn) {
+            openGlobalEditModal(btn);
+        }
 
-            // Display errors (simplified for this context)
-            if (editErrors) {
-                console.log('Errors:', editErrors);
-                // You would implement specific error showing logic here if needed
-                alert('Please correct the errors in the form.');
-            }
+        // Display errors (simplified for this context)
+        if (editErrors) {
+            console.log('Errors:', editErrors);
+            // You would implement specific error showing logic here if needed
+            alert('Please correct the errors in the form.');
+        }
         });
     </script>
     {% endif %}
 
     {% include 'accounts/logout_modal.html' %}
 </body>
+
 </html>
