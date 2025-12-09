@@ -14,8 +14,10 @@ urlpatterns = [
     path('create/', views.create_community_post, name='create_community_post'),
     path('<int:post_id>/like/', views.toggle_post_like, name='toggle_post_like'),
     path('<int:post_id>/delete/', views.delete_community_post, name='delete_community_post'),
+    path('<int:post_id>/edit/', views.edit_community_post, name='edit_community_post'),
 
     # Comment Actions
     path('<int:post_id>/comment/', views.add_comment, name='add_comment'),
     path('<int:post_id>/comment/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
+    path('<int:post_id>/comment/<int:comment_id>/edit/', views.edit_comment, name='edit_comment'),
 ]

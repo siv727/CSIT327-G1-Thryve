@@ -162,3 +162,49 @@ def delete_comment(request, post_id, comment_id):
         return JsonResponse({'status': 'success', 'message': 'Comment deleted successfully.'})
     
     return HttpResponseBadRequest("Invalid request.")
+# -----------------------------------------------------------
+# CHANGE 7: Added login_url='login' to edit_community_post
+@login_required(login_url='login')
+def edit_community_post(request, post_id):
+    """Edits a community post if the user is the author (via AJAX)."""
+    if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        post = get_object_or_404(CommunityPost, id=post_id)
+        
+        if post.user != request.user:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'You are not authorized to edit this post.'
+            }, status=403)
+
+        form = CommunityPostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'status': 'success', 'content': post.content})
+        else:
+            return JsonResponse({'status': 'error', 'message': form.errors}, status=400)
+    
+    return HttpResponseBadRequest("Invalid request.")
+
+
+# -----------------------------------------------------------
+# CHANGE 8: Added login_url='login' to edit_comment
+@login_required(login_url='login')
+def edit_comment(request, post_id, comment_id):
+    """Edits a comment if the user is the author (via AJAX)."""
+    if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        comment = get_object_or_404(Comment, id=comment_id, post_id=post_id)
+        
+        if comment.user != request.user:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'You are not authorized to edit this comment.'
+            }, status=403)
+
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'status': 'success', 'content': comment.content})
+        else:
+            return JsonResponse({'status': 'error', 'message': form.errors}, status=400)
+    
+    return HttpResponseBadRequest("Invalid request.")
