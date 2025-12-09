@@ -1,4 +1,5 @@
 # community_app/urls.py
+
 from django.urls import path
 from . import views
 
@@ -12,4 +13,8 @@ urlpatterns = [
     # Other paths like /community/create/
     path('create/', views.create_community_post, name='create_community_post'),
     path('<int:post_id>/like/', views.toggle_post_like, name='toggle_post_like'),
+    
+    # --- NEW URL: Add Comment ---
+    path('<int:post_id>/comment/', views.add_comment, name='add_comment'),
+    # -----------------------------
 ]

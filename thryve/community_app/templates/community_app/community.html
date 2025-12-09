@@ -1,214 +1,456 @@
+
+
 {% load static %}
 {% load i18n %}
 
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="utf-8" />
+
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+
     <title>Thryve • Community Feed</title>
 
+
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script>
+
         // Your existing Tailwind configuration
+
         tailwind.config = {
+
             theme: {
+
                 extend: {
+
                     colors: {
+
                         brand: { 500: '#26a8e6', 600: '#199ad7', 700: '#148cc5' },
+
                         ink: '#0f172a',
+
                         line: '#e7edf4',
+
                         bg: '#f7fbfd'
+
                     },
+
                     boxShadow: { soft: '0 10px 28px rgba(2,8,23,.06)' },
+
                     fontFamily: { inter: ['Inter','system-ui','-apple-system','Segoe UI','Roboto','sans-serif'] }
+
                 }
+
             }
+
         }
+
     </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
     
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+
+
     <style>
+
         /* General body style from your business_logo.html */
+
         .font-inter { font-family: 'Inter', sans-serif; }
+
         .bg-\[\#f7fbfd\] { background-color: #f7fbfd; }
+
         .text-brand-ink { color: #0f172a; }
 
+
+
         /* Styles to match the look of the SME Exchange example */
+
         .feed-container {
+
             max-width: 700px;
+
             margin: 0 auto;
+
         }
+
         .post-card {
+
             border: 1px solid #e7edf4; /* Soft border */
+
             box-shadow: 0 2px 4px rgba(0,0,0,.05); /* Light shadow */
+
         }
+
         .btn-action-icon {
+
             background: none;
+
             border: none;
+
             cursor: pointer;
+
             padding: 0;
+
             color: #6c757d; 
+
             transition: color 0.2s;
+
         }
+
         /* Style for post meta info (company name and date) */
+
         .post-info-text {
+
             display: inline-flex;
+
             align-items: center;
+
             font-size: 0.875rem;
+
         }
+
         .post-info-text i {
+
             margin-right: 3px; 
+
         }
+
     </style>
+
 </head>
+
 <body class="font-inter bg-[#f7fbfd] text-brand-ink">
+
+
 
     {% include 'thryve_app/navbar.html' %} 
 
+
+
     <div class="container mt-4">
+
         <div class="d-flex justify-content-between align-items-center mb-4">
+
             <div>
+
                 <h2>Community Feed</h2>
+
                 <p class="text-muted">Share experiences and connect with other SMEs</p>
+
             </div>
+
             <button class="btn btn-primary" data-toggle="modal" data-target="#createPostModal">
+
                 <i class="fas fa-plus-circle"></i> Create Post
+
             </button>
+
         </div>
+
+
 
         <div class="modal fade" id="createPostModal" tabindex="-1" role="dialog" aria-labelledby="createPostLabel" aria-hidden="true">
+
             <div class="modal-dialog" role="document">
+
                 <div class="modal-content">
+
                     <div class="modal-header">
+
                         <h5 class="modal-title" id="createPostLabel">Create New Post</h5>
+
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
                             <span aria-hidden="true">&times;</span>
+
                         </button>
+
                     </div>
+
                     <form method="POST" action="{% url 'community_app:create_community_post' %}">
+
                         {% csrf_token %}
+
                         <div class="modal-body">
+
                             {{ form.content }} 
+
                             {% if form.content.errors %}
+
                                 <div class="alert alert-danger mt-2">{{ form.content.errors }}</div>
+
                             {% endif %}
+
                         </div>
+
                         <div class="modal-footer">
+
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
                             <button type="submit" class="btn btn-primary">Post</button>
+
                         </div>
+
                     </form>
+
                 </div>
+
             </div>
+
         </div>
+
+
 
         <div class="feed-container">
-            {% for post in posts %}
-            <div class="post-card card mb-3">
-                <div class="card-body">
-                    <div class="post-header mb-2">
-                        <h5 class="mb-1">{{ post.user.first_name }} {{ post.user.last_name }}</h5>
-                        
-                        <p class="text-muted small mb-0">
-                            <span class="post-info-text">
-                                <i class="fas fa-building"></i>
-                                {{ post.user.businessprofile.company_name|default:"SME User" }} </span> 
-                            <span class="mx-1">•</span> 
-                            <span class="post-info-text">
-                                <i class="fas fa-clock"></i>
-                                {{ post.created_at|date:"n/j/Y" }}
-                            </span>
-                        </p>
-                    </div>
-                    <p class="card-text">{{ post.content|linebreaksbr }}</p>
-                    
-                    <hr class="my-2">
-                    
-                    <div class="post-actions d-flex align-items-center">
-                        <button class="like-btn btn-action-icon {% if post.id in liked_posts_ids %}text-danger{% endif %}" data-post-id="{{ post.id }}">
-                            <i class="{% if post.id in liked_posts_ids %}fas{% else %}far{% endif %} fa-heart"></i> 
-                            <span class="like-count ml-1">{{ post.likes_count }}</span>
-                        </button>
-                        
-                        <button class="comment-btn btn-action-icon ml-3 text-secondary" disabled> 
-                            <i class="far fa-comment"></i> 
-                            <span class="comment-count ml-1">{{ post.comments_count }}</span>
-                        </button>
-                    </div>
 
-                    </div>
-            </div>
-            {% empty %}
-            <div class="alert alert-info" role="alert">
-                No posts in the community feed yet. Be the first to share an experience!
-            </div>
-            {% endfor %}
+           {% for post in posts %}
+<div class="post-card card mb-3">
+    <div class="card-body">
+        <div class="post-header mb-2">
+            <h5 class="mb-1">{{ post.user.first_name }} {{ post.user.last_name }}</h5>
+            <p class="text-muted small mb-0">
+                <span class="post-info-text">
+                    <i class="fas fa-building"></i>
+                    {{ post.user.businessprofile.company_name|default:"SME User" }} </span> 
+                <span class="mx-1">•</span> 
+                <span class="post-info-text">
+                    <i class="fas fa-clock"></i>
+                    {{ post.created_at|date:"n/j/Y" }}
+                </span>
+            </p>
         </div>
+        <p class="card-text">{{ post.content|linebreaksbr }}</p>
+        
+        <hr class="my-2">
+        
+        <div class="post-actions d-flex align-items-center">
+            <button class="like-btn btn-action-icon {% if post.id in liked_posts_ids %}text-danger{% endif %}" data-post-id="{{ post.id }}">
+                <i class="{% if post.id in liked_posts_ids %}fas{% else %}far{% endif %} fa-heart"></i> 
+                <span class="like-count ml-1">{{ post.likes_count }}</span>
+            </button>
+            
+            <button class="comment-btn btn-action-icon ml-3 text-secondary" 
+                data-toggle="collapse" 
+                data-target="#comments-{{ post.id }}" 
+                aria-expanded="false" 
+                aria-controls="comments-{{ post.id }}"> 
+                <i class="far fa-comment"></i> 
+                <span class="comment-count ml-1">{{ post.comments_count }}</span>
+            </button>
+            </div>
+
+        <div class="comments-section mt-3 collapse {% if post.comments_count > 0 %}show{% endif %}" id="comments-{{ post.id }}">
+            
+            <div class="existing-comments-{{ post.id }}">
+                {% for comment in post.comments.all %}
+                <div class="comment-item border-left pl-3 py-1 mb-2">
+                    <p class="mb-0 small font-weight-bold">
+                        {{ comment.user.first_name }} {{ comment.user.last_name }} 
+                        <span class="text-muted font-weight-normal">• {{ comment.created_at|date:"n/j/Y" }}</span>
+                    </p>
+                    <p class="mb-0 small text-muted">
+                        {{ comment.user.businessprofile.company_name|default:"SME User" }}
+                    </p>
+                    <p class="mb-0">{{ comment.content|linebreaksbr }}</p>
+                </div>
+                {% empty %}
+                <div class="no-comments-{{ post.id }} text-center text-muted small py-2">
+                    No comments yet.
+                </div>
+                {% endfor %}
+            </div>
+
+            <form class="add-comment-form mt-2" data-post-id="{{ post.id }}" action="{% url 'community_app:add_comment' post.id %}" method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+                    {{ comment_form.content }} 
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary btn-sm">Post</button>
+                    </div>
+                </div>
+                </form>
+            
+        </div>
+        </div>
+</div>
+{% empty %}
+{% endfor %}
+
+        </div>
+
     </div>
 
+
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        let cookie = cookies[i].trim();
-                        if (cookie.startsWith(name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
+
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // CSRF Token utility (unchanged)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
                     }
                 }
-                return cookieValue;
             }
-            const csrftoken = getCookie('csrftoken');
-            
-            const likeButtons = document.querySelectorAll('.like-btn');
-            
-            likeButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const postId = this.getAttribute('data-post-id');
-                    const likeIcon = this.querySelector('i');
-                    const likeCountSpan = this.querySelector('.like-count');
-                    
-                    const url = `/community/${postId}/like/`; 
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+        
+        // --- Existing LIKE Logic (Toggling the heart icon) ---
+        const likeButtons = document.querySelectorAll('.like-btn');
+        
+        likeButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const postId = this.getAttribute('data-post-id');
+                const likeIcon = this.querySelector('i');
+                const likeCountSpan = this.querySelector('.like-count');
+                
+                const url = `/community/${postId}/like/`; 
 
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRFToken': csrftoken,
-                            'X-Requested-With': 'XMLHttpRequest' 
-                        },
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            likeCountSpan.textContent = data.new_count;
-                            if (data.action === 'liked') {
-                                likeIcon.classList.remove('far');
-                                likeIcon.classList.add('fas', 'text-danger');
-                            } else {
-                                likeIcon.classList.remove('fas', 'text-danger');
-                                likeIcon.classList.add('far');
-                            }
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'X-Requested-With': 'XMLHttpRequest' 
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        likeCountSpan.textContent = data.new_count;
+                        if (data.action === 'liked') {
+                            likeIcon.classList.remove('far');
+                            likeIcon.classList.add('fas', 'text-danger');
+                        } else {
+                            likeIcon.classList.remove('fas', 'text-danger');
+                            likeIcon.classList.add('far');
                         }
-                    })
-                    .catch(error => console.error('Error toggling like:', error));
+                    }
+                })
+                .catch(error => console.error('Error toggling like:', error));
+            });
+        });
+
+        // --- NEW COMMENT Logic ---
+        const commentForms = document.querySelectorAll('.add-comment-form');
+
+        commentForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const postId = this.getAttribute('data-post-id');
+                const url = this.getAttribute('action'); 
+                const contentInput = this.querySelector('textarea[name="content"]');
+                const content = contentInput.value.trim();
+                
+                if (!content) {
+                    alert('Comment content is required.');
+                    return;
+                }
+
+                // Use the built-in FormData for easier POST submission
+                const formData = new FormData(form); 
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'X-Requested-With': 'XMLHttpRequest' 
+                    },
+                    body: formData,
+                })
+                .then(response => {
+                    // Check if response is 400 or 200 before parsing
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.message || 'Validation Failed');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        // 1. Clear the input field
+                        contentInput.value = '';
+
+                        // 2. Build the new comment HTML 
+                        const newCommentHTML = `
+                            <div class="comment-item border-left pl-3 py-1 mb-2">
+                                <p class="mb-0 small font-weight-bold">
+                                    ${data.user_full_name} 
+                                    <span class="text-muted font-weight-normal">• ${data.created_at}</span>
+                                </p>
+                                <p class="mb-0 small text-muted">
+                                    ${data.business_name}
+                                </p>
+                                <p class="mb-0">${data.content.replace(/\n/g, '<br>')}</p>
+                            </div>
+                        `;
+
+                        // 3. Insert the new comment
+                        const commentsContainer = document.querySelector(`.existing-comments-${postId}`);
+                        commentsContainer.insertAdjacentHTML('beforeend', newCommentHTML);
+                        
+                        // 4. Update the comment count span
+                        const postCard = form.closest('.post-card');
+                        const commentCountSpan = postCard.querySelector('.comment-count');
+                        commentCountSpan.textContent = data.new_count;
+
+                        // 5. Ensure the comment section is visible/expanded
+                        const commentsCollapse = document.getElementById(`comments-${postId}`);
+                        if (commentsCollapse && !commentsCollapse.classList.contains('show')) {
+                            // Use Bootstrap's native collapse methods if possible, 
+                            // but adding 'show' class is enough for a basic open
+                            commentsCollapse.classList.add('show');
+                        }
+                        
+                        // 6. Remove "No comments yet" message if present
+                        const noCommentsMessage = document.querySelector(`.no-comments-${postId}`);
+                        if (noCommentsMessage) {
+                            noCommentsMessage.remove();
+                        }
+                    } 
+                })
+                .catch(error => {
+                    console.error('Error adding comment:', error);
+                    alert('Failed to post comment. ' + error.message);
                 });
             });
         });
-    </script>
+        // --- End New Comment Logic ---
+    });
+</script>
+
      {% include 'accounts/logout_modal.html' %}
+
 </body>
+
 </html>

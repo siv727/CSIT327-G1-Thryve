@@ -1,4 +1,5 @@
 # community_app/models.py
+
 from django.db import models
 from django.conf import settings
 
@@ -22,6 +23,14 @@ class CommunityPost(models.Model):
         # Count of related PostLike objects
         return self.likes.count()
 
+    # --- NEW PROPERTY: Comment Count ---
+    @property
+    def comments_count(self):
+        # Count of related Comment objects
+        return self.comments.count()
+    # -----------------------------------
+
+
 class PostLike(models.Model):
     post = models.ForeignKey(CommunityPost, on_delete=models.CASCADE, related_name='likes')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='liked_posts')
@@ -35,3 +44,27 @@ class PostLike(models.Model):
     def __str__(self):
         return f"{self.user.username} liked Post {self.post.id}"
 
+
+# --- NEW MODEL: Comment ---
+class Comment(models.Model):
+    """Represents a comment on a community post."""
+    post = models.ForeignKey(
+        CommunityPost, 
+        on_delete=models.CASCADE,
+        related_name='comments' # Use 'comments' for reverse lookups
+    )
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE
+    )
+    content = models.TextField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at'] # Display oldest comments first
+        verbose_name = "Comment"
+        verbose_name_plural = "Comments"
+
+    def __str__(self):
+        return f'Comment by {self.user.username} on Post {self.post.id}'
+# -----------------------------
