@@ -1,285 +1,87 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.http import JsonResponse
-from django.core.exceptions import ValidationError
-from .forms import ListingForm, validate_images_count, validate_image_file
-from .models import ListingImage, Listing
 from django.db.models import Q
-from .forms import ListingForm
-from .models import ListingImage, Listing, Connection, ConnectionRequest
+from django.contrib import messages
+from django.core.exceptions import ValidationError
 
-LISTING_TYPES = [
-    {'value': 'sale', 'label': 'For Sale'},
-    {'value': 'swap', 'label': 'For Swap'},
-    {'value': 'buy', 'label': 'Looking to Buy'},
-]
-
-@login_required(login_url='login')
-def my_listings(request):
-    # Get listings created by the current user
-    user_listings = Listing.objects.filter(user=request.user).prefetch_related('images').order_by('-created_at')
-
-    # Process listings data for easier template usage
-    processed_listings = []
-    for listing in user_listings:
-        listing_data = {
-            'obj': listing,  # Original listing object
-            'id': listing.id,
-            'title': listing.title,
-            'description': listing.description,
-            'location': listing.location,
-            'your_name': listing.your_name,
-            'company': listing.company,
-            'listing_type': listing.listing_type,
-            'category': listing.category,
-            'subcategory': listing.subcategory,
-            'category_display': listing.category_display,
-            'subcategory_display': listing.subcategory_display,
-            'formatted_price': listing.formatted_price,
-            'formatted_budget': listing.formatted_budget,
-            'formatted_date': listing.formatted_date,
-            'price': listing.price,
-            'budget': listing.budget,
-            'swap_for': listing.swap_for,
-            'date': listing.date,
-            'main_image': listing.main_image,
-            'images': listing.images.all(),
-            'image_count': listing.image_count,
-            'can_add_images': listing.can_add_images,
-        }
-        processed_listings.append(listing_data)
-
-    return render(request, 'landing/home.html', {
-        'listings': user_listings,  # Keep original for backward compatibility
-        'processed_listings': processed_listings,
-        'is_my_listings': True,
-        'categories': Listing.get_categories_dict(),
-        'listing_types': LISTING_TYPES,
-    })
-
-@login_required(login_url='login')
-def create_listing(request):
-    if request.method == 'POST':
-        form = ListingForm(request.POST, request.FILES)
-
-        # Validate category field manually since it's not in the form
-        category_value = request.POST.get('category', '').strip()
-        if not category_value:
-            form.add_error(None, 'Category is required.')
-
-        if form.is_valid() and category_value:
-            listing = form.save(commit=False)
-            listing.user = request.user
-            try:
-                listing.your_name = request.user.profile.display_name or f"{request.user.first_name} {request.user.last_name}"
-            except:
-                listing.your_name = f"{request.user.first_name} {request.user.last_name}"
-            listing.company = request.user.company_name
-
-            # Parse category and subcategory from the POST data
-            if '-' in category_value:
-                main_category, subcategory = category_value.split('-', 1)
-                listing.category = main_category
-                listing.subcategory = subcategory
-            else:
-                listing.category = category_value
-                listing.subcategory = None
-
-            listing.save()
-
-            # Handle multiple image uploads with validation
-            images = request.FILES.getlist('images')
-            if images:
-                try:
-                    # Validate image count
-                    validate_images_count(images)
-
-                    # Validate each image file
-                    for image in images:
-                        validate_image_file(image)
-
-                    # If validation passes, save images
-                    for i, image_file in enumerate(images[:5]):  # Limit to 5 images
-                        ListingImage.objects.create(
-                            listing=listing,
-                            image=image_file,
-                            is_main=(i == 0)  # First image is main
-                        )
-                except ValidationError as e:
-                    # If validation fails, delete the listing and return error
-                    listing.delete()
-                    messages.error(request, str(e))
-                    return redirect('home')
-
-            messages.success(request, 'Your listing has been created successfully!')
-            return redirect('home')
-        else:
-            # Form is invalid - store errors in session and redirect
-            form_errors = form.errors.get_json_data()
-
-            # Add category error if missing
-            if not category_value:
-                form_errors['category'] = [{'message': 'This field is required.', 'code': 'required'}]
-
-            request.session['form_errors'] = form_errors
-            request.session['form_data'] = request.POST.dict()
-            request.session['show_create_modal'] = True
-            return redirect('home')
-    else:
-        form = ListingForm()
-    return render(request, 'thryve_app/create_listing.html', {'form': form})
-
-@login_required(login_url='login')
-def edit_listing(request, listing_id):
-    try:
-        listing = Listing.objects.get(id=listing_id, user=request.user)
-    except Listing.DoesNotExist:
-        messages.error(request, 'Listing not found.')
-        return redirect('thryve_app:my_listings')
-
-    if request.method == 'POST':
-        form = ListingForm(request.POST, request.FILES, instance=listing)
-        if form.is_valid():
-            listing = form.save(commit=False)
-
-            # Parse category and subcategory from the POST data
-            category_value = request.POST.get('category', '')
-            if '-' in category_value:
-                main_category, subcategory = category_value.split('-', 1)
-                listing.category = main_category
-                listing.subcategory = subcategory
-            else:
-                listing.category = category_value
-                listing.subcategory = None
-
-            listing.save()
-
-            # Handle image reordering first (from POST data)
-            image_order = request.POST.get('image_order', '')
-            if image_order:
-                image_ids = [int(id.strip()) for id in image_order.split(',') if id.strip()]
-                for index, image_id in enumerate(image_ids):
-                    try:
-                        image_obj = ListingImage.objects.get(id=image_id, listing=listing)
-                        image_obj.is_main = (index == 0)  # First image is main
-                        image_obj.save()
-                    except ListingImage.DoesNotExist:
-                        pass  # Skip if image doesn't exist
-
-            # Handle multiple image uploads (only add new ones, don't replace existing)
-            images = request.FILES.getlist('images')
-            if images:
-                current_images_count = listing.images.count()
-
-                try:
-                    # Validate image count
-                    validate_images_count(images, current_images_count)
-
-                    # Validate each image file
-                    for image in images:
-                        validate_image_file(image)
-
-                    # If validation passes, save images
-                    for i, image_file in enumerate(images[:5 - current_images_count]):
-                        ListingImage.objects.create(
-                            listing=listing,
-                            image=image_file,
-                            is_main=(current_images_count == 0 and i == 0)
-                        )
-                except ValidationError as e:
-                    messages.error(request, str(e))
-                    return redirect('thryve_app:my_listings')
-
-            messages.success(request, 'Your listing has been updated successfully!')
-            return redirect('thryve_app:my_listings')
-        else:
-            # Form is invalid - show errors
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
-            return redirect('thryve_app:my_listings')
-
-    # GET request - render edit page
-    form = ListingForm(instance=listing)
-    category_value = listing.category
-    if listing.subcategory:
-        category_value = f"{listing.category}-{listing.subcategory}"
-
-    return render(request, 'thryve_app/edit_listing.html', {
-        'form': form,
-        'listing': listing,
-        'category_value': category_value,
-        'categories': Listing.get_categories_dict(),
-        'listing_types': LISTING_TYPES,
-    })
-
-@login_required(login_url='login')
-def delete_listing(request, listing_id):
-    try:
-        listing = Listing.objects.get(id=listing_id, user=request.user)
-        listing.delete()
-        messages.success(request, 'Your listing has been deleted successfully!')
-    except Listing.DoesNotExist:
-        messages.error(request, 'Listing not found.')
-
-    return redirect('thryve_app:my_listings')
+from marketplace_app.forms import ListingForm, validate_images_count, validate_image_file
+from marketplace_app.views import LISTING_TYPES
+from thryve_app.models import Listing, ListingImage
+from .models import Connection, ConnectionRequest
+from booking_app.models import BookingRequest
 
 
 @login_required(login_url='login')
 def dashboard(request):
-    # Get user's recent bookings (placeholder data)
-    recent_bookings = [
-        {
-            'item': 'Mousepad',
-            'date': '10/20/2025 – 10/29/2025',
-            'status': 'pending'
-        }
-    ]
+    # Get user's recent bookings (5 most recent)
+    recent_bookings_qs = BookingRequest.objects.filter(
+        sender=request.user
+    ).select_related('listing').order_by('-created_at')[:5]
+    
+    recent_bookings = []
+    for booking in recent_bookings_qs:
+        recent_bookings.append({
+            'item': booking.listing.title,
+            'date': f"{booking.proposed_start_date.strftime('%m/%d/%Y')} – {booking.proposed_end_date.strftime('%m/%d/%Y')}",
+            'status': booking.status
+        })
 
-    # Get user's active listings (placeholder data)
-    active_listings = [
-        {
-            'title': 'Kpop Card',
-            'type': 'Swap',
-            'other': 'Other',
-            'status': 'available'
-        },
-        {
-            'title': 'Mousepad',
-            'type': 'Sale',
-            'other': 'Electronics',
-            'status': 'available'
-        },
-        {
-            'title': 'Mousepad',
-            'type': 'Sale',
-            'other': 'Electronics',
-            'status': 'available'
-        }
-    ]
+    # Get user's active listings (real data)
+    user_active_listings = Listing.objects.filter(user=request.user, is_available=True)
+    active_listings = []
+    for listing in user_active_listings:
+        active_listings.append({
+            'title': listing.title,
+            'type': dict(Listing.LISTING_TYPE_CHOICES).get(listing.listing_type, listing.listing_type).title(),
+            'other': listing.category_display,
+            'status': 'available' if listing.is_available else 'unavailable',
+        })
 
-    # Get recent marketplace updates (placeholder data)
-    marketplace_updates = [
-        {
-            'item': 'Tractor',
-            'detail': 'Sale - $600'
-        }
-    ]
+    # Get recent marketplace updates (5 most recent listings excluding user's own)
+    marketplace_updates = Listing.objects.exclude(user=request.user).order_by('-created_at')[:5]
 
-    # Activity summary counts (placeholder data)
+    # Get incoming connection requests count
+    incoming_connection_requests_count = ConnectionRequest.objects.filter(
+        receiver=request.user,
+        status='pending'
+    ).count()
+
+    # Activity summary counts
+    total_bookings_count = BookingRequest.objects.filter(sender=request.user).count()
+    pending_bookings_count = BookingRequest.objects.filter(sender=request.user, status='pending').count()
+    
     activity_summary = {
-        'total_bookings': 1,
-        'active_listings': 4,
-        'pending_booking_requests': 1,
-        'connection_requests': 0
+        'total_bookings': total_bookings_count,
+        'active_listings': user_active_listings.count(),
+        'pending_booking_requests': pending_bookings_count,
+        'connection_requests': incoming_connection_requests_count
     }
+
+    # Get all user's listings for the "My Listings" section
+    user_listings = Listing.objects.filter(user=request.user).order_by('-created_at')
+
+    category_dropdown_data = []
+
+    # Loop through the main categories defined in your Model
+    for cat_key, cat_label in Listing.CATEGORY_CHOICES:
+        # Get the subcategories for this specific category key
+        # Returns an empty list [] if the key isn't found
+        subcats = Listing.SUBCATEGORY_CHOICES.get(cat_key, [])
+
+        category_dropdown_data.append({
+            'code': cat_key,  # e.g. 'electronics'
+            'label': cat_label,  # e.g. 'Electronics'
+            'subcategories': subcats  # The list of tuples for that category
+        })
 
     context = {
         'recent_bookings': recent_bookings,
         'active_listings': active_listings,
         'marketplace_updates': marketplace_updates,
         'activity_summary': activity_summary,
+        'user_listings': user_listings,
+        'categories': Listing.get_categories_dict(),
     }
 
     return render(request, 'thryve_app/dashboard.html', context)
@@ -475,3 +277,126 @@ def cancel_connection_request(request):
         except ConnectionRequest.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Connection request not found.'})
     return JsonResponse({'success': False, 'message': 'Invalid request.'})
+
+@login_required(login_url='login')
+def remove_connection(request):
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        connection_id = request.POST.get('connection_id')
+        try:
+            connection = Connection.objects.get(
+                Q(id=connection_id) & (Q(user1=request.user) | Q(user2=request.user))
+            )
+            # Get the other user's name
+            other_user = connection.user2 if connection.user1 == request.user else connection.user1
+            other_user_name = other_user.get_full_name()
+            # Delete the connection
+            connection.delete()
+            # Also delete any connection requests between these users
+            ConnectionRequest.objects.filter(
+                (Q(sender=request.user) & Q(receiver=other_user)) |
+                (Q(sender=other_user) & Q(receiver=request.user))
+            ).delete()
+
+            return JsonResponse({
+                'success': True,
+                'message': f'Connection with {other_user_name} removed successfully.',
+                'other_user_name': other_user_name
+            })
+        except Connection.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Connection not found.'})
+    return JsonResponse({'success': False, 'message': 'Invalid request.'})
+
+
+@login_required(login_url='login')
+def edit_listing(request, listing_id):
+    listing = get_object_or_404(Listing, id=listing_id, user=request.user)
+
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES, instance=listing)
+        if form.is_valid():
+            listing = form.save(commit=False)
+
+            category_value = request.POST.get('category', '')
+            if '-' in category_value:
+                main_category, subcategory = category_value.split('-', 1)
+                listing.category = main_category
+                listing.subcategory = subcategory
+            else:
+                listing.category = category_value
+                listing.subcategory = None
+
+            listing.save()
+
+            # Handle Image Deletion
+            deleted_images = request.POST.get('deleted_images', '')
+            if deleted_images:
+                deleted_image_ids = [int(id.strip()) for id in deleted_images.split(',') if id.strip()]
+                for img_id in deleted_image_ids:
+                    try:
+                        image_obj = ListingImage.objects.get(id=img_id, listing=listing)
+                        image_obj.delete()
+                    except ListingImage.DoesNotExist:
+                        pass
+
+            # Handle Image Reordering
+            image_order = request.POST.get('image_order', '')
+            if image_order:
+                image_ids = [int(id.strip()) for id in image_order.split(',') if id.strip()]
+                for index, img_id in enumerate(image_ids):
+                    try:
+                        image_obj = ListingImage.objects.get(id=img_id, listing=listing)
+                        image_obj.is_main = (index == 0)
+                        image_obj.save()
+                    except ListingImage.DoesNotExist:
+                        pass
+
+            # Handle New Images
+            images = request.FILES.getlist('images')
+            if images:
+                current_images_count = listing.images.count()
+                try:
+                    validate_images_count(images, current_images_count)
+                    for image in images:
+                        validate_image_file(image)
+
+                    for i, image_file in enumerate(images[:5 - current_images_count]):
+                        ListingImage.objects.create(
+                            listing=listing,
+                            image=image_file,
+                            is_main=(current_images_count == 0 and i == 0)
+                        )
+                except ValidationError as e:
+                    messages.error(request, str(e))
+                    return redirect('thryve_app:dashboard')
+
+            messages.success(request, 'Your listing has been updated successfully!')
+            return redirect('thryve_app:dashboard')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+            return redirect('thryve_app:dashboard')
+
+    # GET request
+    form = ListingForm(instance=listing)
+    category_value = listing.category
+    if listing.subcategory:
+        category_value = f"{listing.category}-{listing.subcategory}"
+
+    return render(request, 'edit_listing.html', {
+        'form': form,
+        'listing': listing,
+        'category_value': category_value,
+        'categories': Listing.get_categories_dict(),
+        'listing_types': LISTING_TYPES,
+    })
+
+
+@login_required(login_url='login')
+def delete_listing(request, listing_id):
+    """Delete a listing from dashboard"""
+    listing = get_object_or_404(Listing, id=listing_id, user=request.user)
+    if request.method == 'POST':
+        listing.delete()
+        messages.success(request, 'Your listing has been deleted successfully!')
+    return redirect('thryve_app:dashboard')

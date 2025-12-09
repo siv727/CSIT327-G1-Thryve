@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>User Register - Thryve</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/styles.css' %}">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -64,6 +63,17 @@
                 {% endif %}
             </div>
 
+            <!-- Phone Number -->
+            <div>
+                <label for="{{ form.phone_number.id }}" class="block text-xs font-medium text-gray-700 mb-1">
+                    Phone Number
+                </label>
+                {{ form.phone_number }}
+                {% if form.phone_number.errors %}
+                <p class="text-red-500 text-xs mt-1">{{ form.phone_number.errors.0 }}</p>
+                {% endif %}
+            </div>
+
             <!-- Password -->
             <div>
                 <label for="{{ form.password1.id }}" class="block text-xs font-medium text-gray-700 mb-1">
@@ -105,6 +115,63 @@
             </p>
         </div>
     </div>
+
+    <script>
+        function formatPhoneNumber(input) {
+            let value = input.value;
+            let cursorPosition = input.selectionStart;
+
+            // Store the previous full value and cursor position
+            const previousValue = input.dataset.previousValue || '';
+
+            // 1. Remove all non-digit characters to get pure digits
+            let digits = value.replace(/\D/g, '');
+
+            // --- Deletion Logic (Kept mostly the same for backspace fix) ---
+            if (value.length < previousValue.length) {
+                input.dataset.previousValue = value;
+                input.dataset.previousCursor = cursorPosition;
+                return;
+            }
+            // -------------------------------------------------------------
+
+            // Limit to 10 digits
+            if (digits.length > 10) {
+                digits = digits.slice(0, 10);
+            }
+
+            // 2. Format as XXX XXX XXXX
+            let formatted = '';
+            if (digits.length >= 6) {
+                formatted = digits.slice(0, 3) + ' ' + digits.slice(3, 6) + ' ' + digits.slice(6);
+            } else if (digits.length >= 3) {
+                formatted = digits.slice(0, 3) + ' ' + digits.slice(3);
+            } else {
+                formatted = digits;
+            }
+
+            // 3. Adjust cursor position for addition
+            let newCursorPosition = cursorPosition;
+
+            // If the formatted string is longer than the previous value, we added content (a digit and possibly a space).
+            if (formatted.length > previousValue.length) {
+                // If the character immediately *before* the new cursor position is a space,
+                // it means we just typed a digit and the space was inserted behind it.
+                // We need to move the cursor one more position to jump over the new space.
+                if (formatted.charAt(cursorPosition - 1) === ' ' && cursorPosition > 0) {
+                    newCursorPosition++;
+                }
+            }
+
+            // Set the new value and store the new state
+            input.value = formatted;
+            input.dataset.previousValue = formatted; // Store the new *formatted* value
+
+            // Store and set the cursor back
+            input.dataset.previousCursor = newCursorPosition;
+            input.setSelectionRange(newCursorPosition, newCursorPosition);
+        }
+    </script>
 </body>
 
 </html>

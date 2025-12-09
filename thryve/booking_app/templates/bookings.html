@@ -39,194 +39,1079 @@
 
 <body class="font-inter bg-[#f7fbfd] text-brand-ink">
 
-  <!-- NAVBAR -->
-   <header class="bg-[#23d3ee] text-white shadow">
-    <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
+    {%  include 'thryve_app/navbar.html' %}
 
-      <!-- Left: Logo -->
-      <a href="{% url 'home' %}" class="flex items-center gap-2">
-        <span
-          class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
-        <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
-      </a>
+    <main class="max-w-[1200px] mx-auto px-5 py-8">
+        <div class="flex items-start justify-between gap-4 mb-6">
+            <div>
+                <h1 class="text-[38px] leading-[1.1] font-extrabold">Booking Requests</h1>
+                <p class="text-slate-600 mt-1">Manage your booking requests and transactions</p>
+            </div>
+        </div>
 
-      <!-- Center: Navigation Links -->
-      {% with active=request.resolver_match.url_name %}
-      <nav class="flex items-center gap-6 text-[14px] font-medium">
-        <!-- Dashboard -->
-        <a href="{% url 'thryve_app:dashboard' %}"
-          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"></path>
-          </svg>
-          <span class="leading-none">Dashboard</span>
-          {% if active == 'dashboard' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
+        <!-- Tabs -->
+        <div class="bg-white/90 backdrop-blur rounded-xl shadow-soft border border-slate-100 p-5 mb-8"
+              data-initial-tab="scheduled">
+
+            <div class="flex gap-8 border-b border-slate-200" id="tab-controls">
+                <button id="tabScheduled" class="tab-button flex items-center gap-2 pb-3
+                    text-slate-500 hover:text-slate-700 font-medium" data-count="{{ scheduled_count }}">
+                    Scheduled ({{ scheduled_count }})
+                </button>
+                <button id="tabReceived" class="tab-button flex items-center gap-2 pb-3
+                    text-slate-500 hover:text-slate-700 font-medium" data-count="{{ received_count }}">
+                    Received ({{ received_count }})
+                </button>
+                <button id="tabSent" class="tab-button flex items-center gap-2 pb-3
+                    text-slate-500 hover:text-slate-700 font-medium" data-count="{{ sent_count }}">
+                    Sent ({{ sent_count }})
+                </button>
+            </div>
+
+
+            <!-- Tab Content -->
+            <div id="received-content" class="tab-content mt-6 hidden">
+
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 mb-1">Received Booking Requests</h2>
+                        <p class="text-slate-600">Booking requests from other businesses</p>
+                    </div>
+
+                    <div class="max-w-sm w-full mt-1">
+                         <form id="booking-search-form" method="get" action="{% url 'bookings' %}">
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <circle cx="11" cy="11" r="7" stroke-width="2" />
+                                        <path stroke-width="2" d="M21 21l-4.3-4.3" />
+                                    </svg>
+                                </span>
+                                <input
+                                    class="w-full rounded-lg border border-slate-200 pl-9 pr-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                    type="text" name="q" value="{{ search_query|default:'' }}"
+                                    placeholder="Search by listing title, company name, and etc..." />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {% if received_requests %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {% for request in received_requests %}
+    <div class="bg-white rounded-xl shadow-soft border
+      {% if request.status == 'pending' %}border-yellow-100
+      {% elif request.status == 'scheduled' %}border-green-100
+      {% elif request.status == 'declined' %}border-red-100
+      {% elif request.status == 'cancelled' %}border-gray-200
+      {% elif request.status == 'completed' %}border-blue-100
+      {% else %}border-gray-100{% endif %}">
+
+      <div class="w-full h-2 bg-gradient-to-r
+        {% if request.status == 'pending' %}from-yellow-400 to-yellow-600
+        {% elif request.status == 'scheduled' %}from-green-400 to-green-600
+        {% elif request.status == 'declined' %}from-red-400 to-red-600
+        {% elif request.status == 'completed' %}from-blue-400 to-blue-600
+        {% else %}from-gray-400 to-gray-600{% endif %}
+        rounded-t-xl">
+      </div>
+
+      <div class="p-6
+        {% if request.status != 'pending' %}pb-4{% endif %}">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 mb-1">{{ request.listing.title }}</h3>
+            <p class="text-sm text-slate-500 flex items-center gap-1 whitespace-nowrap"><strong><span class="text-slate-700">From:</span> {{ request.sender.get_full_name|default:request.sender.email }}</strong> | {{ request.sender.company_name }}</p>
+          </div>
+          <div class="flex flex-col gap-2 items-end">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold
+                {% if request.status == 'pending' %}bg-yellow-100 text-yellow-800
+                {% elif request.status == 'scheduled' %}bg-green-100 text-green-800
+                {% elif request.status == 'declined' %}bg-red-100 text-red-800
+                {% elif request.status == 'completed' %}bg-blue-100 text-blue-800
+                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                <span class="w-1.5 h-1.5 rounded-full bg-current flex-shrink-0"></span>
+                {{ request.get_status_display }}
+              </span>
+             <div class="relative">
+               <button class="booking-menu-btn p-1 hover:bg-slate-100 rounded" data-booking-id="{{ request.id }}">
+                 <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                 </svg>
+               </button>
+               <div class="booking-menu-dropdown min-w-max absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg py-2 z-10 hidden" data-booking-id="{{ request.id }}">
+                 <button class="booking-view-message w-full text-left px-6 py-2 text-sm hover:bg-slate-50 rounded-md" data-message="{{ request.message }}" data-listing-title="{{ request.listing.title }}">View received message</button>
+               </div>
+             </div>
+            </div>
+            {% if request.listing.category %}
+            {% if request.listing.subcategory %}
+            <span class="inline-flex items-center text-xs font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
+              {% if request.listing.category == 'electronics' %}
+              {% if request.listing.subcategory == 'computers' %}Computers
+              {% elif request.listing.subcategory == 'phones' %}Phones
+              {% elif request.listing.subcategory == 'tablets' %}Tablets
+              {% elif request.listing.subcategory == 'audio_video' %}Audio/Video Equipment
+              {% elif request.listing.subcategory == 'cameras' %}Cameras
+              {% else %}Other Electronics{% endif %}
+              {% elif request.listing.category == 'furniture' %}
+              {% if request.listing.subcategory == 'office_chairs' %}Office Chairs
+              {% elif request.listing.subcategory == 'desks' %}Desks
+              {% elif request.listing.subcategory == 'cabinets' %}Cabinets
+              {% elif request.listing.subcategory == 'tables' %}Tables
+              {% elif request.listing.subcategory == 'seating' %}Seating
+              {% else %}Other Furniture{% endif %}
+              {% elif request.listing.category == 'tools_equipment' %}
+              {% if request.listing.subcategory == 'power_tools' %}Power Tools
+              {% elif request.listing.subcategory == 'hand_tools' %}Hand Tools
+              {% elif request.listing.subcategory == 'machinery' %}Machinery
+              {% elif request.listing.subcategory == 'safety_equipment' %}Safety Equipment
+              {% elif request.listing.subcategory == 'measuring_tools' %}Measuring Tools
+              {% else %}Other Tools & Equipment{% endif %}
+              {% elif request.listing.category == 'raw_materials' %}
+              {% if request.listing.subcategory == 'metals' %}Metals
+              {% elif request.listing.subcategory == 'plastics' %}Plastics
+              {% elif request.listing.subcategory == 'woods' %}Woods
+              {% elif request.listing.subcategory == 'chemicals' %}Chemicals
+              {% elif request.listing.subcategory == 'fabrics' %}Fabrics
+              {% else %}Other Raw Materials{% endif %}
+              {% elif request.listing.category == 'services' %}
+              {% if request.listing.subcategory == 'consulting' %}Consulting
+              {% elif request.listing.subcategory == 'maintenance' %}Maintenance
+              {% elif request.listing.subcategory == 'installation' %}Installation
+              {% elif request.listing.subcategory == 'training' %}Training
+              {% elif request.listing.subcategory == 'design' %}Design
+              {% else %}Other Services{% endif %}
+              {% else %}
+              Miscellaneous
+              {% endif %}
+            </span>
+            {% else %}
+            <span class="inline-flex items-center text-xs font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
+              {% if request.listing.category == 'electronics' %}Electronics
+              {% elif request.listing.category == 'furniture' %}Furniture
+              {% elif request.listing.category == 'tools_equipment' %}Tools & Equipment
+              {% elif request.listing.category == 'raw_materials' %}Raw Materials
+              {% elif request.listing.category == 'services' %}Services
+              {% else %}Other{% endif %}
+            </span>
+            {% endif %}
+            {% endif %}
+          </div>
+        </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4
+        {% if request.status != 'pending' %}mb-2{% else %}mb-4{% endif %}">
+        <div>
+          <p class="text-sm text-slate-600"><strong>Proposed Start:</strong> {{ request.proposed_start_date|date:"M d, Y" }}</p>
+          <p class="text-sm text-slate-600"><strong>Proposed End:</strong> {{ request.proposed_end_date|date:"M d, Y" }}</p>
+          {% if request.status != 'pending' %}
+          <p class="text-sm text-slate-600"><strong>Status Changed:</strong> {{ request.updated_at|date:"M d, Y \a\t g:i A" }}</p>
           {% endif %}
-        </a>
+        </div>
+        <div>
+          <p class="text-sm text-slate-600"><strong>Listing Type:</strong>
+              <span class="text-sm font-bold
+                  {% if request.listing.listing_type == 'sale' %}text-slate-800
+                  {% elif request.listing.listing_type == 'swap' %}text-emerald-600
+                  {% else %}text-slate-700{% endif %}">
+                  {% if request.listing.listing_type == 'sale' %}SALE
+                  {% elif request.listing.listing_type == 'swap' %}SWAP
+                  {% else %}BUY{% endif %}
+              </span>
+          </p>
+          <p class="text-sm text-slate-600"><strong>Created:</strong> {{ request.created_at|date:"M d, Y \a\t g:i A" }}</p>
+        </div>
+      </div>
 
-        <!-- Marketplace -->
-        <a href="{% url 'home' %}"
-          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0"></path>
-          </svg>
-          <span class="leading-none">Marketplace</span>
-          {% if active == 'home' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-          {% endif %}
-        </a>
-         <a href="{% url 'thryve_app:my_listings' %}"
-                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    <span class="leading-none">My Listings</span>
-                    {% if active == 'my_listings' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-         </a>
-
-        <a href="{% url 'thryve_app:connections' %}"
-                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                    <span class="leading-none">Connections</span>
-                    {% if active == 'connections' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-        </a>
-
-        <!-- Community -->
-        <a href="#" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
-          </svg>
-          <span class="leading-none">Community</span>
-          {% if active == 'community' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-          {% endif %}
-        </a>
-
-        <!-- Bookings -->
-        <a href="{% url 'bookings' %}" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
-          </svg>
-          <span class="leading-none">Bookings</span>
-          {% if active == 'bookings' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-          {% endif %}
-        </a>
-
-        <!-- Profile -->
-        <a href="{% url 'business_profile' %}"
-          class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z" />
-          </svg>
-          <span class="leading-none">Profile</span>
-          {% if active == 'business_profile' %}
-          <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-          {% endif %}
-        </a>
-      </nav>
-      {% endwith %}
-
-      <!-- Right: Logout -->
-      <button onclick="openLogoutModal()" type="button"
-        class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
-        </svg>
-        <span class="leading-none">Logout</span>
-      </button>
-
+      {% if request.status == 'pending' %}
+      <div class="mt-5 grid grid-cols-2 gap-3">
+        <button class="schedule-booking-btn text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5 transition" data-booking-id="{{ request.id }}" data-title="{{ request.listing.title }}">
+          Schedule Booking
+        </button>
+        <button class="decline-booking-btn text-center rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 transition" data-booking-id="{{ request.id }}" data-title="{{ request.listing.title }}">
+          Decline Booking
+        </button>
+      </div>
+      {% endif %}
+     </div>
+   </div>
+    {% endfor %}
     </div>
-  </header>
+               {% else %}
+                   <div class="text-center py-12">
+                       <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                           <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"></path>
+                           </svg>
+                       </div>
+                       <h3 class="text-lg font-semibold text-slate-900 mb-2">No Received Requests</h3>
+                       <p class="text-slate-500">Any booking requests you receive will appear here!</p>
+                   </div>
+               {% endif %}
+           </div>
+
+           <div id="scheduled-content" class="tab-content mt-6 hidden">
+
+               <div class="flex justify-between items-start mb-6">
+                   <div>
+                       <h2 class="text-xl font-bold text-slate-900 mb-1">Scheduled Bookings</h2>
+                       <p class="text-slate-600">Your confirmed booking schedules</p>
+                   </div>
+
+                   <div class="max-w-sm w-full mt-1">
+                        <form id="booking-search-form" method="get" action="{% url 'bookings' %}">
+                           <div class="relative">
+                               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                       <circle cx="11" cy="11" r="7" stroke-width="2" />
+                                       <path stroke-width="2" d="M21 21l-4.3-4.3" />
+                                   </svg>
+                               </span>
+                               <input
+                                   class="w-full rounded-lg border border-slate-200 pl-9 pr-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                   type="text" name="q" value="{{ search_query|default:'' }}"
+                                   placeholder="Search by listing title, company name, and etc..." />
+                           </div>
+                       </form>
+                   </div>
+               </div>
+
+               {% if scheduled_requests %}
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {% for request in scheduled_requests %}
+                  <div class="bg-white rounded-xl shadow-soft border border-green-100">
+
+                    <div class="w-full h-2 bg-gradient-to-r from-green-400 to-green-600 rounded-t-xl"></div>
+
+                    <div class="p-6">
+                      <div class="flex items-start justify-between mb-4">
+                          <div>
+                              <h3 class="text-lg font-bold text-slate-900 mb-1">{{ request.listing.title }}</h3>
+                              <p class="text-sm text-slate-500 flex items-center gap-1 whitespace-nowrap"><strong><span class="text-slate-700">To:</span> {{ request.receiver.get_full_name|default:request.receiver.email }}</strong> | {{ request.receiver.company_name }}</p>
+                          </div>
+                          <div class="flex flex-col gap-2 items-end">
+                            <div class="flex items-center gap-2">
+                              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                               <span class="w-1.5 h-1.5 rounded-full bg-current flex-shrink-0"></span>
+                               {{ request.get_status_display }}
+                             </span>
+                            </div>
+                            {% if request.listing.category %}
+                            {% if request.listing.subcategory %}
+                            <span class="inline-flex items-center text-xs font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
+                              {% if request.listing.category == 'electronics' %}
+                              {% if request.listing.subcategory == 'computers' %}Computers
+                              {% elif request.listing.subcategory == 'phones' %}Phones
+                              {% elif request.listing.subcategory == 'tablets' %}Tablets
+                              {% elif request.listing.subcategory == 'audio_video' %}Audio/Video Equipment
+                              {% elif request.listing.subcategory == 'cameras' %}Cameras
+                              {% else %}Other Electronics{% endif %}
+                              {% elif request.listing.category == 'furniture' %}
+                              {% if request.listing.subcategory == 'office_chairs' %}Office Chairs
+                              {% elif request.listing.subcategory == 'desks' %}Desks
+                              {% elif request.listing.subcategory == 'cabinets' %}Cabinets
+                              {% elif request.listing.subcategory == 'tables' %}Tables
+                              {% elif request.listing.subcategory == 'seating' %}Seating
+                              {% else %}Other Furniture{% endif %}
+                              {% elif request.listing.category == 'tools_equipment' %}
+                              {% if request.listing.subcategory == 'power_tools' %}Power Tools
+                              {% elif request.listing.subcategory == 'hand_tools' %}Hand Tools
+                              {% elif request.listing.subcategory == 'machinery' %}Machinery
+                              {% elif request.listing.subcategory == 'safety_equipment' %}Safety Equipment
+                              {% elif request.listing.subcategory == 'measuring_tools' %}Measuring Tools
+                              {% else %}Other Tools & Equipment{% endif %}
+                              {% elif request.listing.category == 'raw_materials' %}
+                              {% if request.listing.subcategory == 'metals' %}Metals
+                              {% elif request.listing.subcategory == 'plastics' %}Plastics
+                              {% elif request.listing.subcategory == 'woods' %}Woods
+                              {% elif request.listing.subcategory == 'chemicals' %}Chemicals
+                              {% elif request.listing.subcategory == 'fabrics' %}Fabrics
+                              {% else %}Other Raw Materials{% endif %}
+                              {% elif request.listing.category == 'services' %}
+                              {% if request.listing.subcategory == 'consulting' %}Consulting
+                              {% elif request.listing.subcategory == 'maintenance' %}Maintenance
+                              {% elif request.listing.subcategory == 'installation' %}Installation
+                              {% elif request.listing.subcategory == 'training' %}Training
+                              {% elif request.listing.subcategory == 'design' %}Design
+                              {% else %}Other Services{% endif %}
+                              {% else %}
+                              Miscellaneous
+                              {% endif %}
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center text-xs font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
+                              {% if request.listing.category == 'electronics' %}Electronics
+                              {% elif request.listing.category == 'furniture' %}Furniture
+                              {% elif request.listing.category == 'tools_equipment' %}Tools & Equipment
+                              {% elif request.listing.category == 'raw_materials' %}Raw Materials
+                              {% elif request.listing.category == 'services' %}Services
+                              {% else %}Other{% endif %}
+                            </span>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                              <p class="text-sm text-slate-600"><strong>Proposed Start:</strong> {{ request.proposed_start_date|date:"M d, Y" }}</p>
+                              <p class="text-sm text-slate-600"><strong>Proposed End:</strong> {{ request.proposed_end_date|date:"M d, Y" }}</p>
+                              {% if request.status != 'pending' %}
+                              <p class="text-sm text-slate-600"><strong>Status Changed:</strong> {{ request.updated_at|date:"M d, Y \a\t g:i A" }}</p>
+                              {% endif %}
+                          </div>
+                          <div>
+                              <p class="text-sm text-slate-600"><strong>Listing Type:</strong>
+                                  <span class="text-sm font-bold
+                                    {% if request.listing.listing_type == 'sale' %}text-slate-800
+                                    {% elif request.listing.listing_type == 'swap' %}text-emerald-600
+                                    {% else %}text-slate-700{% endif %}">
+                                    {% if request.listing.listing_type == 'sale' %}SALE
+                                    {% elif request.listing.listing_type == 'swap' %}SWAP
+                                    {% else %}BUY{% endif %}
+                                  </span>
+                              </p>
+                              <p class="text-sm text-slate-600"><strong>Created:</strong> {{ request.updated_at|date:"M d, Y \a\t g:i A" }}</p>
+                          </div>
+                      </div>
+
+                      <div class="mt-5 grid grid-cols-2 gap-3">
+                        <button class="complete-booking-btn text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5 transition" data-booking-id="{{ request.id }}" data-title="{{ request.listing.title }}" data-start-date="{{ request.proposed_start_date|date:'Y-m-d' }}">
+                          Booking Completed
+                        </button>
+                        <button class="open-cancel-modal text-center rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 transition" data-booking-id="{{ request.id }}" data-title="{{ request.listing.title }}">
+                          Cancel Booking
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+               </div>
+               {% else %}
+                   <div class="text-center py-12">
+                       <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                           <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"></path>
+                           </svg>
+                       </div>
+                       <h3 class="text-lg font-semibold text-slate-900 mb-2">No Scheduled Bookings</h3>
+                       <p class="text-slate-500">Your confirmed bookings will appear here!</p>
+                   </div>
+               {% endif %}
+           </div>
+
+           <div id="sent-content" class="tab-content mt-6 hidden">
+
+               <div class="flex justify-between items-start mb-6">
+                   <div>
+                       <h2 class="text-xl font-bold text-slate-900 mb-1">Sent Booking Requests</h2>
+                       <p class="text-slate-600">Booking requests you've sent</p>
+                   </div>
+
+                   <div class="max-w-sm w-full mt-1">
+                        <form id="booking-search-form" method="get" action="{% url 'bookings' %}">
+                           <div class="relative">
+                               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                       <circle cx="11" cy="11" r="7" stroke-width="2" />
+                                       <path stroke-width="2" d="M21 21l-4.3-4.3" />
+                                   </svg>
+                               </span>
+                               <input
+                                   class="w-full rounded-lg border border-slate-200 pl-9 pr-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
+                                   type="text" name="q" value="{{ search_query|default:'' }}"
+                                   placeholder="Search by listing title, company name, and etc..." />
+                           </div>
+                       </form>
+                   </div>
+               </div>
+
+               {% if sent_requests %}
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {% for request in sent_requests %}
+                  <div class="bg-white rounded-xl shadow-soft border
+                    {% if request.status == 'pending' %}border-yellow-100
+                    {% elif request.status == 'scheduled' %}border-green-100
+                    {% elif request.status == 'declined' %}border-red-100
+                    {% elif request.status == 'cancelled' %}border-gray-200
+                    {% elif request.status == 'completed' %}border-blue-100
+                    {% else %}border-gray-100{% endif %}">
+
+                    <div class="w-full h-2 bg-gradient-to-r
+                      {% if request.status == 'pending' %}from-yellow-400 to-yellow-600
+                      {% elif request.status == 'scheduled' %}from-green-400 to-green-600
+                      {% elif request.status == 'declined' %}from-red-400 to-red-600
+                      {% elif request.status == 'cancelled' %}from-gray-500 to-gray-700
+                      {% elif request.status == 'completed' %}from-blue-400 to-blue-600
+                      {% else %}from-gray-400 to-gray-600{% endif %}
+                      rounded-t-xl">
+                    </div>
+
+                    <div class="p-6">
+                      <div class="flex items-start justify-between mb-4">
+                          <div>
+                              <h3 class="text-lg font-bold text-slate-900 mb-1">{{ request.listing.title }}</h3>
+                              <p class="text-sm text-slate-500 flex items-center gap-1 whitespace-nowrap"><strong><span class="text-slate-700">To:</span> {{ request.receiver.get_full_name|default:request.receiver.email }}</strong> | {{ request.receiver.company_name }}</p>
+                          </div>
+                          <div class="flex flex-col gap-2 items-end">
+                            <div class="flex items-center gap-2">
+                              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold
+                                {% if request.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                {% elif request.status == 'scheduled' %}bg-green-100 text-green-800
+                                {% elif request.status == 'declined' %}bg-red-100 text-red-800
+                                {% elif request.status == 'cancelled' %}bg-gray-200 text-gray-900
+                                {% elif request.status == 'completed' %}bg-blue-100 text-blue-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                               <span class="w-1.5 h-1.5 rounded-full bg-current flex-shrink-0"></span>
+                               {{ request.get_status_display }}
+                             </span>
+                             <div class="relative">
+                               <button class="booking-menu-btn p-1 hover:bg-slate-100 rounded" data-booking-id="{{ request.id }}">
+                                 <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                 </svg>
+                               </button>
+                               <div class="booking-menu-dropdown min-w-max absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg py-2 z-10 hidden" data-booking-id="{{ request.id }}">
+                                 <button class="booking-view-message w-full text-left px-5 py-2 text-sm hover:bg-slate-50 rounded-md" data-message="{{ request.message }}" data-listing-title="{{ request.listing.title }}">View sent message</button>
+                               </div>
+                             </div>
+                           </div>
+                            {% if request.listing.category %}
+                            {% if request.listing.subcategory %}
+                            <span class="inline-flex items-center text-xs font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
+                              {% if request.listing.category == 'electronics' %}
+                              {% if request.listing.subcategory == 'computers' %}Computers
+                              {% elif request.listing.subcategory == 'phones' %}Phones
+                              {% elif request.listing.subcategory == 'tablets' %}Tablets
+                              {% elif request.listing.subcategory == 'audio_video' %}Audio/Video Equipment
+                              {% elif request.listing.subcategory == 'cameras' %}Cameras
+                              {% else %}Other Electronics{% endif %}
+                              {% elif request.listing.category == 'furniture' %}
+                              {% if request.listing.subcategory == 'office_chairs' %}Office Chairs
+                              {% elif request.listing.subcategory == 'desks' %}Desks
+                              {% elif request.listing.subcategory == 'cabinets' %}Cabinets
+                              {% elif request.listing.subcategory == 'tables' %}Tables
+                              {% elif request.listing.subcategory == 'seating' %}Seating
+                              {% else %}Other Furniture{% endif %}
+                              {% elif request.listing.category == 'tools_equipment' %}
+                              {% if request.listing.subcategory == 'power_tools' %}Power Tools
+                              {% elif request.listing.subcategory == 'hand_tools' %}Hand Tools
+                              {% elif request.listing.subcategory == 'machinery' %}Machinery
+                              {% elif request.listing.subcategory == 'safety_equipment' %}Safety Equipment
+                              {% elif request.listing.subcategory == 'measuring_tools' %}Measuring Tools
+                              {% else %}Other Tools & Equipment{% endif %}
+                              {% elif request.listing.category == 'raw_materials' %}
+                              {% if request.listing.subcategory == 'metals' %}Metals
+                              {% elif request.listing.subcategory == 'plastics' %}Plastics
+                              {% elif request.listing.subcategory == 'woods' %}Woods
+                              {% elif request.listing.subcategory == 'chemicals' %}Chemicals
+                              {% elif request.listing.subcategory == 'fabrics' %}Fabrics
+                              {% else %}Other Raw Materials{% endif %}
+                              {% elif request.listing.category == 'services' %}
+                              {% if request.listing.subcategory == 'consulting' %}Consulting
+                              {% elif request.listing.subcategory == 'maintenance' %}Maintenance
+                              {% elif request.listing.subcategory == 'installation' %}Installation
+                              {% elif request.listing.subcategory == 'training' %}Training
+                              {% elif request.listing.subcategory == 'design' %}Design
+                              {% else %}Other Services{% endif %}
+                              {% else %}
+                              Miscellaneous
+                              {% endif %}
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center text-xs font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
+                              {% if request.listing.category == 'electronics' %}Electronics
+                              {% elif request.listing.category == 'furniture' %}Furniture
+                              {% elif request.listing.category == 'tools_equipment' %}Tools & Equipment
+                              {% elif request.listing.category == 'raw_materials' %}Raw Materials
+                              {% elif request.listing.category == 'services' %}Services
+                              {% else %}Other{% endif %}
+                            </span>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                              <p class="text-sm text-slate-600"><strong>Proposed Start:</strong> {{ request.proposed_start_date|date:"M d, Y" }}</p>
+                              <p class="text-sm text-slate-600"><strong>Proposed End:</strong> {{ request.proposed_end_date|date:"M d, Y" }}</p>
+                              {% if request.status != 'pending' %}
+                              <p class="text-sm text-slate-600"><strong>Status Changed:</strong> {{ request.updated_at|date:"M d, Y \a\t g:i A" }}</p>
+                              {% endif %}
+                          </div>
+                          <div>
+                              <p class="text-sm text-slate-600"><strong>Listing Type:</strong>
+                                  <span class="text-sm font-bold
+                                    {% if request.listing.listing_type == 'sale' %}text-slate-800
+                                    {% elif request.listing.listing_type == 'swap' %}text-emerald-600
+                                    {% else %}text-slate-700{% endif %}">
+                                    {% if request.listing.listing_type == 'sale' %}SALE
+                                    {% elif request.listing.listing_type == 'swap' %}SWAP
+                                    {% else %}BUY{% endif %}
+                                  </span>
+                              </p>
+                              <p class="text-sm text-slate-600"><strong>Sent:</strong> {{ request.created_at|date:"M d, Y \a\t g:i A" }}</p>
+                          </div>
+                      </div>
+
+                      {% if request.status == 'pending' %}
+                      <div class="mt-5 grid grid-cols-2 gap-3">
+                        <a href="/marketplace/?view_listing={{ request.listing.id }}" class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View Listing</a>
+                        <button class="booking-cancel-request text-center rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5" data-booking-id="{{ request.id }}" data-title="{{ request.listing.title }}">Cancel Booking</button>
+                      </div>
+                      {% endif %}
+
+                    </div>
+                  </div>
+                  {% endfor %}
+               </div>
+               {% else %}
+                   <div class="text-center py-12">
+                       <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                           <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"></path>
+                           </svg>
+                       </div>
+                       <h3 class="text-lg font-semibold text-slate-900 mb-2">No Sent Requests</h3>
+                       <p class="text-slate-500">Once you send a booking request, you can manage it here!</p>
+                   </div>
+               {% endif %}
+           </div>
+       </div>
+    </div>
+   </main>
+    <script>
+        // --- Core Tab Functions ---
+
+        // Function to apply active styles to the chosen button
+        function activateButton(button) {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('text-slate-700', 'font-semibold', 'border-b-2', 'border-brand-leaf');
+                btn.classList.add('text-slate-500', 'font-medium');
+            });
+            button.classList.add('text-slate-700', 'font-semibold', 'border-b-2', 'border-brand-leaf');
+            button.classList.remove('text-slate-500', 'font-medium');
+        }
+
+        // Function to update content visibility using STYLE manipulation (The Fix)
+        function updateTabContent(activeButton) {
+            const receivedContent = document.getElementById('received-content');
+            const scheduledContent = document.getElementById('scheduled-content');
+            const sentContent = document.getElementById('sent-content');
+
+            const targetId = activeButton.id.replace('tab', '').toLowerCase() + '-content';
+
+            // 1. Hide ALL content containers using block/none
+            receivedContent.style.display = 'none';
+            scheduledContent.style.display = 'none';
+            sentContent.style.display = 'none';
+
+            // 2. Show the target content container
+            if (targetId === 'received-content') {
+                receivedContent.style.display = 'block';
+            } else if (targetId === 'scheduled-content') {
+                scheduledContent.style.display = 'block';
+            } else if (targetId === 'sent-content') {
+                sentContent.style.display = 'block';
+            }
+        }
+
+        // Function to run ON PAGE LOAD (The Initialization)
+        function initializeTabs() {
+            const sentButton = document.getElementById('tabSent');
+            const scheduledButton = document.getElementById('tabScheduled');
+            const receivedButton = document.getElementById('tabReceived');
+
+            if (!sentButton || !scheduledButton || !receivedButton) return;
+
+            // Always default to Scheduled tab
+            let initialActiveButton = scheduledButton;
+
+            // Apply initial state
+            activateButton(initialActiveButton);
+            updateTabContent(initialActiveButton);
+        }
 
 
+        // --- Event Listeners ---
 
+        // Attach click handlers to buttons for switching tabs
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault(); // Ensure links/buttons don't navigate
+                    activateButton(button);
+                    updateTabContent(button);
+                });
+            });
 
+            // Run initial state setup
+            initializeTabs();
+        });
 
-  <!-- MAIN CONTENT -->
-  <main class="max-w-[1100px] mx-auto px-5 py-10">
+        // Booking menu functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.booking-menu-btn')) {
+                e.stopPropagation();
+                const button = e.target.closest('.booking-menu-btn');
+                const bookingId = button.getAttribute('data-booking-id');
+                const dropdown = document.querySelector(`.booking-menu-dropdown[data-booking-id="${bookingId}"]`);
 
-    <!-- Page Header -->
-    <div class="mb-6">
-      <h1 class="text-[36px] font-extrabold leading-tight">Booking Requests</h1>
-      <p class="text-slate-600 mt-1">Manage your booking requests</p>
+                // Close all other dropdowns
+                document.querySelectorAll('.booking-menu-dropdown').forEach(d => {
+                    if (d !== dropdown) d.classList.add('hidden');
+                });
+
+                // Toggle this dropdown
+                dropdown.classList.toggle('hidden');
+            } else if (e.target.classList.contains('booking-view-message')) {
+                const message = e.target.getAttribute('data-message');
+                const listingTitle = e.target.getAttribute('data-listing-title');
+                openBookingMessageModal(message, listingTitle);
+                // Close dropdown
+                document.querySelectorAll('.booking-menu-dropdown').forEach(d => d.classList.add('hidden'));
+            } else if (e.target.classList.contains('booking-cancel-request')) {
+                const bookingId = e.target.getAttribute('data-booking-id');
+                openCancelBookingModal(bookingId);
+                // Close dropdown
+                document.querySelectorAll('.booking-menu-dropdown').forEach(d => d.classList.add('hidden'));
+            } else if (e.target.classList.contains('complete-booking-btn')) {
+                const bookingId = e.target.getAttribute('data-booking-id');
+                const title = e.target.getAttribute('data-title');
+                const startDate = e.target.getAttribute('data-start-date');
+                handleCompleteBooking(bookingId, title, startDate);
+            } else if (e.target.classList.contains('open-cancel-modal')) {
+                const bookingId = e.target.getAttribute('data-booking-id');
+                const title = e.target.getAttribute('data-title');
+                openCancelBookingModal(bookingId, title);
+            } else if (e.target.classList.contains('schedule-booking-btn')) {
+                const bookingId = e.target.getAttribute('data-booking-id');
+                const title = e.target.getAttribute('data-title');
+                scheduleBooking(bookingId, title);
+            } else if (e.target.classList.contains('decline-booking-btn')) {
+                const bookingId = e.target.getAttribute('data-booking-id');
+                const title = e.target.getAttribute('data-title');
+                openDeclineBookingModal(bookingId, title);
+            } else if (!e.target.closest('.booking-menu-btn') && !e.target.closest('.booking-menu-dropdown')) {
+                document.querySelectorAll('.booking-menu-dropdown').forEach(d => d.classList.add('hidden'));
+            }
+        });
+
+        // Booking modal functions
+        function openBookingMessageModal(message, listingTitle) {
+            document.getElementById('booking-modal-message').textContent = message;
+            document.getElementById('booking-modal-listing-title').textContent = listingTitle;
+            document.getElementById('booking-message-modal').classList.remove('hidden');
+        }
+
+        function closeBookingMessageModal() {
+            document.getElementById('booking-message-modal').classList.add('hidden');
+        }
+
+        function openCancelBookingModal(bookingId, title) {
+            // Determine if this is from Scheduled tab (has title parameter) or other tabs
+            const isScheduledTab = title !== undefined;
+
+            // If no title provided, find the button that triggered this
+            if (!title) {
+                const button = document.querySelector(`.booking-cancel-request[data-booking-id="${bookingId}"]`);
+                title = button ? button.getAttribute('data-title') : 'this item';
+            }
+
+            // Update modal title
+            const modalTitle = document.querySelector('#cancel-booking-modal h3');
+            modalTitle.textContent = isScheduledTab ? 'Cancel Scheduled Booking' : 'Cancel Booking Request';
+
+            // Update the modal message
+            const messageEl = document.getElementById('cancel-modal-message');
+            if (isScheduledTab) {
+                messageEl.innerHTML = `Are you sure you want to cancel the scheduled booking for <strong style="color: #3ac363;">${title}</strong>? This action will cancel the booking for both parties and cannot be undone.`;
+            } else {
+                messageEl.innerHTML = `Are you sure you want to cancel your booking request for <strong style="color: #3ac363;">${title}</strong>? This action cannot be undone.`;
+            }
+
+            // Update the cancel button text
+            const keepBtn = document.querySelector('#cancel-booking-modal button:first-of-type');
+            keepBtn.textContent = isScheduledTab ? 'Keep Booking' : 'Keep Request';
+
+            const confirmBtn = document.getElementById('confirm-cancel-booking-btn');
+            confirmBtn.onclick = () => cancelBooking(bookingId);
+            document.getElementById('cancel-booking-modal').classList.remove('hidden');
+        }
+
+        function closeCancelBookingModal() {
+            document.getElementById('cancel-booking-modal').classList.add('hidden');
+        }
+
+        function openDeclineBookingModal(bookingId, title) {
+            // Update the modal message
+            const messageEl = document.getElementById('decline-modal-message');
+            messageEl.innerHTML = `Are you sure you want to decline the booking request for <strong style="color: #3ac363;">${title}</strong>? This action cannot be undone.`;
+
+            const confirmBtn = document.getElementById('confirm-decline-booking-btn');
+            confirmBtn.onclick = () => declineBooking(bookingId);
+            document.getElementById('decline-booking-modal').classList.remove('hidden');
+        }
+
+        function closeDeclineBookingModal() {
+            document.getElementById('decline-booking-modal').classList.add('hidden');
+        }
+
+        function handleCompleteBooking(bookingId, title, startDate) {
+            // Get current date in YYYY-MM-DD format
+            const today = new Date();
+            const currentDate = today.getFullYear() + '-' +
+                String(today.getMonth() + 1).padStart(2, '0') + '-' +
+                String(today.getDate()).padStart(2, '0');
+
+            // If current date is before start date, show confirmation modal
+            if (currentDate < startDate) {
+                openCompleteBookingModal(bookingId, title, startDate);
+            } else {
+                // Proceed directly with completion
+                completeBooking(bookingId, title);
+            }
+        }
+
+        function openCompleteBookingModal(bookingId, title, startDate) {
+            // Format the date for display
+            const dateObj = new Date(startDate);
+            const formattedDate = dateObj.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Update the modal message
+            const messageEl = document.getElementById('complete-modal-message');
+            messageEl.innerHTML = `The booking <strong style="color: #3ac363;">${title}</strong> is scheduled for <strong style="color: #3ac363;">${formattedDate}</strong>, which is on a later date. Are you sure that the booking has been completed between both parties? This cannot be undone.`;
+
+            const confirmBtn = document.getElementById('confirm-complete-booking-btn');
+            confirmBtn.onclick = () => {
+                closeCompleteBookingModal();
+                completeBooking(bookingId, title);
+            };
+            document.getElementById('complete-booking-modal').classList.remove('hidden');
+        }
+
+        function closeCompleteBookingModal() {
+            document.getElementById('complete-booking-modal').classList.add('hidden');
+        }
+
+        function completeBooking(bookingId, title) {
+            // Get CSRF token
+            let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            if (!csrfToken) {
+                const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+                if (csrfCookie) {
+                    csrfToken = csrfCookie.split('=')[1];
+                }
+            }
+
+            // Send AJAX request
+            fetch(`/bookings/complete/${bookingId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: ''
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 500) {
+                        throw new Error(`Server error (500). This booking may have already been cancelled or have an issue. Please refresh the page and try again.`);
+                    } else {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update the status tag to completed
+                    const bookingCard = document.querySelector(`.complete-booking-btn[data-booking-id="${bookingId}"]`).closest('.bg-white');
+                    const statusSpan = bookingCard.querySelector('.inline-flex.items-center.gap-1\\.5');
+                    statusSpan.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800';
+                    statusSpan.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-current flex-shrink-0"></span> Completed';
+
+                    // Remove the action buttons
+                    const actionButtons = bookingCard.querySelector('.grid.grid-cols-2.gap-3');
+                    if (actionButtons) actionButtons.remove();
+
+                    // Update card border
+                    bookingCard.className = bookingCard.className.replace(/border-[a-z]+-[0-9]+/, 'border-blue-100');
+
+                    // Show success message
+                    showToast(data.message);
+                } else {
+                    alert(data.message || 'Failed to complete booking.');
+                }
+            })
+            .catch(error => {
+                console.error('Error completing booking:', error);
+                alert('An error occurred while completing the booking. Please try again.');
+            });
+        }
+
+        function scheduleBooking(bookingId, title) {
+            // Get CSRF token
+            let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            if (!csrfToken) {
+                const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+                if (csrfCookie) {
+                    csrfToken = csrfCookie.split('=')[1];
+                }
+            }
+
+            // Send AJAX request
+            fetch(`/bookings/schedule/${bookingId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: ''
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update the booking card status and remove buttons
+                    const bookingCard = document.querySelector(`.schedule-booking-btn[data-booking-id="${bookingId}"]`).closest('.bg-white');
+                    if (bookingCard) {
+                        // Update status badge
+                        const statusSpan = bookingCard.querySelector('.inline-flex.items-center.gap-1\\.5');
+                        statusSpan.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800';
+                        statusSpan.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-current flex-shrink-0"></span> Scheduled';
+
+                        // Remove the action buttons
+                        const actionButtons = bookingCard.querySelector('.grid.grid-cols-2.gap-3');
+                        if (actionButtons) actionButtons.remove();
+
+                        // Update card border
+                        bookingCard.className = bookingCard.className.replace(/border-[a-z]+-[0-9]+/, 'border-green-100');
+                    }
+
+                    // Show success message
+                    showToast(data.message);
+                } else {
+                    alert(data.message || 'Failed to schedule booking request.');
+                }
+            })
+            .catch(error => {
+                console.error('Error scheduling booking:', error);
+                alert('An error occurred while scheduling the booking. Please try again.');
+            });
+        }
+
+        function declineBooking(bookingId) {
+            // Get CSRF token
+            let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            if (!csrfToken) {
+                const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+                if (csrfCookie) {
+                    csrfToken = csrfCookie.split('=')[1];
+                }
+            }
+
+            // Send AJAX request
+            fetch(`/bookings/decline/${bookingId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: ''
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update the status tag
+                    const bookingCard = document.querySelector(`[data-booking-id="${bookingId}"]`).closest('.bg-white');
+                    const statusSpan = bookingCard.querySelector('.inline-flex.items-center.gap-1\\.5');
+                    statusSpan.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800';
+                    statusSpan.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-current flex-shrink-0"></span> Declined';
+
+                    // Remove the action buttons
+                    const actionButtons = bookingCard.querySelector('.grid.grid-cols-2.gap-3');
+                    if (actionButtons) actionButtons.remove();
+
+                    // Update card border
+                    bookingCard.className = bookingCard.className.replace(/border-[a-z]+-[0-9]+/, 'border-red-100');
+
+                    // Close modal and show success message
+                    closeDeclineBookingModal();
+                    showToast(data.message);
+                } else {
+                    alert(data.message || 'Failed to decline booking request.');
+                }
+            })
+            .catch(error => {
+                console.error('Error declining booking:', error);
+                alert('An error occurred while declining the booking. Please try again.');
+            });
+        }
+
+        function cancelBooking(bookingId) {
+            // Get CSRF token
+            let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            if (!csrfToken) {
+                const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+                if (csrfCookie) {
+                    csrfToken = csrfCookie.split('=')[1];
+                }
+            }
+
+            // Send AJAX request
+            fetch(`/bookings/cancel/${bookingId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: ''
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update the status tag
+                    const bookingCard = document.querySelector(`[data-booking-id="${bookingId}"]`).closest('.bg-white');
+                    const statusSpan = bookingCard.querySelector('.inline-flex.items-center.gap-1\\.5');
+                    statusSpan.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800';
+                    statusSpan.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-current flex-shrink-0"></span> Cancelled';
+
+                    // Remove the menu button
+                    const menuContainer = bookingCard.querySelector('.relative');
+                    if (menuContainer) menuContainer.remove();
+
+                    // Update card border
+                    bookingCard.className = bookingCard.className.replace(/border-[a-z]+-[0-9]+/, 'border-red-200');
+
+                    // Close modal and show success message
+                    closeCancelBookingModal();
+                    showToast(data.message);
+                } else {
+                    alert(data.message || 'Failed to cancel booking request.');
+                }
+            })
+            .catch(error => {
+                console.error('Error cancelling booking:', error);
+                let errorMessage = 'An error occurred while cancelling the booking. Please try again.';
+                if (error.message) {
+                    errorMessage += ' Details: ' + error.message;
+                }
+                alert(errorMessage);
+            });
+        }
+
+        // Toast notification function
+        function showToast(message) {
+            // Remove existing toast if any
+            const existingToast = document.getElementById('toast');
+            if (existingToast) existingToast.remove();
+
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-300 z-50';
+            toast.innerHTML = `<p class="text-sm font-medium">${message}</p>`;
+
+            document.body.appendChild(toast);
+
+            // Show toast
+            setTimeout(() => {
+                toast.classList.remove('translate-y-full', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+            }, 100);
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-full', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+    </script>
+
+    <!-- Booking Message Modal -->
+    <div id="booking-message-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                <h3 class="text-lg font-semibold mb-4">Booking Request Message for: <span id="booking-modal-listing-title" class="text-green-600"></span></h3>
+                <p id="booking-modal-message" class="text-slate-600 max-h-60 overflow-y-auto break-words"></p>
+                <div class="mt-4 flex justify-end">
+                    <button onclick="closeBookingMessageModal()" class="px-6 py-2 bg-blue-500 text-white rounded font-bold">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-<!-- Tabs -->
-<div class="flex items-center gap-3 mb-6">
-  <!-- Received Tab -->
-  <button id="tabReceived"
-    onclick="showReceived()"
-    class="px-4 py-2.5 rounded-lg font-semibold text-sm border transition
-    bg-[#e8fafe] text-brand-ink border-brand-sky">
-    Received (0)
-  </button>
+    <!-- Cancel Booking Modal -->
+    <div id="cancel-booking-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                <h3 class="text-lg font-semibold mb-4">Cancel Booking Request</h3>
+                <p id="cancel-modal-message" class="text-slate-600 mb-4">Are you sure you want to cancel this booking request? This action cannot be undone.</p>
+                <div class="mt-4 flex justify-end gap-2">
+                    <button onclick="closeCancelBookingModal()" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Keep Request</button>
+                    <button id="confirm-cancel-booking-btn" class="px-4 py-2 bg-red-500 text-white rounded font-bold">Cancel Booking</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <!-- Sent Tab -->
-  <button id="tabSent"
-    onclick="showSent()"
-    class="px-4 py-2.5 rounded-lg font-semibold text-sm text-slate-600 hover:bg-slate-100 transition">
-    Sent (0)
-  </button>
-</div>
+    <!-- Decline Booking Modal -->
+    <div id="decline-booking-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                <h3 class="text-lg font-semibold mb-4">Decline Booking Request</h3>
+                <p id="decline-modal-message" class="text-slate-600 mb-4">Are you sure you want to decline this booking request? This action cannot be undone.</p>
+                <div class="mt-4 flex justify-end gap-2">
+                    <button onclick="closeDeclineBookingModal()" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Keep Request</button>
+                    <button id="confirm-decline-booking-btn" class="px-4 py-2 bg-red-500 text-white rounded font-bold">Decline Booking</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- CONTENT AREA -->
-<div id="receivedSection" class="text-slate-500 text-[15px] font-medium">
-  No booking requests received
-</div>
-
-<div id="sentSection" class="text-slate-500 text-[15px] font-medium hidden">
-  No booking requests sent
-</div>
-
-  </main>
-<script>
-function showReceived() {
-  document.getElementById("receivedSection").classList.remove("hidden");
-  document.getElementById("sentSection").classList.add("hidden");
-
-  // Active tab styling
-  document.getElementById("tabReceived").className =
-    "px-4 py-2.5 rounded-lg font-semibold text-sm border transition bg-[#e8fafe] text-brand-ink border-brand-sky";
-
-  document.getElementById("tabSent").className =
-    "px-4 py-2.5 rounded-lg font-semibold text-sm text-slate-600 hover:bg-slate-100 transition";
-}
-
-function showSent() {
-  document.getElementById("receivedSection").classList.add("hidden");
-  document.getElementById("sentSection").classList.remove("hidden");
-
-  // Active tab styling
-  document.getElementById("tabSent").className =
-    "px-4 py-2.5 rounded-lg font-semibold text-sm border transition bg-[#e8fafe] text-brand-ink border-brand-sky";
-
-  document.getElementById("tabReceived").className =
-    "px-4 py-2.5 rounded-lg font-semibold text-sm text-slate-600 hover:bg-slate-100 transition";
-}
-</script>
-
-
+    <!-- Complete Booking Modal -->
+    <div id="complete-booking-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                <h3 class="text-lg font-semibold mb-4">Complete Booking</h3>
+                <p id="complete-modal-message" class="text-slate-600 mb-4">Message content will be set by JavaScript</p>
+                <div class="mt-4 flex justify-end gap-2">
+                    <button onclick="closeCompleteBookingModal()" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                    <button id="confirm-complete-booking-btn" class="px-4 py-2 bg-brand-leaf text-white rounded font-bold">Complete Booking</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
   <!-- Logout Modal -->
   {% include 'accounts/logout_modal.html' %}
