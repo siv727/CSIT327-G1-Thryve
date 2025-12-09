@@ -53,10 +53,6 @@ def dashboard(request):
     # Get all user's listings for the "My Listings" section
     user_listings = Listing.objects.filter(user=request.user).order_by('-created_at')
 
-    # Get edit errors from session if they exist
-    edit_errors = request.session.pop('edit_errors', None)
-    edit_listing_id = request.session.pop('edit_listing_id', None)
-
     category_dropdown_data = []
 
     # Loop through the main categories defined in your Model
@@ -78,9 +74,6 @@ def dashboard(request):
         'activity_summary': activity_summary,
         'user_listings': user_listings,
         'categories': Listing.get_categories_dict(),
-        'edit_errors': edit_errors,
-        'edit_listing_id': edit_listing_id,
-        'category_dropdown_data': category_dropdown_data,
     }
 
     return render(request, 'thryve_app/dashboard.html', context)
@@ -326,6 +319,17 @@ def edit_listing(request, listing_id):
 
             listing.save()
 
+            # Handle Image Deletion
+            deleted_images = request.POST.get('deleted_images', '')
+            if deleted_images:
+                deleted_image_ids = [int(id.strip()) for id in deleted_images.split(',') if id.strip()]
+                for img_id in deleted_image_ids:
+                    try:
+                        image_obj = ListingImage.objects.get(id=img_id, listing=listing)
+                        image_obj.delete()
+                    except ListingImage.DoesNotExist:
+                        pass
+
             # Handle Image Reordering
             image_order = request.POST.get('image_order', '')
             if image_order:
@@ -360,14 +364,9 @@ def edit_listing(request, listing_id):
             messages.success(request, 'Your listing has been updated successfully!')
             return redirect('thryve_app:dashboard')
         else:
-            # Store errors in session for display
-            error_dict = {}
             for field, errors in form.errors.items():
-                error_dict[field] = [{'message': str(error), 'code': error.code if hasattr(error, 'code') else 'invalid'} for error in errors]
-            
-            # Store errors and listing ID in session
-            request.session['edit_errors'] = error_dict
-            request.session['edit_listing_id'] = listing_id
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
             return redirect('thryve_app:dashboard')
 
     # GET request
