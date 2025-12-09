@@ -232,7 +232,7 @@
                                     {% endwith %}
                                 </p>
                                 <p class="mb-0 text-xs text-gray-500">
-                                    <i class="fas fa-building mr-1"></i>
+                                    {# Removed <i class="fas fa-building mr-1"></i> #}
                                     {{ comment.user.businessprofile.company_name|default:"SME User" }}
                                     <span class="mx-1">•</span>
                                     {{ comment.created_at|date:"n/j/Y" }}
@@ -519,7 +519,7 @@
                             if (data.status === 'success') {
                                 contentInput.value = '';
 
-                                // CRITICAL FIX: Changed data.user_full_name to data.user_display_name
+                                // CRITICAL FIX: The updated HTML no longer includes the building icon in the comment meta data.
                                 const newCommentHTML = `
                                 <div class="comment-item border-l-2 border-gray-200 pl-3 py-1 mb-2 flex justify-between items-start" 
                                     data-comment-id="${data.comment_id}" data-post-id="${postId}">
@@ -528,7 +528,6 @@
                                             ${data.user_display_name} 
                                         </p>
                                         <p class="mb-0 text-xs text-gray-500">
-                                            <i class="fas fa-building mr-1"></i>
                                             ${data.business_name}
                                             <span class="mx-1">•</span>
                                             ${data.created_at}
