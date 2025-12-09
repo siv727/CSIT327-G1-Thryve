@@ -26,6 +26,7 @@ urlpatterns = [
     path('listings/', include('thryve_app.urls')),
     path('bookings/', include('booking_app.urls')),
     path('marketplace/', include('marketplace_app.urls')),
+    path('community/', include('community_app.urls')),
 ]
 
 # Serve media files during development

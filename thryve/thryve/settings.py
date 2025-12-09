@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'profile_app',
     'booking_app',
     'marketplace_app',
+    'community_app',
 ]
 
 MIDDLEWARE = [
