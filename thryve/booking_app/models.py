@@ -35,7 +35,6 @@ class BookingRequest(models.Model):
 
     class Meta:
         # A sender can only have one pending request for a single listing at a time
-        unique_together = ('listing', 'sender', 'status')
         constraints = [
             models.UniqueConstraint(fields=['listing', 'sender'], condition=models.Q(status='pending'), name='unique_pending_booking')
         ]
