@@ -2,9 +2,36 @@
  * Requires window.MARKETPLACE_CONFIG and 'categories-data' JSON script to be loaded in the HTML
  */
 
-document.addEventListener('DOMContentLoaded', function () {
+// --- Toast Notification System ---
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    toastMessage.textContent = message;
+
+    // Show toast
+    toast.classList.remove('translate-y-full', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+
+    // Hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-full', 'opacity-0');
+    }, 3000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
     // Initialize everything
     initLocationAutocomplete();
+
+    // Check for view_listing parameter to open modal
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewListingId = urlParams.get('view_listing');
+    if (viewListingId) {
+        // Wait a bit for the page to load, then open the modal
+        setTimeout(() => {
+            openListingDetailsModal(viewListingId);
+        }, 500);
+    }
 
     // Auto-open modal if requested (e.g. on validation error)
     if (window.MARKETPLACE_CONFIG.showCreateModal) {
@@ -22,6 +49,59 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Setup other event listeners
     setupRealTimeValidation();
+
+    // Initialize Book Now Modal event listeners
+    const closeModalBtn = document.getElementById('close-book-now-modal');
+    const cancelModalBtn = document.getElementById('cancel-book-now-btn');
+    const bookNowModal = document.getElementById('book-now-modal');
+    const bookNowForm = document.getElementById('book-now-form');
+
+    closeModalBtn?.addEventListener('click', closeBookNowModal);
+    cancelModalBtn?.addEventListener('click', closeBookNowModal);
+    bookNowModal?.addEventListener('click', (e) => {
+        if (e.target === bookNowModal) closeBookNowModal();
+    });
+
+    // Handle AJAX submission for Book Now form
+    bookNowForm?.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const requestBookingBtn = document.getElementById('request-booking-btn');
+        requestBookingBtn.disabled = true;
+        requestBookingBtn.textContent = 'Sending...';
+
+        // Get CSRF token
+        const csrfToken = this.querySelector('[name=csrfmiddlewaretoken]').value;
+        const formData = new URLSearchParams(new FormData(this));
+
+        // Send AJAX request to the new booking app API endpoint
+        fetch('/bookings/request/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast(`Success! ${data.message}`);
+                closeBookNowModal();
+            } else {
+                requestBookingBtn.textContent = 'Request Booking'; // Restore button state
+                showToast(`Error: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('Submission error:', error);
+            requestBookingBtn.textContent = 'Request Booking'; // Restore button state
+            showToast('An unknown error occurred during submission. Check your network or form data.');
+        })
+        .finally(() => {
+            requestBookingBtn.disabled = false;
+        });
+    });
 });
 
 // --- Data Helper ---
@@ -819,5 +899,80 @@ function handlePriceInput(event) {
 
 const priceIn = document.getElementById('id_price');
 const budgetIn = document.getElementById('id_budget');
-if (priceIn) priceIn.addEventListener('input', handlePriceInput);
-if (budgetIn) budgetIn.addEventListener('input', handlePriceInput);
+if(priceIn) priceIn.addEventListener('input', handlePriceInput);
+if(budgetIn) budgetIn.addEventListener('input', handlePriceInput);
+
+// --- Book Now Modal Logic ---
+// Note: Elements are accessed lazily to ensure they exist when modal is opened
+
+
+function openBookNowModal(listingId) {
+    const listingCard = document.querySelector(`[data-listing-id="${listingId}"]`);
+    if (!listingCard) return;
+
+    // Check if user is trying to book their own listing
+    const listingUserId = parseInt(listingCard.dataset.userId);
+    const currentUserId = window.MARKETPLACE_CONFIG.currentUserId;
+
+    if (listingUserId === currentUserId) {
+        showToast("You can't set a booking for yourself!");
+        return;
+    }
+
+    const type = listingCard.dataset.listingType;
+    const title = listingCard.dataset.title;
+
+    // Get modal elements (lazy loading to ensure they exist)
+    const bookNowModal = document.getElementById('book-now-modal');
+    const modalTitle = document.getElementById('modal-title-text');
+    const messageTextarea = document.getElementById('message');
+    const messageHelperText = document.getElementById('message-helper-text');
+    const listingIdInput = document.getElementById('booking-listing-id');
+    const listingTypeInput = document.getElementById('booking-listing-type');
+
+    // 1. Set hidden form values
+    listingIdInput.value = listingId;
+    listingTypeInput.value = type;
+
+    // 2. Set dynamic text based on listing type
+    const actionText = (type === 'swap') ? 'Exchange' : 'Transaction';
+    modalTitle.innerHTML = `Arrange ${actionText} for: <span class="text-brand-leaf">${title}</span>`;
+    messageTextarea.value = ''; // Clear previous message
+    messageTextarea.placeholder = 'Describe your item or service';
+    messageHelperText.textContent = '';
+
+    // Define helper text based on the limited timeframe/meeting clarification
+    let helperText = '';
+
+    if (type === 'sale' || type === 'buy') {
+        messageTextarea.placeholder = 'e.g., "I want to buy this item and can meet for pickup on Nov 16th."';
+        helperText = 'Propose a date and time to meet for pickup/delivery. The dates selected are for the meeting window and are NOT the listing\'s expiration date.';
+    } else if (type === 'swap') {
+        messageTextarea.placeholder = 'e.g., "I am offering a XYZ tool and can meet for the exchange on Nov 17th."';
+        helperText = 'Clearly describe the item you are offering for swap, and confirm your preferred exchange date. The dates selected are for the meeting window and are NOT the listing\'s expiration date.';
+    }
+
+    messageHelperText.textContent = helperText;
+
+    // 3. Reset dates (optional, but good practice)
+    document.getElementById('start-date').value = '';
+    document.getElementById('end-date').value = '';
+
+    // 4. Show modal
+    bookNowModal.classList.remove('hidden');
+    bookNowModal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeBookNowModal() {
+    const bookNowModal = document.getElementById('book-now-modal');
+    const bookNowForm = document.getElementById('book-now-form');
+    const requestBookingBtn = document.getElementById('request-booking-btn');
+
+    bookNowModal.classList.add('hidden');
+    bookNowModal.classList.remove('flex');
+    document.body.style.overflow = '';
+    bookNowForm.reset();
+    requestBookingBtn.disabled = false;
+    requestBookingBtn.textContent = 'Request Booking';
+}
