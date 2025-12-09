@@ -441,6 +441,7 @@ function openEditListingModal(listingId) {
 // --- Create Listing Functions ---
 
 let createSelectedFiles = [];
+let createDraggedElement = null;
 
 function handleCreateImagePreview(input) {
     const previewContainer = document.getElementById('create-image-previews');
@@ -460,21 +461,101 @@ function handleCreateImagePreview(input) {
         const filesToAdd = Array.from(input.files).slice(0, availableSlots);
         filesToAdd.forEach(file => createSelectedFiles.push(file));
 
-        previewContainer.innerHTML = '';
-        createSelectedFiles.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const previewDiv = document.createElement('div');
-                previewDiv.className = 'relative group';
-                previewDiv.innerHTML = `<img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">`;
-                previewContainer.appendChild(previewDiv);
-            };
-            reader.readAsDataURL(file);
-        });
-
+        renderCreateImagePreviews();
         photoCounter.textContent = `Photos: ${createSelectedFiles.length}/5`;
         input.value = '';
     }
+}
+
+function renderCreateImagePreviews() {
+    const previewContainer = document.getElementById('create-image-previews');
+    if (!previewContainer) return;
+    
+    previewContainer.innerHTML = '';
+    createSelectedFiles.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'relative group w-20 h-20 cursor-move';
+            previewDiv.draggable = true;
+            previewDiv.dataset.index = index;
+            
+            previewDiv.innerHTML = `
+                <img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover rounded-lg border-2 ${index === 0 ? 'border-brand-sky' : 'border-slate-200'}">
+                ${index === 0 ? '<div class="absolute top-0 left-0 bg-brand-sky text-white text-xs px-1 rounded-br">Main</div>' : ''}
+                <button type="button" onclick="removeCreateImage(${index})" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10" style="line-height: 1;">×</button>
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all rounded-lg flex items-center justify-center pointer-events-none">
+                    <svg class="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                    </svg>
+                </div>
+            `;
+            
+            // Add drag event listeners
+            previewDiv.addEventListener('dragstart', handleCreateDragStart);
+            previewDiv.addEventListener('dragover', handleCreateDragOver);
+            previewDiv.addEventListener('drop', handleCreateDrop);
+            previewDiv.addEventListener('dragend', handleCreateDragEnd);
+            
+            previewContainer.appendChild(previewDiv);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function removeCreateImage(index) {
+    createSelectedFiles.splice(index, 1);
+    renderCreateImagePreviews();
+    const photoCounter = document.getElementById('create-image-counter');
+    if (photoCounter) photoCounter.textContent = `Photos: ${createSelectedFiles.length}/5`;
+}
+
+function handleCreateDragStart(e) {
+    createDraggedElement = e.target.closest('.w-20');
+    createDraggedElement.style.opacity = '0.5';
+    e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleCreateDragOver(e) {
+    if (e.preventDefault) e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    
+    const target = e.target.closest('.w-20');
+    if (target && target !== createDraggedElement) {
+        target.style.borderColor = '#3b9dd8';
+    }
+    return false;
+}
+
+function handleCreateDrop(e) {
+    if (e.stopPropagation) e.stopPropagation();
+    
+    const target = e.target.closest('.w-20');
+    if (createDraggedElement && target && createDraggedElement !== target) {
+        const fromIndex = parseInt(createDraggedElement.dataset.index);
+        const toIndex = parseInt(target.dataset.index);
+        
+        // Reorder the files array
+        const movedFile = createSelectedFiles[fromIndex];
+        createSelectedFiles.splice(fromIndex, 1);
+        createSelectedFiles.splice(toIndex, 0, movedFile);
+        
+        renderCreateImagePreviews();
+    }
+    
+    return false;
+}
+
+function handleCreateDragEnd(e) {
+    createDraggedElement.style.opacity = '';
+    
+    // Reset all border colors
+    const container = document.getElementById('create-image-previews');
+    container.querySelectorAll('.w-20').forEach(el => {
+        el.style.borderColor = '';
+    });
+    
+    createDraggedElement = null;
 }
 
 function syncCreateFilesToInput() {
@@ -508,6 +589,7 @@ const closeAddListingModal = () => {
     // Reset specific elements
     document.querySelectorAll('.error-message').forEach(e => e.remove());
     createSelectedFiles = [];
+    createDraggedElement = null;
     const previews = document.getElementById('create-image-previews');
     if (previews) previews.innerHTML = '';
     const counter = document.getElementById('create-image-counter');
