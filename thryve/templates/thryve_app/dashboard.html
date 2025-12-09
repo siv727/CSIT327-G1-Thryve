@@ -1,9 +1,13 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Dashboard • Thryve</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -33,9 +37,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body class="font-inter bg-[#f7fbfd] text-brand-ink">
 
-    {%  include 'thryve_app/navbar.html' %}
+    {% include 'thryve_app/navbar.html' %}
 
     <main class="max-w-[1200px] mx-auto px-5 py-8">
         <div class="flex items-start justify-between gap-4 mb-6">
@@ -46,7 +51,7 @@
         </div>
 
         <!-- Top Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <!-- My Bookings -->
             <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
                 <h2 class="text-xl font-bold text-slate-900 mb-2">My Bookings</h2>
@@ -57,44 +62,68 @@
                         <p class="font-medium text-slate-900">{{ booking.item }}</p>
                         <p class="text-sm text-slate-500">{{ booking.date }}</p>
                     </div>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">
-                        {{ booking.status }}
+                    {% if booking.status == 'pending' %}
+                    <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+                        Pending
                     </span>
+                    {% elif booking.status == 'scheduled' %}
+                    <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                        Scheduled
+                    </span>
+                    {% elif booking.status == 'completed' %}
+                    <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                        Completed
+                    </span>
+                    {% elif booking.status == 'declined' %}
+                    <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                        Declined
+                    </span>
+                    {% elif booking.status == 'cancelled' %}
+                    <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                        Cancelled
+                    </span>
+                    {% endif %}
                 </div>
                 {% empty %}
                 <p class="text-slate-500 text-sm">No recent bookings</p>
                 {% endfor %}
             </div>
 
-            <!-- My Listings -->
-            <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
-                <h2 class="text-xl font-bold text-slate-900 mb-2">My Listings</h2>
-                <p class="text-slate-600 mb-4">Your active marketplace items</p>
-                <div class="max-h-64 overflow-y-auto">
-                    {% for listing in active_listings %}
-                    <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-b-0">
-                        <div>
-                            <p class="font-medium text-slate-900 truncate max-w-[10rem]">{{ listing.title }}</p>
-                            <p class="text-sm text-slate-500 truncate max-w-[14rem]">{{ listing.type }} - {{ listing.other }}</p>
-                        </div>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            {{ listing.status }}
-                        </span>
-                    </div>
-                    {% empty %}
-                    <p class="text-slate-500 text-sm">No active listings</p>
-                    {% endfor %}
-                </div>
-            </div>
-
             <!-- Marketplace Updates -->
             <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
                 <h2 class="text-xl font-bold text-slate-900 mb-2">Marketplace Updates</h2>
                 <p class="text-slate-600 mb-4">Recently listed items</p>
-                {% for update in marketplace_updates %}
-                <div class="py-2 border-b border-slate-100 last:border-b-0">
-                    <p class="font-medium text-slate-900">{{ update.item }}</p>
-                    <p class="text-sm text-slate-500">{{ update.detail }}</p>
+                {% for listing in marketplace_updates %}
+                <div class="py-3 border-b border-slate-100 last:border-b-0">
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <p class="text-sm font-semibold text-slate-900 flex-1">{{ listing.title }}</p>
+                        {% if listing.listing_type == 'sale' %}
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                            Sale
+                        </span>
+                        {% elif listing.listing_type == 'swap' %}
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                            Swap
+                        </span>
+                        {% elif listing.listing_type == 'buy' %}
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            Buy
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <p class="text-xs text-slate-500">{{ listing.category_display }}</p>
+                        <span class="text-slate-300">•</span>
+                        <p class="text-xs text-slate-500">{{ listing.created_at|timesince }} ago</p>
+                    </div>
                 </div>
                 {% empty %}
                 <p class="text-slate-500 text-sm">No recent updates</p>
@@ -117,43 +146,901 @@
                     <div class="text-sm text-slate-600">Active Listings</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl font-bold text-brand-leaf mb-1">{{ activity_summary.pending_booking_requests }}</div>
+                    <div class="text-3xl font-bold text-brand-leaf mb-1">{{ activity_summary.pending_booking_requests }}
+                    </div>
                     <div class="text-sm text-slate-600">Pending Booking Requests</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl font-bold text-brand-leaf mb-1">{{ activity_summary.connection_requests }}</div>
+                    <div class="text-3xl font-bold text-brand-leaf mb-1">{{ activity_summary.connection_requests }}
+                    </div>
                     <div class="text-sm text-slate-600">Connection Requests</div>
                 </div>
             </div>
         </div>
 
-        <!-- Upcoming Events -->
+        <!-- My Listings Section -->
         <div class="bg-white rounded-xl shadow-soft border border-slate-100 p-6">
             <div class="flex items-center justify-between mb-6">
                 <div>
-                    <h2 class="text-xl font-bold text-slate-900">Upcoming Events</h2>
-                    <p class="text-slate-600">Community events you can attend</p>
+                    <h2 class="text-xl font-bold text-slate-900">My Listings</h2>
+                    <p class="text-slate-600">Manage your marketplace listings</p>
                 </div>
-                <button class="inline-flex items-center gap-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 shadow-soft transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14" />
-                    </svg>
-                    Submit Event
-                </button>
             </div>
 
+            {% if user_listings %}
+            <!-- Desktop Table View (hidden on mobile) -->
+            <div class="hidden md:block overflow-x-auto">
+                <table class="w-full table-fixed">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th
+                                class="w-[40%] px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                Title</th>
+                            <th
+                                class="w-[15%] px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                Type</th>
+                            <th
+                                class="w-[25%] px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                Category</th>
+                            <th
+                                class="w-[20%] px-20 py-3 text-right text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        {% for listing in user_listings %}
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-4 py-3">
+                                <p class="font-medium text-slate-900 truncate" title="{{ listing.title }}">{{ listing.title }}</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                {% if listing.listing_type == 'sale' %}
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                                    Sale
+                                </span>
+                                {% elif listing.listing_type == 'swap' %}
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                    Swap
+                                </span>
+                                {% elif listing.listing_type == 'buy' %}
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    Buy
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3">
+                                <p class="text-sm text-slate-600">{{ listing.category_display }}</p>
+                            </td>
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button type="button" onclick="openGlobalEditModal(this)" data-id="{{ listing.id }}"
+                                        data-title="{{ listing.title }}" data-type="{{ listing.listing_type }}"
+                                        data-category="{{ listing.category }}"
+                                        data-subcategory="{{ listing.subcategory }}"
+                                        data-description="{{ listing.description }}"
+                                        data-price="{{ listing.price|default:'' }}"
+                                        data-swap="{{ listing.swap_for|default:'' }}"
+                                        data-budget="{{ listing.budget|default:'' }}"
+                                        data-location="{{ listing.location }}"
+                                        data-date="{{ listing.date|date:'Y-m-d' }}"
+                                        data-images='[{% for img in listing.images.all %}"{{ img.image.url }}"{% if not forloop.last %},{% endif %}{% endfor %}]'
+                                        data-image-ids='[{% for img in listing.images.all %}{{ img.id }}{% if not forloop.last %},{% endif %}{% endfor %}]'
+                                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                            </path>
+                                        </svg>
+                                        Edit
+                                    </button>
+
+                                    <button onclick="openDeleteModal('{{ listing.id }}')"
+                                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition ml-2">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                            </path>
+                                        </svg>
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Card View (hidden on desktop) -->
+            <div class="md:hidden space-y-4">
+                {% for listing in user_listings %}
+                <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1 min-w-0 pr-2">
+                            <h3 class="font-semibold text-slate-900 text-base mb-1 break-words">{{ listing.title }}</h3>
+                            <p class="text-sm text-slate-600">{{ listing.category_display }}</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            {% if listing.listing_type == 'sale' %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                                Sale
+                            </span>
+                            {% elif listing.listing_type == 'swap' %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                Swap
+                            </span>
+                            {% elif listing.listing_type == 'buy' %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                Buy
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openEditModal{{ listing.id }}()"
+                            class="flex-1 inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-slate-700 bg-white hover:bg-slate-100 rounded-lg transition border border-slate-300">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                </path>
+                            </svg>
+                            Edit
+                        </button>
+                        <button onclick="openDeleteModal('{{ listing.id }}')"
+                            class="flex-1 inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
             <div class="text-center py-12">
                 <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
                     </svg>
                 </div>
-                <h3 class="text-lg font-semibold text-slate-900 mb-2">No upcoming events</h3>
-                <p class="text-slate-500">Submit one to get started!</p>
+                <h3 class="text-lg font-semibold text-slate-900 mb-2">No listings yet</h3>
+                <p class="text-slate-500">Create your first listing to get started!</p>
             </div>
+            {% endif %}
         </div>
     </main>
 
+    <!-- Global Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50"
+        onclick="if(event.target === this) closeDeleteModal()">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-slate-900">Delete Listing</h2>
+                    <button onclick="closeDeleteModal()" type="button" class="text-slate-400 hover:text-slate-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-slate-700">Are you sure you want to delete this listing? This action cannot be
+                        undone.</p>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="closeDeleteModal()"
+                        class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                    <button type="button" onclick="confirmDelete()"
+                        class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">Delete
+                        Listing</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% csrf_token %}
+
+    <div id="global-edit-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50"
+        onclick="if(event.target === this) closeGlobalEditModal()">
+        <div class="flex items-center justify-center min-h-screen p-4 w-full">
+            <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-slate-900">Edit Listing</h2>
+                        <button onclick="closeGlobalEditModal()" type="button"
+                            class="text-slate-400 hover:text-slate-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form id="global-edit-form" method="post" action="" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="listing_type" value="sale"
+                                        class="text-brand-sky focus:ring-brand-sky"
+                                        onchange="updateEditDynamicField('sale')" required>
+                                    <span class="ml-2 text-slate-700">For Sale</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="listing_type" value="swap"
+                                        class="text-brand-sky focus:ring-brand-sky"
+                                        onchange="updateEditDynamicField('swap')" required>
+                                    <span class="ml-2 text-slate-700">For Swap</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="listing_type" value="buy"
+                                        class="text-brand-sky focus:ring-brand-sky"
+                                        onchange="updateEditDynamicField('buy')" required>
+                                    <span class="ml-2 text-slate-700">Looking to Buy</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 relative">
+                            <label class="block text-slate-700 font-semibold mb-2">Category *</label>
+
+                            <input type="hidden" name="category" id="edit-category-hidden-input" required>
+
+                            <div id="edit-category-trigger" onclick="toggleEditCategoryDropdown()"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-sky flex items-center justify-between hover:border-slate-300 transition-colors">
+                                <span id="edit-category-display-text" class="text-slate-700">Choose Category</span>
+                                <span class="text-slate-400">▾</span>
+                            </div>
+
+                            <div id="edit-category-dropdown"
+                                class="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-xl z-20 hidden">
+                                <div class="flex h-64">
+                                    <div class="w-1/2 border-r border-slate-100 overflow-y-auto custom-scrollbar">
+                                        <div class="p-2 space-y-1">
+                                            <div
+                                                class="text-xs text-slate-500 font-bold mb-2 px-2 uppercase tracking-wide">
+                                                Categories</div>
+                                            {% for key, data in categories.items %}
+                                            <button type="button"
+                                                onclick="selectEditMainCategory('{{ key }}', '{{ data.label }}', this)"
+                                                class="w-full text-left px-3 py-2 text-sm rounded-md transition-colors category-btn"
+                                                data-category="{{ key }}">
+                                                {{ data.label }}
+                                            </button>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <div class="w-1/2 overflow-y-auto custom-scrollbar bg-slate-50/50">
+                                        <div class="p-2">
+                                            <div
+                                                class="text-xs text-slate-500 font-bold mb-2 px-2 uppercase tracking-wide">
+                                                Subcategories</div>
+                                            <div id="edit-subcategories-list" class="space-y-1">
+                                                <div class="px-3 py-10 text-center text-sm text-slate-400 italic">
+                                                    Select a category
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Title *</label>
+                            <input type="text" name="title" id="edit-title-input"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                                required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Description *</label>
+                            <textarea name="description" id="edit-description-input" rows="4"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky resize-y"
+                                required></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label id="edit-dynamic-label" class="block text-slate-700 font-semibold mb-2">Price
+                                *</label>
+
+                            <div id="edit-price-container" class="relative hidden">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
+                                <input type="text" name="price" id="edit-price-input"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky">
+                            </div>
+
+                            <div id="edit-swap-container" class="hidden">
+                                <input type="text" name="swap_for" id="edit-swap-input"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky">
+                            </div>
+
+                            <div id="edit-budget-container" class="relative hidden">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
+                                <input type="text" name="budget" id="edit-budget-input"
+                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Location *</label>
+                            <input type="text" name="location" id="edit-location-input"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                                required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-slate-700 font-semibold mb-2">Date *</label>
+                            <input type="date" name="date" id="edit-date-input"
+                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                                required>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-slate-700 font-semibold mb-2">Listing Images</label>
+                            <p class="text-sm text-slate-500 mb-2">Drag images to reorder. First image will be the main
+                                image.</p>
+
+                            <input type="hidden" name="image_order" id="edit-image-order">
+                            <div id="edit-image-previews" class="flex flex-wrap gap-2 mb-3">
+                            </div>
+
+                            <div
+                                class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors bg-slate-50 relative">
+                                <div class="flex flex-col items-center justify-center space-y-4">
+                                    <div class="w-12 h-12 text-slate-400">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-lg font-medium text-slate-700">Drag and drop your images here</p>
+                                        <p class="text-sm text-slate-500">or <span
+                                                class="text-brand-sky font-medium">click to browse</span></p>
+                                    </div>
+                                    <p id="edit-photo-counter" class="text-sm font-medium text-slate-600">Photos: 0/5
+                                    </p>
+                                </div>
+
+                                <input type="file" id="edit-file-input" name="images"
+                                    accept="image/jpeg,image/png,image/gif,image/webp" multiple
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer pointer-events-auto"
+                                    onchange="handleEditImagePreview(this)">
+                            </div>
+
+                            <div class="mt-2 text-sm text-slate-500">
+                                <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
+                            </div>
+                        </div>
+
+                        <!-- Hidden inputs for image management -->
+                        <input type="hidden" id="edit-deleted-images" name="deleted_images" value="">
+
+                        <div class="flex justify-end gap-3">
+                            <button type="button" onclick="closeGlobalEditModal()"
+                                class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                            <button type="submit"
+                                class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update
+                                Listing</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create a structured object of categories and subcategories from Django context
+        const categoriesData = {
+            {% for key, data in categories.items %}
+        "{{ key }}": {
+            label: "{{ data.label }}",
+                subcategories: [
+                    {% for sub in data.subcategories %}
+        { value: "{{ sub.value }}", label: "{{ sub.label }}" },
+        {% endfor %}
+                ]
+            },
+        {% endfor %}
+        };
+    </script>
+
+    <script>
+        // --- 1. Delete Modal Logic ---
+        let currentDeleteListingId = null;
+
+        function openDeleteModal(listingId) {
+            currentDeleteListingId = listingId;
+            const modal = document.getElementById('delete-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('delete-modal');
+            if (modal) modal.classList.add('hidden');
+            currentDeleteListingId = null;
+        }
+
+        function confirmDelete() {
+            if (currentDeleteListingId) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/listings/delete-listing/${currentDeleteListingId}/`;
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = 'csrfmiddlewaretoken';
+                    csrfInput.value = csrfToken.value;
+                    form.appendChild(csrfInput);
+                }
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        // --- 2. Edit Modal Logic (Global Variables) ---
+        let editNewFiles = [];
+        let editExistingCount = 0;
+        let editExistingImages = []; // Track existing images with their IDs
+        let editDeletedImageIds = []; // Track images marked for deletion
+        let draggedElement = null;
+
+        // --- 3. Custom Category Dropdown Logic ---
+        function toggleEditCategoryDropdown() {
+            const dropdown = document.getElementById('edit-category-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Handle clicking outside to close dropdown
+        document.addEventListener('click', function (event) {
+            const trigger = document.getElementById('edit-category-trigger');
+            const dropdown = document.getElementById('edit-category-dropdown');
+            if (trigger && dropdown && !trigger.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        function selectEditMainCategory(categoryKey, categoryLabel, btnElement) {
+            // 1. Highlight the active button on left
+            const buttons = document.querySelectorAll('#edit-main-categories .category-btn');
+            // Remove active styling from all buttons (reset to base)
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-sky', 'bg-opacity-10', 'text-brand-ink', 'font-medium');
+                btn.classList.add('text-slate-600', 'hover:bg-slate-50');
+            });
+
+            // Add active styling to clicked button
+            btnElement.classList.remove('text-slate-600', 'hover:bg-slate-50');
+            btnElement.classList.add('bg-brand-sky', 'bg-opacity-10', 'text-brand-ink', 'font-medium');
+
+            // 2. Populate Subcategories on Right
+            const subContainer = document.getElementById('edit-subcategories-list');
+            subContainer.innerHTML = ''; // Clear previous
+
+            const data = categoriesData[categoryKey];
+
+            // Add specific subcategories
+            if (data && data.subcategories.length > 0) {
+                data.subcategories.forEach(sub => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'w-full text-left px-3 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-md transition-colors';
+                    btn.onclick = () => confirmEditCategorySelection(categoryKey, categoryLabel, sub.value, sub.label);
+                    btn.textContent = sub.label;
+                    subContainer.appendChild(btn);
+                });
+            }
+        }
+
+        function confirmEditCategorySelection(catKey, catLabel, subVal, subLabel) {
+            // 1. Set Hidden Input Value (format: "category" or "category-subcategory")
+            const input = document.getElementById('edit-category-hidden-input');
+            let finalValue = catKey;
+            let displayText = catLabel;
+
+            if (subVal) {
+                // Ensure we use a dash separator for backend compatibility
+                finalValue = `${catKey}-${subVal}`;
+                displayText = `${catLabel} : ${subLabel}`;
+            }
+
+            input.value = finalValue;
+
+            // 2. Update Trigger Text
+            const displaySpan = document.getElementById('edit-category-display-text');
+            displaySpan.textContent = displayText;
+            displaySpan.classList.remove('text-slate-400');
+            displaySpan.classList.add('text-slate-900');
+
+            // 3. Close Dropdown
+            document.getElementById('edit-category-dropdown').classList.add('hidden');
+        }
+
+
+        // --- 4. Main Edit Modal Functions ---
+        function openGlobalEditModal(button) {
+            const modal = document.getElementById('global-edit-modal');
+            const form = document.getElementById('global-edit-form');
+            const d = button.dataset;
+
+            // Form Action
+            form.action = `/listings/edit-listing/${d.id}/`;
+
+            // Simple Fields
+            document.getElementById('edit-title-input').value = d.title;
+            document.getElementById('edit-description-input').value = d.description;
+            document.getElementById('edit-location-input').value = d.location;
+            document.getElementById('edit-date-input').value = d.date;
+
+            // Radio Buttons
+            const radio = form.querySelector(`input[name="listing_type"][value="${d.type}"]`);
+            if (radio) {
+                radio.checked = true;
+                updateEditDynamicField(d.type);
+            }
+
+            // Dynamic Fields
+            document.getElementById('edit-price-input').value = d.price;
+            document.getElementById('edit-swap-input').value = d.swap;
+            document.getElementById('edit-budget-input').value = d.budget;
+
+            // --- CUSTOM CATEGORY LOGIC ---
+            // 1. Get raw category and subcategory from button dataset
+            const catKey = d.category;
+            const subKey = d.subcategory;
+
+            // 2. Resolve Labels using the categoriesData object we created
+            let catLabel = "Other";
+            let subLabel = "";
+
+            if (categoriesData[catKey]) {
+                catLabel = categoriesData[catKey].label;
+
+                // Find subcategory label if it exists
+                if (subKey && subKey !== 'None' && subKey !== '') {
+                    const subObj = categoriesData[catKey].subcategories.find(s => s.value === subKey);
+                    if (subObj) subLabel = subObj.label;
+                }
+            }
+
+            // 3. Simulate Selection
+            if (subKey && subKey !== 'None' && subKey !== '') {
+                confirmEditCategorySelection(catKey, catLabel, subKey, subLabel);
+            } else {
+                confirmEditCategorySelection(catKey, catLabel, '');
+            }
+
+            // --- IMAGE LOGIC ---
+            editNewFiles = [];
+            editExistingImages = [];
+            editDeletedImageIds = [];
+            const previewContainer = document.getElementById('edit-image-previews');
+            previewContainer.innerHTML = '';
+
+            try {
+                const imagesData = JSON.parse(d.images || '[]');
+                editExistingCount = imagesData.length;
+
+                // Get image IDs from data attribute
+                const imageIds = d.imageIds ? JSON.parse(d.imageIds) : [];
+
+                imagesData.forEach((url, index) => {
+                    const imageId = imageIds[index] || null;
+                    editExistingImages.push({ id: imageId, url: url });
+
+                    const div = document.createElement('div');
+                    div.className = 'relative group w-20 h-20 cursor-move';
+                    div.draggable = true;
+                    div.dataset.imageId = imageId;
+                    div.dataset.imageType = 'existing';
+                    div.innerHTML = `
+                        <img src="${url}" class="w-full h-full object-cover rounded-lg border-2 ${index === 0 ? 'border-brand-sky' : 'border-slate-200'}">
+                        ${index === 0 ? '<div class="absolute top-0 left-0 bg-brand-sky text-white text-xs px-1 rounded-br">Main</div>' : ''}
+                        <button type="button" onclick="event.stopPropagation(); removeExistingImage(${imageId})" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10" style="line-height: 1;">×</button>
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all rounded-lg flex items-center justify-center pointer-events-none">
+                            <svg class="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                            </svg>
+                        </div>
+                    `;
+
+                    // Add drag event listeners
+                    div.addEventListener('dragstart', handleDragStart);
+                    div.addEventListener('dragover', handleDragOver);
+                    div.addEventListener('drop', handleDrop);
+                    div.addEventListener('dragend', handleDragEnd);
+
+                    previewContainer.appendChild(div);
+                });
+            } catch (e) {
+                console.error("Error parsing images", e);
+                editExistingCount = 0;
+            }
+            updateEditPhotoCounter();
+            updateImageOrder();
+
+            // Show Modal
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeGlobalEditModal() {
+            const modal = document.getElementById('global-edit-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            // Hide dropdown if open
+            document.getElementById('edit-category-dropdown').classList.add('hidden');
+        }
+
+        function updateEditDynamicField(type) {
+            document.getElementById('edit-price-container').classList.add('hidden');
+            document.getElementById('edit-swap-container').classList.add('hidden');
+            document.getElementById('edit-budget-container').classList.add('hidden');
+
+            const label = document.getElementById('edit-dynamic-label');
+
+            if (type === 'sale') {
+                document.getElementById('edit-price-container').classList.remove('hidden');
+                label.textContent = "Price *";
+            } else if (type === 'swap') {
+                document.getElementById('edit-swap-container').classList.remove('hidden');
+                label.textContent = "Looking to Swap For *";
+            } else if (type === 'buy') {
+                document.getElementById('edit-budget-container').classList.remove('hidden');
+                label.textContent = "Budget *";
+            }
+        }
+
+        function handleEditImagePreview(input) {
+            const previewContainer = document.getElementById('edit-image-previews');
+            if (input.files && input.files.length > 0) {
+                const totalCurrent = editExistingCount + editNewFiles.length;
+                const availableSlots = 5 - totalCurrent;
+
+                if (availableSlots <= 0) {
+                    alert('Maximum 5 images allowed.');
+                    input.value = '';
+                    return;
+                }
+
+                const filesToAdd = Array.from(input.files).slice(0, availableSlots);
+                filesToAdd.forEach(file => {
+                    editNewFiles.push(file);
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const div = document.createElement('div');
+                        div.className = 'relative group w-20 h-20 new-image-preview cursor-move';
+                        div.draggable = true;
+                        div.dataset.imageType = 'new';
+                        const index = editNewFiles.indexOf(file);
+                        div.innerHTML = `
+                            <img src="${e.target.result}" class="w-full h-full object-cover rounded-lg border-2 border-brand-sky">
+                            <div class="absolute top-0 right-0 bg-brand-sky text-white text-xs px-1 rounded-bl">New</div>
+                            <button type="button" onclick="removeEditNewImage(${index})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 z-10">&times;</button>
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all rounded-lg flex items-center justify-center pointer-events-none">
+                                <svg class="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                                </svg>
+                            </div>
+                        `;
+
+                        // Add drag event listeners
+                        div.addEventListener('dragstart', handleDragStart);
+                        div.addEventListener('dragover', handleDragOver);
+                        div.addEventListener('drop', handleDrop);
+                        div.addEventListener('dragend', handleDragEnd);
+
+                        previewContainer.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+                updateEditPhotoCounter();
+                updateImageOrder();
+                input.value = '';
+            }
+        }
+
+        function removeEditNewImage(index) {
+            editNewFiles.splice(index, 1);
+            document.querySelectorAll('.new-image-preview').forEach(el => el.remove());
+            editNewFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const div = document.createElement('div');
+                    div.className = 'relative group w-20 h-20 new-image-preview';
+                    const newIdx = editNewFiles.indexOf(file);
+                    div.innerHTML = `
+                        <img src="${e.target.result}" class="w-full h-full object-cover rounded-lg border-2 border-brand-sky">
+                        <div class="absolute top-0 right-0 bg-brand-sky text-white text-xs px-1 rounded-bl">New</div>
+                        <button type="button" onclick="removeEditNewImage(${newIdx})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600">&times;</button>
+                    `;
+                    document.getElementById('edit-image-previews').appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+            updateEditPhotoCounter();
+        }
+
+        function removeExistingImage(imageId) {
+            if (!imageId) return;
+
+            // Add to deleted list
+            editDeletedImageIds.push(imageId);
+
+            // Remove from UI
+            const imageDiv = document.querySelector(`[data-image-id="${imageId}"]`);
+            if (imageDiv) {
+                imageDiv.remove();
+            }
+
+            // Update existing images array
+            editExistingImages = editExistingImages.filter(img => img.id != imageId);
+            editExistingCount = editExistingImages.length;
+
+            updateEditPhotoCounter();
+            updateImageOrder();
+        }
+
+        function updateEditPhotoCounter() {
+            const total = editExistingCount + editNewFiles.length;
+            const counter = document.getElementById('edit-photo-counter');
+            if (counter) counter.textContent = `Photos: ${total}/5`;
+        }
+
+        // Drag and drop handlers
+        function handleDragStart(e) {
+            draggedElement = e.target.closest('.w-20');
+            draggedElement.style.opacity = '0.5';
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+
+            const target = e.target.closest('.w-20');
+            if (target && target !== draggedElement) {
+                target.style.borderColor = '#3ac363';
+            }
+            return false;
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            const target = e.target.closest('.w-20');
+            if (draggedElement && target && draggedElement !== target) {
+                const container = document.getElementById('edit-image-previews');
+                const all = Array.from(container.children);
+                const draggedIndex = all.indexOf(draggedElement);
+                const targetIndex = all.indexOf(target);
+
+                if (draggedIndex < targetIndex) {
+                    target.parentNode.insertBefore(draggedElement, target.nextSibling);
+                } else {
+                    target.parentNode.insertBefore(draggedElement, target);
+                }
+
+                updateMainImageIndicator();
+                updateImageOrder();
+            }
+
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            draggedElement.style.opacity = '';
+
+            // Reset all border colors
+            const container = document.getElementById('edit-image-previews');
+            container.querySelectorAll('.w-20').forEach(el => {
+                const img = el.querySelector('img');
+                if (img) {
+                    img.style.borderColor = '';
+                }
+            });
+
+            draggedElement = null;
+        }
+
+        function updateMainImageIndicator() {
+            const container = document.getElementById('edit-image-previews');
+            const images = container.querySelectorAll('.w-20');
+
+            images.forEach((div, index) => {
+                const img = div.querySelector('img');
+                const mainLabel = div.querySelector('div.absolute.top-0.left-0');
+
+                if (index === 0) {
+                    // First image is main
+                    img.className = 'w-full h-full object-cover rounded-lg border-2 border-brand-sky';
+                    if (!mainLabel) {
+                        const label = document.createElement('div');
+                        label.className = 'absolute top-0 left-0 bg-brand-sky text-white text-xs px-1 rounded-br';
+                        label.textContent = 'Main';
+                        div.insertBefore(label, div.firstChild);
+                    }
+                } else {
+                    // Other images
+                    img.className = 'w-full h-full object-cover rounded-lg border-2 border-slate-200';
+                    if (mainLabel && mainLabel.textContent === 'Main') {
+                        mainLabel.remove();
+                    }
+                }
+            });
+        }
+
+        function updateImageOrder() {
+            const container = document.getElementById('edit-image-previews');
+            const images = container.querySelectorAll('.w-20[data-image-type="existing"]');
+            const imageIds = Array.from(images)
+                .map(img => img.dataset.imageId)
+                .filter(id => id && id !== 'null');
+
+            document.getElementById('edit-image-order').value = imageIds.join(',');
+        }
+
+        document.getElementById('global-edit-form').addEventListener('submit', function (e) {
+            const fileInput = document.getElementById('edit-file-input');
+            const dataTransfer = new DataTransfer();
+            editNewFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+
+            // Add deleted image IDs to form
+            const deletedInput = document.getElementById('edit-deleted-images');
+            if (deletedInput) {
+                deletedInput.value = editDeletedImageIds.join(',');
+            }
+        });
+    </script>
+
+    {% if edit_errors and edit_listing_id %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const listingId = {{ edit_listing_id }};
+        const editErrors = {{ edit_errors| safe }};
+        const openModalFunc = window['openEditModal' + listingId]; // Fallback if you have specific modal functions
+
+        // Try to find the button for this listing to trigger openGlobalEditModal correctly
+        const btn = document.querySelector(`button[data-id="${listingId}"]`);
+        if (btn) {
+            openGlobalEditModal(btn);
+        }
+
+        // Display errors (simplified for this context)
+        if (editErrors) {
+            console.log('Errors:', editErrors);
+            // You would implement specific error showing logic here if needed
+            alert('Please correct the errors in the form.');
+        }
+        });
+    </script>
+    {% endif %}
+
     {% include 'accounts/logout_modal.html' %}
 </body>
+
 </html>

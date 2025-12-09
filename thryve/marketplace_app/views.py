@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.db.models import Q
+from django.db.models import Q, OuterRef, Subquery
 from django.views.decorators.cache import cache_control
 
 from .forms import ListingForm, validate_images_count, validate_image_file
 from thryve_app.models import Listing, ListingImage
+from booking_app.models import BookingRequest
 
 LISTING_TYPES = [
     {'value': 'sale', 'label': 'For Sale'},
@@ -40,7 +41,28 @@ def marketplace_home(request):
     category_filter = request.GET.get('category', '').strip()
     type_filter = request.GET.get('type', '').strip()
 
-    listings_qs = Listing.objects.prefetch_related('images').all()
+    # Subquery to get the user's booking status for each listing
+    user_booking_status = BookingRequest.objects.filter(
+        listing=OuterRef('pk'),
+        sender=request.user
+    ).order_by('-created_at').values('status')[:1]
+
+    listings_qs = Listing.objects.prefetch_related('images').annotate(
+        user_booking_status=Subquery(user_booking_status)
+    ).all()
+
+    # Exclude listings that have scheduled bookings from other users
+    # (Keep listings where: user is the owner OR user has the scheduled booking OR no scheduled booking exists)
+    scheduled_by_others = BookingRequest.objects.filter(
+        listing=OuterRef('pk'),
+        status='scheduled'
+    ).exclude(
+        Q(sender=request.user) | Q(receiver=request.user)
+    )
+    
+    listings_qs = listings_qs.exclude(
+        id__in=Subquery(scheduled_by_others.values('listing_id'))
+    )
 
     if search_query:
         listings_qs = listings_qs.filter(Q(title__icontains=search_query))
@@ -63,21 +85,6 @@ def marketplace_home(request):
         'type_filter': type_filter,
         'show_create_modal': show_create_modal,
         'is_my_listings': False,
-    })
-
-
-@login_required(login_url='login')
-def my_listings(request):
-    """View for managing current user's listings."""
-    user_listings = Listing.objects.filter(user=request.user).prefetch_related('images').order_by('-created_at')
-
-    # We reuse the home template but with specific context
-    return render(request, 'marketplace.html', {
-        'listings': user_listings,
-        'is_my_listings': True,
-        'categories': Listing.get_categories_dict(),
-        'listing_types': LISTING_TYPES,
-        'form': ListingForm(),  # Empty form for the modal
     })
 
 
@@ -143,84 +150,3 @@ def create_listing(request):
     return redirect('marketplace:home')
 
 
-@login_required(login_url='login')
-def edit_listing(request, listing_id):
-    listing = get_object_or_404(Listing, id=listing_id, user=request.user)
-
-    if request.method == 'POST':
-        form = ListingForm(request.POST, request.FILES, instance=listing)
-        if form.is_valid():
-            listing = form.save(commit=False)
-
-            category_value = request.POST.get('category', '')
-            if '-' in category_value:
-                main_category, subcategory = category_value.split('-', 1)
-                listing.category = main_category
-                listing.subcategory = subcategory
-            else:
-                listing.category = category_value
-                listing.subcategory = None
-
-            listing.save()
-
-            # Handle Image Reordering
-            image_order = request.POST.get('image_order', '')
-            if image_order:
-                image_ids = [int(id.strip()) for id in image_order.split(',') if id.strip()]
-                for index, img_id in enumerate(image_ids):
-                    try:
-                        image_obj = ListingImage.objects.get(id=img_id, listing=listing)
-                        image_obj.is_main = (index == 0)
-                        image_obj.save()
-                    except ListingImage.DoesNotExist:
-                        pass
-
-            # Handle New Images
-            images = request.FILES.getlist('images')
-            if images:
-                current_images_count = listing.images.count()
-                try:
-                    validate_images_count(images, current_images_count)
-                    for image in images:
-                        validate_image_file(image)
-
-                    for i, image_file in enumerate(images[:5 - current_images_count]):
-                        ListingImage.objects.create(
-                            listing=listing,
-                            image=image_file,
-                            is_main=(current_images_count == 0 and i == 0)
-                        )
-                except ValidationError as e:
-                    messages.error(request, str(e))
-                    return redirect('marketplace:my_listings')
-
-            messages.success(request, 'Your listing has been updated successfully!')
-            return redirect('marketplace:my_listings')
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
-            return redirect('marketplace:my_listings')
-
-    # GET request
-    form = ListingForm(instance=listing)
-    category_value = listing.category
-    if listing.subcategory:
-        category_value = f"{listing.category}-{listing.subcategory}"
-
-    return render(request, 'edit_listing.html', {
-        'form': form,
-        'listing': listing,
-        'category_value': category_value,
-        'categories': Listing.get_categories_dict(),
-        'listing_types': LISTING_TYPES,
-    })
-
-
-@login_required(login_url='login')
-def delete_listing(request, listing_id):
-    listing = get_object_or_404(Listing, id=listing_id, user=request.user)
-    if request.method == 'POST':
-        listing.delete()
-        messages.success(request, 'Your listing has been deleted successfully!')
-    return redirect('marketplace:my_listings')

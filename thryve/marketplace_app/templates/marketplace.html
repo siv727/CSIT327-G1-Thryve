@@ -40,148 +40,18 @@
 </head>
 
 <body class="font-inter bg-[#f7fbfd] text-brand-ink">
-
-    <header class="bg-[#23d3ee] text-white shadow">
-        <div class="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
-
-            <a href="{% url 'marketplace:home' %}" class="flex items-center gap-2">
-                <span
-                    class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white font-black text-[#23d3ee]">T</span>
-                <span class="text-[22px] font-extrabold tracking-tight">Thryve</span>
-            </a>
-
-            {% with active=request.resolver_match.url_name %}
-            <nav class="flex items-center gap-6 text-[14px] font-medium">
-                <a href="{% url 'thryve_app:dashboard' %}"
-                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"></path>
-                    </svg>
-                    <span class="leading-none">Dashboard</span>
-                    {% if active == 'dashboard' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
-
-                <a href="{% url 'marketplace:home' %}"
-                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/90">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 3h18l-1.68 9.39a2 2 0 01-1.98 1.61H6.66a2 2 0 01-1.98-1.61L3 3zM16 16a3 3 0 11-6 0">
-                        </path>
-                    </svg>
-                    <span class="leading-none">Marketplace</span>
-                    {% if active == 'marketplace:home' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
-
-                <a href="{% url 'marketplace:my_listings' %}"
-                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                        </path>
-                    </svg>
-                    <span class="leading-none">My Listings</span>
-                    {% if active == 'my_listings' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
-
-                <a href="{% url 'thryve_app:connections' %}"
-                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                        </path>
-                    </svg>
-                    <span class="leading-none">Connections</span>
-                    {% if active == 'connections' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
-
-                <a href="{% url 'community_app:community_feed' %}" class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5V4H2v16h5M17 8l-5 5-5-5" />
-                    </svg>
-                    <span class="leading-none">Community</span>
-                    {% if active == 'community_feed' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
-
-                <a href="{% url 'bookings' %}"
-                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z" />
-                    </svg>
-                    <span class="leading-none">Bookings</span>
-                    {% if active == 'bookings' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
-
-                <a href="{% url 'business_profile' %}"
-                    class="relative flex items-center gap-2 pb-1 hover:text-white transition-all text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20 21a8 8 0 10-16 0m8-9a4 4 0 100-8 4 4 0 000 8z" />
-                    </svg>
-                    <span class="leading-none">Profile</span>
-                    {% if active == 'business_profile' %}
-                    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-white"></span>
-                    {% endif %}
-                </a>
-            </nav>
-            {% endwith %}
-
-            <button onclick="openLogoutModal()" type="button"
-                class="flex items-center gap-2 font-medium text-white/90 hover:text-white transition-all text-[15px]">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1" />
-                </svg>
-                <span class="leading-none">Logout</span>
-            </button>
-
-        </div>
-    </header>
-
+    {% include 'thryve_app/navbar.html' %}
 
     <main class="max-w-[1200px] mx-auto px-5 py-8">
         <div class="flex items-start justify-between gap-4 mb-6">
             <div>
                 <h1 class="text-[38px] leading-[1.1] font-extrabold">
-                    {% if is_my_listings %}
-                    My Listings
-                    {% else %}
                     Marketplace
-                    {% endif %}
                 </h1>
                 <p class="text-slate-600 mt-1">
-                    {% if is_my_listings %}
-                    Manage your equipment and service listings.
-                    {% else %}
                     Buy, sell, or swap equipment and services with confidence.
-                    {% endif %}
                 </p>
             </div>
-            {% if not is_my_listings %}
             <button id="add-listing-btn"
                 class="inline-flex items-center gap-2 rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold px-4 py-2.5 shadow-soft transition">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -189,7 +59,6 @@
                 </svg>
                 Add Listing
             </button>
-            {% endif %}
         </div>
 
         <section class="bg-white/90 backdrop-blur rounded-xl shadow-soft border border-slate-100 p-5 mb-8">
@@ -271,8 +140,7 @@
             {% for listing in listings %}
             <article
                 class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col hover:-translate-y-2 hover:shadow-lg transition-all duration-300"
-                data-listing-id="{{ listing.id }}"
-                data-user-id="{{ listing.user.id }}"
+                data-listing-id="{{ listing.id }}" data-user-id="{{ listing.user.id }}"
                 data-images="{% for image in listing.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}"
                 data-title="{{ listing.title }}" data-description="{{ listing.description|safe }}"
                 data-price="{% if listing.listing_type == 'sale' and listing.price %}₱{{ listing.price }}{% endif %}"
@@ -381,15 +249,62 @@
                         {% endif %}
                         {% endif %}
                     </div>
+
+                    {# LISTING STATUS #}
+                    {% if listing.user_booking_status == 'pending' %}
                     <span
-                        class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">
-                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7">
-                            </path>
+                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 border border-yellow-200 whitespace-nowrap">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                clip-rule="evenodd" />
                         </svg>
-                        Available
+                        Request Pending
                     </span>
+                    {% elif listing.user_booking_status == 'scheduled' %}
+                    <span
+                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200 whitespace-nowrap">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Scheduled
+                    </span>
+                    {% elif listing.user_booking_status == 'completed' %}
+                    <span
+                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-blue-200 whitespace-nowrap">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Completed
+                    </span>
+                    {% elif listing.user_booking_status == 'declined' %}
+                    <span
+                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-red-200 whitespace-nowrap">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Declined
+                    </span>
+                    {% elif listing.user_booking_status == 'cancelled' %}
+                    <span
+                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200 whitespace-nowrap">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Cancelled
+                    </span>
+                    {% endif %}
                 </div>
+
+                {# IF LISTING TITLE LENGTH TOO LONG, SCROLL ANIMATION #}
                 {% if listing.title|length > 25 %}
                 <div class="title-scroll-container relative">
                     <div class="title-scroll-text whitespace-nowrap">
@@ -401,6 +316,7 @@
                 {% else %}
                 <h3 class="text-lg font-bold truncate">{{ listing.title }}</h3>
                 {% endif %}
+
                 <div class="mt-0.5 text-slate-500 font-medium flex items-center gap-1">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -408,6 +324,8 @@
                     </svg>
                     <strong>{{ listing.your_name }}</strong> | {{ listing.company }}
                 </div>
+
+                {# DESCRIPTION LENGTH TOO LONG, TRUNCATE #}
                 <div class="relative mt-3 text-slate-700 card-description">
                     {% with stripped_desc=listing.description|striptags %}
                     {% if stripped_desc|length > 120 %}
@@ -459,6 +377,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
+
+                        {# LOCATION LENGTH TOO LONG, SCROLL ANIMATION #}
                         {% if listing.location|length > 20 %}
                         <div class="location-scroll-container">
                             <div class="location-scroll-text whitespace-nowrap">
@@ -471,6 +391,7 @@
                         <span class="truncate">{{ listing.location }}</span>
                         {% endif %}
                     </span>
+
                     <span class="flex items-center gap-1">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -479,296 +400,24 @@
                         {{ listing.date|date:"m/d/Y" }}
                     </span>
                 </div>
+
+                {# FOR MODALS (DETAILS AND BOOKING) #}
                 <div class="mt-5 grid grid-cols-2 gap-3">
-                    {% if is_my_listings %}
-                    <button onclick="openEditModal{{ listing.id }}()"
-                        class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">Edit
-                        Details</button>
-                    <button onclick="openDeleteListingModal('{{ listing.id }}')"
-                        class="text-center rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5">Delete</button>
-                    {% else %}
                     <button onclick="openListingDetailsModal('{{ listing.id }}')"
                         class="text-center rounded-lg border font-semibold py-2.5 hover:bg-slate-50">View
                         Details</button>
+                    {% if listing.user_booking_status == 'pending' or listing.user_booking_status == 'scheduled' %}
+                    <button disabled
+                        class="text-center rounded-lg bg-gray-300 text-gray-500 font-semibold py-2.5 cursor-not-allowed"
+                        title="You already have a {{ listing.user_booking_status }} booking for this listing">Book
+                        Now</button>
+                    {% else %}
                     <button onclick="openBookNowModal('{{ listing.id }}')"
                         class="text-center rounded-lg bg-brand-leaf hover:bg-[#33b459] text-white font-semibold py-2.5">Book
                         Now</button>
                     {% endif %}
                 </div>
             </article>
-
-            <!-- Individual Edit Modal for Listing {{ listing.id }} -->
-            {% if is_my_listings %}
-            <script>
-                function openEditModal{{listing.id}} () {
-                    document.getElementById('editModal{{ listing.id }}').classList.remove('hidden');
-                    document.getElementById('editModal{{ listing.id }}').classList.add('flex');
-                }
-                function closeEditModal{{ listing.id}} () {
-                    document.getElementById('editModal{{ listing.id }}').classList.add('hidden');
-                    document.getElementById('editModal{{ listing.id }}').classList.remove('flex');
-                }
-                let editNewImagesData{{ listing.id }} =[];
-
-                function handleImagePreview{{ listing.id}} (input) {
-                    const previewContainer = document.getElementById('imagePreview{{ listing.id }}');
-                    const photoCounter = document.getElementById('photoCounter{{ listing.id }}');
-                    const existingCount = {{ listing.images.count }};
-                const fileInput = input;
-
-                if (input.files && input.files.length > 0) {
-                    const currentNewCount = editNewImagesData{{ listing.id }}.length;
-                const availableSlots = 5 - existingCount - currentNewCount;
-
-                if (availableSlots <= 0) {
-                    alert('Maximum 5 images allowed. You have reached the limit.');
-                    fileInput.value = '';
-                    return;
-                }
-
-                const filesToAdd = Math.min(input.files.length, availableSlots);
-                if (input.files.length > availableSlots) {
-                    alert(`You can only add ${availableSlots} more image(s). Only the first ${availableSlots} will be added.`);
-                }
-
-                // Add new files to our array
-                for (let i = 0; i < filesToAdd; i++) {
-                            editNewImagesData{{ listing.id }}.push(input.files[i]);
-
-                    const reader = new FileReader();
-                    const fileIndex = currentNewCount + i;
-                    reader.onload = function (e) {
-                        const previewDiv = document.createElement('div');
-                        previewDiv.className = 'relative group new-image-preview';
-                        previewDiv.setAttribute('data-index', fileIndex);
-                        previewDiv.innerHTML = `
-                                    <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
-                                    <div class="absolute top-1 right-1 bg-brand-sky text-white text-xs px-1.5 py-0.5 rounded">New</div>
-                                    <button type="button" onclick="removeNewImage{{ listing.id }}(${fileIndex})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">×</button>
-                                `;
-                        previewContainer.appendChild(previewDiv);
-                    };
-                    reader.readAsDataURL(input.files[i]);
-                }
-
-                const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
-                photoCounter.textContent = `Photos: ${totalCount}/5`;
-
-                // Clear the file input so the same file can be selected again
-                fileInput.value = '';
-                    }
-                }
-
-                function removeNewImage{{ listing.id }} (index) {
-                    // Remove from array
-                    editNewImagesData{{ listing.id }}.splice(index, 1);
-
-                    // Update preview container
-                    const previewContainer = document.getElementById('imagePreview{{ listing.id }}');
-                    const allNewPreviews = previewContainer.querySelectorAll('.new-image-preview');
-                    allNewPreviews.forEach(preview => preview.remove());
-
-                    // Re-render remaining new images with updated indices
-                    editNewImagesData{{ listing.id }}.forEach((file, newIndex) => {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            const previewDiv = document.createElement('div');
-                            previewDiv.className = 'relative group new-image-preview';
-                            previewDiv.setAttribute('data-index', newIndex);
-                            previewDiv.innerHTML = `
-                                <img src="${e.target.result}" alt="Preview" class="w-20 h-20 object-cover rounded-lg border-2 border-brand-sky">
-                                <div class="absolute top-1 right-1 bg-brand-sky text-white text-xs px-1.5 py-0.5 rounded">New</div>
-                                <button type="button" onclick="removeNewImage{{ listing.id }}(${newIndex})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">×</button>
-                            `;
-                            previewContainer.appendChild(previewDiv);
-                        };
-                        reader.readAsDataURL(file);
-                    });
-
-                    // Update counter
-                    const existingCount = {{ listing.images.count }};
-                const totalCount = existingCount + editNewImagesData{{ listing.id }}.length;
-                document.getElementById('photoCounter{{ listing.id }}').textContent = `Photos: ${totalCount}/5`;
-                }
-
-                function submitEditForm{{ listing.id }} (form) {
-                    // Create a new DataTransfer object to hold our files
-                    const dataTransfer = new DataTransfer();
-
-                    // Add all new images to the file input
-                    editNewImagesData{{ listing.id }}.forEach(file => {
-                        dataTransfer.items.add(file);
-                    });
-
-                    // Update the file input with our collected files
-                    const fileInput = form.querySelector('input[type="file"]');
-                    fileInput.files = dataTransfer.files;
-
-                    return true; // Allow form submission
-                }
-            </script>
-            <div id="editModal{{ listing.id }}" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50"
-                onclick="if(event.target === this) closeEditModal{{ listing.id }}()">
-                <div class="flex items-center justify-center min-h-screen p-4 w-full">
-                    <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
-                        <div class="p-6">
-                            <div class="flex items-center justify-between mb-6">
-                                <h2 class="text-xl font-bold text-slate-900">Edit Listing</h2>
-                                <button onclick="closeEditModal{{ listing.id }}()" type="button"
-                                    class="text-slate-400 hover:text-slate-600">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <form method="post" action="{% url 'marketplace:edit_listing' listing.id %}"
-                                enctype="multipart/form-data" onsubmit="return submitEditForm{{ listing.id }}(this)">
-                                {% csrf_token %}
-
-                                <div class="mb-4">
-                                    <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
-                                    <div class="space-y-2">
-                                        <label class="flex items-center">
-                                            <input type="radio" name="listing_type" value="sale"
-                                                class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'sale' %}checked{% endif %} required>
-                                            <span class="ml-2 text-slate-700">For Sale</span>
-                                        </label>
-                                        <label class="flex items-center">
-                                            <input type="radio" name="listing_type" value="swap"
-                                                class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'swap' %}checked{% endif %} required>
-                                            <span class="ml-2 text-slate-700">For Swap</span>
-                                        </label>
-                                        <label class="flex items-center">
-                                            <input type="radio" name="listing_type" value="buy"
-                                                class="text-brand-sky focus:ring-brand-sky" {% if listing.listing_type == 'buy' %}checked{% endif %} required>
-                                            <span class="ml-2 text-slate-700">Looking to Buy</span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="block text-slate-700 font-semibold mb-2">Category *</label>
-                                    <input type="hidden" name="category"
-                                        value="{% if listing.subcategory %}{{ listing.category }}-{{ listing.subcategory }}{% else %}{{ listing.category }}{% endif %}">
-                                    <div
-                                        class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-slate-100 text-slate-700">
-                                        {{ listing.category_display }}{% if listing.subcategory_display %} - {{listing.subcategory_display }}{% endif %}
-                                    </div>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="block text-slate-700 font-semibold mb-2">Title *</label>
-                                    <input type="text" name="title" value="{{ listing.title }}"
-                                        placeholder="Enter listing title"
-                                        class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
-                                        required>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="block text-slate-700 font-semibold mb-2">Description *</label>
-                                    <textarea name="description" rows="4" placeholder="Describe your item or service"
-                                        class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400 resize-y"
-                                        required>{{ listing.description }}</textarea>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="block text-slate-700 font-semibold mb-2">
-                                        {% if listing.listing_type == 'sale' %}Price *
-                                        {% elif listing.listing_type == 'swap' %}Looking to Swap For *
-                                        {% elif listing.listing_type == 'buy' %}Budget *
-                                        {% endif %}
-                                    </label>
-                                    {% if listing.listing_type == 'sale' %}
-                                    <div class="relative">
-                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                        <input type="text" name="price" value="{{ listing.price }}" placeholder="0.00"
-                                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
-                                    </div>
-                                    {% elif listing.listing_type == 'swap' %}
-                                    <input type="text" name="swap_for" value="{{ listing.swap_for }}"
-                                        placeholder="What are you looking to swap for?"
-                                        class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
-                                    {% elif listing.listing_type == 'buy' %}
-                                    <div class="relative">
-                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                        <input type="text" name="budget" value="{{ listing.budget }}" placeholder="0.00"
-                                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
-                                    </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="block text-slate-700 font-semibold mb-2">Location *</label>
-                                    <input type="text" name="location" value="{{ listing.location }}"
-                                        placeholder="City, State/Country"
-                                        class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
-                                        required>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="block text-slate-700 font-semibold mb-2">Date *</label>
-                                    <input type="date" name="date" value="{{ listing.date|date:'Y-m-d' }}"
-                                        class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
-                                        required>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="block text-slate-700 font-semibold mb-2">Listing Images</label>
-
-                                    <!-- Image Preview Section -->
-                                    <div id="imagePreview{{ listing.id }}" class="flex flex-wrap gap-2 mb-3">
-                                        {% for image in listing.images.all %}
-                                        <div class="relative group">
-                                            <img src="{{ image.image.url }}" alt="Listing image"
-                                                class="w-20 h-20 object-cover rounded-lg border-2 border-slate-300">
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-
-                                    <div
-                                        class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors bg-slate-50 relative">
-                                        <div class="flex flex-col items-center justify-center space-y-4">
-                                            <div class="w-12 h-12 text-slate-400">
-                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
-                                                    </path>
-                                                </svg>
-                                            </div>
-                                            <div>
-                                                <p class="text-lg font-medium text-slate-700">Drag and drop your images
-                                                    here</p>
-                                                <p class="text-sm text-slate-500">or <span
-                                                        class="text-brand-sky font-medium">click to browse</span></p>
-                                            </div>
-                                            <p id="photoCounter{{ listing.id }}"
-                                                class="text-sm font-medium text-slate-600">Photos: {{listing.images.count }}/5</p>
-                                        </div>
-                                        <input type="file" name="images"
-                                            accept="image/jpeg,image/png,image/gif,image/webp" multiple
-                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer pointer-events-auto"
-                                            onchange="handleImagePreview{{ listing.id }}(this)">
-                                    </div>
-                                    <div class="mt-2 text-sm text-slate-500">
-                                        <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex justify-end gap-3">
-                                    <button type="button" onclick="closeEditModal{{ listing.id }}()"
-                                        class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                                    <button type="submit"
-                                        class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update
-                                        Listing</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
 
             {% empty %}
             <article class="bg-white rounded-xl shadow-soft border border-slate-100 p-5 flex flex-col">
@@ -904,234 +553,6 @@
             </div>
         </div>
     </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div id="delete-listing-modal"
-        class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-auto">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-slate-900">Delete Listing</h2>
-                    <button id="close-delete-modal" class="text-slate-400 hover:text-slate-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="mb-6">
-                    <p class="text-slate-700">Are you sure you want to delete this listing? This action cannot be
-                        undone.</p>
-                </div>
-
-                <div class="flex justify-end gap-3">
-                    <button id="cancel-delete-btn"
-                        class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                    <button id="confirm-delete-btn"
-                        class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">Delete
-                        Listing</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Listing Modal -->
-    <div id="edit-listing-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4 w-full">
-            <div class="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-bold text-slate-900">Edit Listing</h2>
-                        <button id="close-edit-modal" class="text-slate-400 hover:text-slate-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <form id="edit-listing-form" method="post" action="" enctype="multipart/form-data" novalidate>
-                        {% csrf_token %}
-
-                        <div class="mb-4">
-                            <label class="block text-slate-700 font-semibold mb-2">Listing Type *</label>
-                            <div class="space-y-2">
-                                <label class="flex items-center">
-                                    <input type="radio" name="listing_type" value="sale"
-                                        class="text-brand-sky focus:ring-brand-sky" required>
-                                    <span class="ml-2 text-slate-700">For Sale</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="listing_type" value="swap"
-                                        class="text-brand-sky focus:ring-brand-sky" required>
-                                    <span class="ml-2 text-slate-700">For Swap</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="listing_type" value="buy"
-                                        class="text-brand-sky focus:ring-brand-sky" required>
-                                    <span class="ml-2 text-slate-700">Looking to Buy</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="edit_id_category" class="block text-slate-700 font-semibold mb-2">Category
-                                *</label>
-                            <div class="relative">
-                                <input type="hidden" name="category" id="edit_id_category" value="">
-                                <div id="edit-category-selector-trigger"
-                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-sky flex items-center justify-between">
-                                    <span id="edit-category-display-text" class="text-slate-400">Choose Category</span>
-                                    <span class="text-slate-400">▾</span>
-                                </div>
-
-                                <div id="edit-category-selector"
-                                    class="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-lg shadow-lg z-10 hidden">
-                                    <div class="flex">
-                                        <div class="w-1/2 border-r border-slate-200 max-h-64 overflow-y-auto">
-                                            <div class="p-2">
-                                                <div class="text-xs text-slate-500 font-medium mb-2 px-2">CATEGORIES
-                                                </div>
-                                                <div id="edit-main-categories" class="space-y-1">
-                                                    {% for key, data in categories.items %}
-                                                    <button type="button"
-                                                        class="w-full text-left px-3 py-2 text-sm hover:bg-brand-sky/10 rounded category-btn"
-                                                        data-category="{{ key }}">{{ data.label }}</button>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="w-1/2 max-h-64 overflow-y-auto">
-                                            <div class="p-2">
-                                                <div class="text-xs text-slate-500 font-medium mb-2 px-2">SUBCATEGORIES
-                                                </div>
-                                                <div id="edit-subcategories" class="space-y-1">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="edit_id_title" class="block text-slate-700 font-semibold mb-2">Title *</label>
-                            <input type="text" name="title"
-                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
-                                placeholder="Enter listing title" id="edit_id_title">
-                            {% if form.title.errors %}
-                            <p class="text-red-500 text-xs mt-1">{{ form.title.errors.0 }}</p>
-                            {% endif %}
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="edit_id_description" class="block text-slate-700 font-semibold mb-2">Description
-                                *</label>
-                            <textarea name="description" id="edit_id_description"
-                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400 resize-y overflow-y-auto"
-                                rows="4" placeholder="Describe your item or service"></textarea>
-                            {% if form.description.errors %}
-                            <p class="text-red-500 text-xs mt-1">{{ form.description.errors.0 }}</p>
-                            {% endif %}
-                        </div>
-
-                        <div class="mb-4" id="edit-dynamic-field-container">
-                            <label id="edit-dynamic-field-label" for="edit_id_price"
-                                class="block text-slate-700 font-semibold mb-2">Price *</label>
-                            <div class="relative" id="edit-price-container">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                <input type="text" name="price"
-                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
-                                    placeholder="0.00" id="edit_id_price">
-                            </div>
-                            <div class="hidden" id="edit-swap-container">
-                                <input type="text" name="swap_for"
-                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
-                                    placeholder="What are you looking to swap for?" id="edit_id_swap_for">
-                            </div>
-                            <div class="relative hidden" id="edit-budget-container">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-900">₱</span>
-                                <input type="text" name="budget"
-                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 pl-7 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
-                                    placeholder="0.00" id="edit_id_budget">
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="edit_id_location" class="block text-slate-700 font-semibold mb-2">Location
-                                *</label>
-                            <div class="relative">
-                                <input type="text" name="location" id="edit_id_location"
-                                    class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400"
-                                    placeholder="City, State/Country">
-                            </div>
-                            {% if form.location.errors %}
-                            <p class="text-red-500 text-xs mt-1">{{ form.location.errors.0 }}</p>
-                            {% endif %}
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="edit_id_date" class="block text-slate-700 font-semibold mb-2">Date *</label>
-                            <input type="date" name="date" id="edit_id_date"
-                                class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky placeholder:text-slate-400">
-                            {% if form.date.errors %}
-                            <p class="text-red-500 text-xs mt-1">{{ form.date.errors.0 }}</p>
-                            {% endif %}
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="edit_id_images" class="block text-slate-700 font-semibold mb-2">Listing
-                                Images</label>
-
-                            <!-- All Images Display (Current + New) -->
-                            <div id="edit-all-images" class="mb-4">
-                                <!-- Current images will be populated by JavaScript -->
-                            </div>
-
-                            <!-- Upload Area -->
-                            <div id="edit-upload-area"
-                                class="relative border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-brand-sky transition-colors cursor-pointer bg-slate-50 hover:bg-slate-100/50">
-                                <div class="flex flex-col items-center justify-center space-y-4">
-                                    <div id="edit-upload-icon" class="w-12 h-12 text-slate-400">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
-                                            </path>
-                                        </svg>
-                                    </div>
-                                    <div id="edit-upload-text">
-                                        <p class="text-lg font-medium text-slate-700">Drag and drop your images here</p>
-                                        <p class="text-sm text-slate-500">or <span
-                                                class="text-brand-sky font-medium">click to browse</span></p>
-                                    </div>
-                                    <div id="edit-image-counter" class="text-sm font-medium text-slate-600">
-                                        Photos: 0/5
-                                    </div>
-                                </div>
-                                <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp"
-                                    id="edit_id_images" multiple
-                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                            </div>
-
-                            <div class="mt-2 text-sm text-slate-500">
-                                <p>Supported formats: JPEG, PNG, GIF, WebP (max 5MB each)</p>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-end gap-3">
-                            <button type="button" id="edit-cancel-btn"
-                                class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                            <button type="button" id="edit-submit-btn" onclick="submitEditListingForm()"
-                                class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Update
-                                Listing</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div id="add-listing-modal"
@@ -1388,12 +809,14 @@
                     <h2 class="text-xl font-bold text-slate-900" id="modal-title-text">Arrange Transaction/Exchange</h2>
                     <button id="close-book-now-modal" type="button" class="text-slate-400 hover:text-slate-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
 
-                <p class="text-sm text-slate-600 mb-4" id="modal-sub-heading">Use the fields below to propose a time frame for the transaction, meeting, or exchange.</p>
+                <p class="text-sm text-slate-600 mb-4" id="modal-sub-heading">Use the fields below to propose a time
+                    frame for the transaction, meeting, or exchange.</p>
 
                 <form id="book-now-form">
                     {% csrf_token %}
@@ -1402,23 +825,32 @@
 
                     <div class="mb-4">
                         <label for="start-date" class="block text-slate-700 font-semibold mb-2">Start Date *</label>
-                        <input type="date" id="start-date" name="start_date" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" required>
+                        <input type="date" id="start-date" name="start_date"
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                            required>
                     </div>
 
                     <div class="mb-6">
                         <label for="end-date" class="block text-slate-700 font-semibold mb-2">End Date *</label>
-                        <input type="date" id="end-date" name="end_date" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky" required>
+                        <input type="date" id="end-date" name="end_date"
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky"
+                            required>
                     </div>
 
                     <div class="mb-6">
                         <label for="message" class="block text-slate-700 font-semibold mb-2">Message *</label>
-                        <textarea id="message" name="message" rows="4" maxlength="500" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky resize-y" required></textarea>
+                        <textarea id="message" name="message" rows="4" maxlength="500"
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-brand-sky resize-y"
+                            required></textarea>
                         <p class="text-xs text-slate-500 mt-1" id="message-helper-text"></p>
                     </div>
 
                     <div class="flex justify-end gap-3">
-                        <button type="button" id="cancel-book-now-btn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
-                        <button type="submit" id="request-booking-btn" class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Request Booking</button>
+                        <button type="button" id="cancel-book-now-btn"
+                            class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">Cancel</button>
+                        <button type="submit" id="request-booking-btn"
+                            class="px-6 py-2 bg-brand-leaf hover:bg-[#33b459] text-white font-semibold rounded-lg transition">Request
+                            Booking</button>
                     </div>
                 </form>
             </div>
@@ -1426,7 +858,8 @@
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-300 z-50">
+    <div id="toast"
+        class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-300 z-50">
         <p id="toast-message" class="text-sm font-medium"></p>
     </div>
 
