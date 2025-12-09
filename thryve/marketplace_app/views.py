@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.db.models import Q
+from django.db.models import Q, OuterRef, Subquery
 from django.views.decorators.cache import cache_control
 
 from .forms import ListingForm, validate_images_count, validate_image_file
 from thryve_app.models import Listing, ListingImage
+from booking_app.models import BookingRequest
 
 LISTING_TYPES = [
     {'value': 'sale', 'label': 'For Sale'},
@@ -40,7 +41,28 @@ def marketplace_home(request):
     category_filter = request.GET.get('category', '').strip()
     type_filter = request.GET.get('type', '').strip()
 
-    listings_qs = Listing.objects.prefetch_related('images').all()
+    # Subquery to get the user's booking status for each listing
+    user_booking_status = BookingRequest.objects.filter(
+        listing=OuterRef('pk'),
+        sender=request.user
+    ).order_by('-created_at').values('status')[:1]
+
+    listings_qs = Listing.objects.prefetch_related('images').annotate(
+        user_booking_status=Subquery(user_booking_status)
+    ).all()
+
+    # Exclude listings that have scheduled bookings from other users
+    # (Keep listings where: user is the owner OR user has the scheduled booking OR no scheduled booking exists)
+    scheduled_by_others = BookingRequest.objects.filter(
+        listing=OuterRef('pk'),
+        status='scheduled'
+    ).exclude(
+        Q(sender=request.user) | Q(receiver=request.user)
+    )
+    
+    listings_qs = listings_qs.exclude(
+        id__in=Subquery(scheduled_by_others.values('listing_id'))
+    )
 
     if search_query:
         listings_qs = listings_qs.filter(Q(title__icontains=search_query))
