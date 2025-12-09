@@ -90,6 +90,21 @@ def create_booking_request(request):
         if BookingRequest.objects.filter(listing=listing, sender=sender, status='pending').exists():
              return JsonResponse({'success': False, 'message': 'You already have a pending transaction proposal for this item.'}, status=409)
 
+        # Check for date overlap with existing scheduled bookings
+        overlapping_bookings = BookingRequest.objects.filter(
+            listing=listing,
+            status='scheduled',
+            proposed_start_date__lte=end_date,
+            proposed_end_date__gte=start_date
+        )
+        
+        if overlapping_bookings.exists():
+            first_conflict = overlapping_bookings.first()
+            return JsonResponse({
+                'success': False, 
+                'message': f'The selected dates overlap with an existing scheduled booking ({first_conflict.proposed_start_date.strftime("%b %d, %Y")} - {first_conflict.proposed_end_date.strftime("%b %d, %Y")}). Please choose different dates.'
+            }, status=409)
+
         # 2. Create the Booking Request
         BookingRequest.objects.create(
             listing=listing,
