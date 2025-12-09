@@ -2,7 +2,6 @@
  * Requires window.MARKETPLACE_CONFIG and 'categories-data' JSON script to be loaded in the HTML
  */
 
-document.addEventListener('DOMContentLoaded', function () {
 // --- Toast Notification System ---
 function showToast(message) {
     const toast = document.getElementById('toast');
@@ -926,7 +925,8 @@ function openBookNowModal(listingId) {
     listingTypeInput.value = type;
 
     // 2. Set dynamic text based on listing type
-    modalTitle.textContent = `Arrange Transaction/Exchange for: ${title}`;
+    const actionText = (type === 'swap') ? 'Exchange' : 'Transaction';
+    modalTitle.innerHTML = `Arrange ${actionText} for: <span class="text-brand-leaf">${title}</span>`;
     messageTextarea.value = ''; // Clear previous message
     messageTextarea.placeholder = 'Describe your item or service';
     messageHelperText.textContent = '';

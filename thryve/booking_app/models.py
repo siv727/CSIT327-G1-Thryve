@@ -22,6 +22,7 @@ class BookingRequest(models.Model):
         ('pending', 'Pending'),
         ('accepted', 'Accepted'),
         ('declined', 'Declined'),
+        ('cancelled', 'Cancelled'),
         ('completed', 'Completed')
     ]
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
